@@ -3,6 +3,6 @@
 # VBA and VB6 source files are read byte for byte: their line endings and code page are never converted.
 *.bas -text
 *.cls -text
-*.frm binary
+*.frm -text
 *.frx binary
 *.doccls -text

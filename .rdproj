@@ -75,13 +75,12 @@
       },
       {
         "RelativeUri": "src/View/Abstract/IGridViewEvents.cls"
-      }
-    ],
-    "References": [
+      },
       {
-        "Name": "Scripting"
+        "RelativeUri": "lib/Dictionary.cls"
       }
     ],
+    "References": [],
     "OtherFiles": [],
     "Folders": [],
     "PrecompilerConstants": {}

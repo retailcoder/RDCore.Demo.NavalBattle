@@ -17,7 +17,7 @@ Private ShipSizes As Dictionary
 Private shipNames As Dictionary
 
 Private Const ShipNameCarrier As String = "Aircraft Carrier"
-Private Const ShipNameBattleship As String = "Battleship"
+Private Const ShipNameDreadnought As String = "Dreadnought"
 Private Const ShipNameSubmarine As String = "Submarine"
 Private Const ShipNameCruiser As String = "Cruiser"
 Private Const ShipNameDestroyer As String = "Destroyer"
@@ -158,7 +158,7 @@ Private Sub Class_Initialize()
         Set ShipSizes = New Dictionary
         With ShipSizes
             .Add ShipType.Carrier, 5
-            .Add ShipType.Battleship, 4
+            .Add ShipType.Dreadnought, 4
             .Add ShipType.Submarine, 3
             .Add ShipType.Cruiser, 3
             .Add ShipType.Destroyer, 2
@@ -166,7 +166,7 @@ Private Sub Class_Initialize()
         Set shipNames = New Dictionary
         With shipNames
             .Add ShipType.Carrier, ShipNameCarrier
-            .Add ShipType.Battleship, ShipNameBattleship
+            .Add ShipType.Dreadnought, ShipNameDreadnought
             .Add ShipType.Submarine, ShipNameSubmarine
             .Add ShipType.Cruiser, ShipNameCruiser
             .Add ShipType.Destroyer, ShipNameDestroyer

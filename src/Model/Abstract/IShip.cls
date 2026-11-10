@@ -16,7 +16,7 @@ Option Explicit
 
 Public Enum ShipType
     Carrier
-    Battleship
+    Dreadnought
     Submarine
     Cruiser
     Destroyer

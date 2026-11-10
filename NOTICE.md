@@ -9,7 +9,7 @@ Ce fichier accompagne le code source de RDCore.Demo.NavalBattle.
 
 Le contenu de ce référentiel est distribué sous la licence **MIT** : voir [LICENSE](LICENSE). Le fichier de licence reproduit le texte officiel de la licence, en anglais. Une version française est disponible sur demande.
 
-## Composants de tiers
+## Composants tiers
 
 Le fichier `lib/Dictionary.cls` est **VBA-Dictionary**, © 2020 Tim Hall, distribué sous la licence **MIT** :
 <https://github.com/VBA-tools/VBA-Dictionary>. Son avis de licence est reproduit en tête du fichier. Une seule ligne y est modifiée, pour que le

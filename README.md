@@ -9,7 +9,21 @@ This repository holds the game's port to the [RDCore](https://github.com/rubberd
 
 ## Project status
 
-RD-VBA Naval Battle is in **pre-alpha** development. The game's workspace is not in the repository yet.
+RD-VBA Naval Battle is in **pre-alpha** development. It plays in the console, the computer against itself.
+
+## Running the game
+
+The game runs with `rdc`, the RDCore command line, built from the [RDCore](https://github.com/rubberduck-vba/RDCore) repository. From the folder of this repository:
+
+```
+rdc run .
+```
+
+`/seed <number>` after `--` fixes the random seed, so that a game can be played again move for move:
+
+```
+rdc run . -- /seed 42
+```
 
 ## Licence
 

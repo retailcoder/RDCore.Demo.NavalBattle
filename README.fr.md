@@ -19,7 +19,7 @@ Le jeu s'exécute avec `rdc`, la ligne de commande de RDCore, compilée à parti
 rdc run .
 ```
 
-Le jeu demande qui joue chaque grille : Human, Random, Fair-play ou Merciless (la première lettre suffit). Une personne place ses cinq navires, puis joue à tour de rôle avec l'ordinateur, un tir chacun, jusqu'à ce qu'une flotte soit coulée. Une case est une lettre de colonne et un numéro de ligne, comme `B3` ; un navire part de sa première case vers la droite, ou vers le bas avec un `V` : `B3 V`. Une réponse vide termine la partie. Sous Windows, les questions sont des boîtes de dialogue. Le jeu lui-même est en anglais.
+Le jeu demande qui joue chaque grille : Human, Random, Fair-play ou Merciless (la première lettre suffit). Une personne place ses cinq navires, puis joue à tour de rôle avec l'ordinateur, un tir chacun, jusqu'à ce qu'une flotte soit coulée. Une case est une lettre de colonne et un numéro de ligne, comme `B3`; un navire part de sa première case vers la droite, ou vers le bas avec un `V` : `B3 V`. Une réponse vide termine la partie. Sous Windows, les questions sont des boîtes de dialogue. Le jeu lui-même est en anglais.
 
 Après `--`, `/player1 <joueur>` et `/player2 <joueur>` nomment les joueurs, et `/seed <nombre>` fixe la graine aléatoire, pour qu'une partie puisse être rejouée coup pour coup :
 

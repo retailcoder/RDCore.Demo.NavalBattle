@@ -9,6 +9,12 @@ Ce fichier accompagne le code source de RDCore.Demo.NavalBattle.
 
 Le contenu de ce référentiel est distribué sous la licence **MIT** : voir [LICENSE](LICENSE). Le fichier de licence reproduit le texte officiel de la licence, en anglais. Une version française est disponible sur demande.
 
+## Composants tiers
+
+Le fichier `lib/Dictionary.cls` est **VBA-Dictionary**, © 2020 Tim Hall, distribué sous la licence **MIT** :
+<https://github.com/VBA-tools/VBA-Dictionary>. Son avis de licence est reproduit en tête du fichier. Une seule ligne y est modifiée, pour que le
+dictionnaire n'utilise jamais `Scripting.Dictionary`.
+
 ## Marques de commerce
 
 Seul, "Rubberduck" est utilisé pour fins de référence au projet open-source legacy **utilisé publiquement ainsi depuis 2015** et sans lien ni affiliation avec tout tiers détenteur d'une marque semblable dans quelque juridiction que ce soit.  
@@ -29,6 +35,12 @@ This file accompanies the RDCore.Demo.NavalBattle source code.
 ## Licence
 
 The content of this repository is licensed under the **MIT** licence: see [LICENSE](LICENSE). The licence file reproduces the official text of the licence, in English. A French version is available on request.
+
+## Third-party components
+
+The file `lib/Dictionary.cls` is **VBA-Dictionary**, © 2020 Tim Hall, licensed under the **MIT** licence:
+<https://github.com/VBA-tools/VBA-Dictionary>. Its licence notice is reproduced at the top of the file. One line of it is changed, so that the dictionary
+never uses `Scripting.Dictionary`.
 
 ## Trademarks
 

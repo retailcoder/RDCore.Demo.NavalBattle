@@ -9,7 +9,21 @@ Ce référentiel contient le portage du jeu vers la plateforme [RDCore](https://
 
 ## État du projet
 
-Bataille navale RD-VBA est en développement **pré-alpha**. L'espace de travail du jeu n'est pas encore dans le référentiel.
+Bataille navale RD-VBA est en développement **pré-alpha**. Le jeu se joue dans la console, l'ordinateur contre lui-même.
+
+## Lancer le jeu
+
+Le jeu s'exécute avec `rdc`, la ligne de commande de RDCore, compilée à partir du référentiel [RDCore](https://github.com/rubberduck-vba/RDCore). À partir du dossier de ce référentiel :
+
+```
+rdc run .
+```
+
+`/seed <nombre>` après `--` fixe la graine aléatoire, pour qu'une partie puisse être rejouée coup pour coup :
+
+```
+rdc run . -- /seed 42
+```
 
 ## Licence
 

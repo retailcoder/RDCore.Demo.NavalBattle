@@ -1,0 +1,88 @@
+{
+  "Version": "0.1.0",
+  "Configuration": [],
+  "ProjectInfo": {
+    "Name": "NavalBattle",
+    "Modules": [
+      {
+        "RelativeUri": "src/Program.bas"
+      },
+      {
+        "RelativeUri": "src/IGameController.cls"
+      },
+      {
+        "RelativeUri": "src/StandardGameController.cls"
+      },
+      {
+        "RelativeUri": "src/Model/AIPlayer.cls"
+      },
+      {
+        "RelativeUri": "src/Model/GameRandomizer.cls"
+      },
+      {
+        "RelativeUri": "src/Model/GridCoord.cls"
+      },
+      {
+        "RelativeUri": "src/Model/HumanPlayer.cls"
+      },
+      {
+        "RelativeUri": "src/Model/PlayerFactory.cls"
+      },
+      {
+        "RelativeUri": "src/Model/PlayerGrid.cls"
+      },
+      {
+        "RelativeUri": "src/Model/Ship.cls"
+      },
+      {
+        "RelativeUri": "src/Model/Abstract/IGameStrategy.cls"
+      },
+      {
+        "RelativeUri": "src/Model/Abstract/IGridCoord.cls"
+      },
+      {
+        "RelativeUri": "src/Model/Abstract/IPlayer.cls"
+      },
+      {
+        "RelativeUri": "src/Model/Abstract/IPlayerFactory.cls"
+      },
+      {
+        "RelativeUri": "src/Model/Abstract/IRandomizer.cls"
+      },
+      {
+        "RelativeUri": "src/Model/Abstract/IShip.cls"
+      },
+      {
+        "RelativeUri": "src/Model/AI/FairPlayStrategy.cls"
+      },
+      {
+        "RelativeUri": "src/Model/AI/GameStrategyBase.cls"
+      },
+      {
+        "RelativeUri": "src/Model/AI/MercilessStrategy.cls"
+      },
+      {
+        "RelativeUri": "src/Model/AI/RandomShotStrategy.cls"
+      },
+      {
+        "RelativeUri": "src/View/ConsoleView.cls"
+      },
+      {
+        "RelativeUri": "src/View/GridViewAdapter.cls"
+      },
+      {
+        "RelativeUri": "src/View/Abstract/IGridViewCommands.cls"
+      },
+      {
+        "RelativeUri": "src/View/Abstract/IGridViewEvents.cls"
+      },
+      {
+        "RelativeUri": "lib/Dictionary.cls"
+      }
+    ],
+    "References": [],
+    "OtherFiles": [],
+    "Folders": [],
+    "PrecompilerConstants": {}
+  }
+}

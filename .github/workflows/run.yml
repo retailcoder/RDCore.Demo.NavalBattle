@@ -2,8 +2,9 @@
 #
 # Plays the game on the RDCore platform, on Windows and on Linux. RDCore has no published release, so the job builds
 # the platform from source (rubberduck-vba/RDCore at RDCORE_REF) with its own PlatformPublish.ps1, then:
-#   1. `rdc run --unattended`, AI vs AI with a fixed seed: the game must play to "Game over" and exit 0. It asks nobody
-#      anything, so it runs unattended; a game against a person would fail here, as it should.
+#   1. `rdc run --unattended`, AI vs AI with a fixed seed: the game must play to "Game over" and exit 0. The command line
+#      names both players, so it asks nobody anything and runs unattended; a game against a person would fail here, as
+#      it should.
 #   2. the same seed again: the two games must print the same output.
 
 name: Run
@@ -58,7 +59,7 @@ jobs:
         run: |
           $rdc = Join-Path $env:RUNNER_TEMP 'platform/RDCore.CLI' ($IsWindows ? 'rdc.exe' : 'rdc')
           $games = foreach ($n in 1, 2) {
-            $output = & $rdc run --unattended ./demo -- /seed 42 2>&1 | Out-String
+            $output = & $rdc run --unattended ./demo -- /seed 42 /player1 merciless /player2 fairplay 2>&1 | Out-String
             Write-Host $output
             if ($LASTEXITCODE -ne 0) { throw "Game $n exited with $LASTEXITCODE." }
             if ($output -notmatch 'Game over: grid \d wins\.') { throw "Game $n did not play to the end." }

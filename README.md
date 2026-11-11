@@ -9,7 +9,7 @@ This repository holds the game's port to the [RDCore](https://github.com/rubberd
 
 ## Project status
 
-RD-VBA Naval Battle is in **pre-alpha** development. It plays in the console, the computer against itself.
+RD-VBA Naval Battle is in **pre-alpha** development. It plays in the console: a person against the computer, or the computer against itself.
 
 ## Running the game
 
@@ -19,10 +19,12 @@ The game runs with `rdc`, the RDCore command line, built from the [RDCore](https
 rdc run .
 ```
 
-`/seed <number>` after `--` fixes the random seed, so that a game can be played again move for move:
+The game asks who plays each grid: Human, Random, Fair-play or Merciless (the first letter is enough). A person places their five ships, then takes turns with the computer, one shot each, until a fleet is sunk. A cell is a column letter and a row number, like `B3`; a ship goes across the grid from its first cell, or down with a `V`: `B3 V`. An empty answer ends the game. On Windows, the questions are dialog boxes.
+
+After `--`, `/player1 <player>` and `/player2 <player>` name the players, and `/seed <number>` fixes the random seed, so that a game can be played again move for move:
 
 ```
-rdc run . -- /seed 42
+rdc run . -- /player1 merciless /player2 fairplay /seed 42
 ```
 
 ## Licence

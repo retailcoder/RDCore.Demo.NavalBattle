@@ -71,6 +71,15 @@
         "RelativeUri": "src/View/GridViewAdapter.cls"
       },
       {
+        "RelativeUri": "src/View/GridCell.cls"
+      },
+      {
+        "RelativeUri": "src/View/GridCellEvents.cls"
+      },
+      {
+        "RelativeUri": "src/View/GameForm.frm"
+      },
+      {
         "RelativeUri": "src/View/Abstract/IGridViewCommands.cls"
       },
       {
@@ -80,7 +89,11 @@
         "RelativeUri": "lib/Dictionary.cls"
       }
     ],
-    "References": [],
+    "References": [
+      {
+        "Name": "MSForms"
+      }
+    ],
     "OtherFiles": [],
     "Folders": [],
     "PrecompilerConstants": {}

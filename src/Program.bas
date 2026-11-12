@@ -36,6 +36,12 @@ Attribute Main.VB_Description = "Plays a game in the console. The command line c
     view.Play firstPlayer, secondPlayer
 End Sub
 
+'@Description("Shows the game form. It does not play a game yet: its status line says which cell was clicked.")
+Public Sub ShowGameForm()
+Attribute ShowGameForm.VB_Description = "Shows the game form. It does not play a game yet: its status line says which cell was clicked."
+    GameForm.Show
+End Sub
+
 '@Description("Gets the value that follows a /name argument on the command line.")
 Private Function TryGetArgument(ByVal commandLine As String, ByVal argumentName As String, ByRef outValue As String) As Boolean
 Attribute TryGetArgument.VB_Description = "Gets the value that follows a /name argument on the command line."

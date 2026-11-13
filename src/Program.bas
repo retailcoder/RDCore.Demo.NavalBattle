@@ -8,9 +8,9 @@ Private Const ClassNotRegistered As Long = 429
 
 Private controller As IGameController
 
-'@Description("Plays a game: in the game form on Windows, and in the console elsewhere, or when /console is on the command line. The command line can name the players, /player1 <player> /player2 <player> (Human, Random, Fair-play or Merciless), and fix the random seed so a game can be replayed: /seed <number>. The form starts with the players it names picked; the console asks for a player it does not name.")
+'@Description("Plays a game: in the game form on Windows, and in the console elsewhere, or when /console is on the command line. The command line can name the players, /player1 <player> /player2 <player> (Human, Random, Fair-play or Merciless), and fix the random seed so a game can be replayed: /seed <number>. The form opens with the players it names already picked; the console asks for a player it does not name.")
 Public Sub Main()
-Attribute Main.VB_Description = "Plays a game: in the game form on Windows, and in the console elsewhere, or when /console is on the command line. The command line can name the players, /player1 <player> /player2 <player> (Human, Random, Fair-play or Merciless), and fix the random seed so a game can be replayed: /seed <number>. The form starts with the players it names picked; the console asks for a player it does not name."
+Attribute Main.VB_Description = "Plays a game: in the game form on Windows, and in the console elsewhere, or when /console is on the command line. The command line can name the players, /player1 <player> /player2 <player> (Human, Random, Fair-play or Merciless), and fix the random seed so a game can be replayed: /seed <number>. The form opens with the players it names already picked; the console asks for a player it does not name."
     Dim seed As String
     If TryGetArgument(Command$, "/seed", seed) And IsNumeric(seed) Then
         Rnd -1

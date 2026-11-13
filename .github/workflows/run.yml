@@ -2,9 +2,10 @@
 #
 # Plays the game on the RDCore platform, on Windows and on Linux. RDCore has no published release, so the job builds
 # the platform from source (rubberduck-vba/RDCore at RDCORE_REF) with its own PlatformPublish.ps1, then:
-#   1. `rdc run --unattended`, AI vs AI with a fixed seed: the game must play to "Game over" and exit 0. The command line
-#      names both players, so it asks nobody anything and runs unattended; a game against a person would fail here, as
-#      it should.
+#   1. `rdc run --unattended`, AI vs AI with a fixed seed, in the console: the game must play to "Game over" and exit 0.
+#      The command line names both players, so it asks nobody anything and runs unattended; a game against a person
+#      would fail here, as it should. On Windows the game is played in its form unless /console says otherwise, and a
+#      form is UI that nobody answers when the run is unattended.
 #   2. the same seed again: the two games must print the same output.
 #   3. `rdc build`, for the runner's own OS, then the built program plays the same two games, unattended. When the build
 #      writes no executable (no .NET application host for the OS), the program runs as `dotnet NavalBattle.dll`.
@@ -61,7 +62,7 @@ jobs:
         run: |
           $rdc = Join-Path $env:RUNNER_TEMP 'platform/RDCore.CLI' ($IsWindows ? 'rdc.exe' : 'rdc')
           $games = foreach ($n in 1, 2) {
-            $output = & $rdc run --unattended ./demo -- /seed 42 /player1 merciless /player2 fairplay 2>&1 | Out-String
+            $output = & $rdc run --unattended ./demo -- /console /seed 42 /player1 merciless /player2 fairplay 2>&1 | Out-String
             Write-Host $output
             if ($LASTEXITCODE -ne 0) { throw "Game $n exited with $LASTEXITCODE." }
             if ($output -notmatch 'Game over: grid \d wins\.') { throw "Game $n did not play to the end." }

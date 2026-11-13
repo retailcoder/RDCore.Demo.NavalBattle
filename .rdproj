@@ -68,6 +68,9 @@
         "RelativeUri": "src/View/ConsoleView.cls"
       },
       {
+        "RelativeUri": "src/View/FormView.cls"
+      },
+      {
         "RelativeUri": "src/View/GridViewAdapter.cls"
       },
       {

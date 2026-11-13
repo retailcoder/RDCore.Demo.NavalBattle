@@ -268,6 +268,7 @@ End Function
 '@Description("Reads a cell, like B3: a column letter, then a row number.")
 Private Function TryParseCell(ByVal text As String, ByRef outPosition As IGridCoord) As Boolean
 Attribute TryParseCell.VB_Description = "Reads a cell, like B3: a column letter, then a row number."
+    TryParseCell = False
     text = UCase$(Replace(text, " ", vbNullString))
     If Len(text) < 2 Then Exit Function
 

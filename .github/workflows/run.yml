@@ -6,6 +6,8 @@
 #      names both players, so it asks nobody anything and runs unattended; a game against a person would fail here, as
 #      it should.
 #   2. the same seed again: the two games must print the same output.
+#   3. `rdc build`, for the runner's own OS, then the built program plays the same two games, unattended. When the build
+#      writes no executable (no .NET application host for the OS), the program runs as `dotnet NavalBattle.dll`.
 
 name: Run
 
@@ -60,6 +62,23 @@ jobs:
           $rdc = Join-Path $env:RUNNER_TEMP 'platform/RDCore.CLI' ($IsWindows ? 'rdc.exe' : 'rdc')
           $games = foreach ($n in 1, 2) {
             $output = & $rdc run --unattended ./demo -- /seed 42 /player1 merciless /player2 fairplay 2>&1 | Out-String
+            Write-Host $output
+            if ($LASTEXITCODE -ne 0) { throw "Game $n exited with $LASTEXITCODE." }
+            if ($output -notmatch 'Game over: grid \d wins\.') { throw "Game $n did not play to the end." }
+            $output
+          }
+          if ($games[0] -ne $games[1]) { throw 'The same seed played two different games.' }
+
+      - name: Build the program, and play AI vs AI with it
+        run: |
+          $rdc = Join-Path $env:RUNNER_TEMP 'platform/RDCore.CLI' ($IsWindows ? 'rdc.exe' : 'rdc')
+          $out = Join-Path $env:RUNNER_TEMP 'NavalBattle'
+          & $rdc build ./demo -c Release -o $out
+          if ($LASTEXITCODE -ne 0) { throw "rdc build exited with $LASTEXITCODE." }
+          $exe = Join-Path $out ($IsWindows ? 'NavalBattle.exe' : 'NavalBattle')
+          $play = (Test-Path $exe) ? { & $exe @args } : { dotnet (Join-Path $out 'NavalBattle.dll') @args }
+          $games = foreach ($n in 1, 2) {
+            $output = & $play --unattended /seed 42 /player1 merciless /player2 fairplay 2>&1 | Out-String
             Write-Host $output
             if ($LASTEXITCODE -ne 0) { throw "Game $n exited with $LASTEXITCODE." }
             if ($output -notmatch 'Game over: grid \d wins\.') { throw "Game $n did not play to the end." }

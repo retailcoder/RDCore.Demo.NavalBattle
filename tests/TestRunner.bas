@@ -79,6 +79,7 @@ Attribute Test.VB_Description = "The name of a test, by its number, and runs it 
         Case 24: Test = "ShipTests.ShipOrientationInvalidEnumValue_Throws": If run Then ShipTests.ShipOrientationInvalidEnumValue_Throws
         Case 25: Test = "ShipTests.IntersectingShip_IntersectReturnsGridCoord": If run Then ShipTests.IntersectingShip_IntersectReturnsGridCoord
         Case 26: Test = "ShipTests.NonIntersectingShip_IntersectReturnsNothing": If run Then ShipTests.NonIntersectingShip_IntersectReturnsNothing
+        Case Else: Test = vbNullString
     End Select
 End Function
 

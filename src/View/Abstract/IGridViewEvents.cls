@@ -31,3 +31,8 @@ End Sub
 
 Public Sub HumanPlayerReady()
 End Sub
+
+'@Description("The view was closed: the game ends, and no turn starts after the one being played.")
+Public Sub ViewClosed()
+Attribute ViewClosed.VB_Description = "The view was closed: the game ends, and no turn starts after the one being played."
+End Sub

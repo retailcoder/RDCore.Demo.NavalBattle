@@ -1,10 +1,11 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} GameForm
    Caption         =   "Naval battle"
-   ClientHeight    =   5700
+   ClientHeight    =   7840
    ClientLeft      =   120
    ClientTop       =   465
-   ClientWidth     =   6660
+   ClientWidth     =   13380
+   OleObjectBlob   =   "GameForm.frx":0000
    StartUpPosition =   1  'CenterOwner
 End
 Attribute VB_Name = "GameForm"
@@ -81,10 +82,12 @@ Attribute readyButton.VB_VarHelpID = -1
 Private Sub UserForm_Initialize()
     Set cellEvents = New GridCellEvents
 
-    Dim formWidth As Long
-    formWidth = GridLeft(PlayerGrid2) + GridWidth + Margin
+    ' the designer block sizes the window: the board on the left, 444 x 392 points, and on its right a picture area 225 points wide, where the form's
+    ' picture (rubber ducks at sea, from GameForm.frx) is aligned at the bottom right.
+    Dim boardWidth As Long
+    boardWidth = GridLeft(PlayerGrid2) + GridWidth + Margin
 
-    Set statusLine = AddLabel("Status", Margin, StatusTop, formWidth - 2 * Margin, StatusHeight, "Pick the players, then click Ready.")
+    Set statusLine = AddLabel("Status", Margin, StatusTop, boardWidth - 2 * Margin, StatusHeight, "Pick the players, then click Ready.")
     statusLine.WordWrap = True
 
     Dim gridId As PlayGridId
@@ -99,14 +102,11 @@ Private Sub UserForm_Initialize()
     Set readyButton = Me.Controls.Add("Forms.CommandButton.1", "Ready", True)
     With readyButton
         .Caption = "Ready"
-        .Left = formWidth - Margin - ReadyWidth
+        .Left = boardWidth - Margin - ReadyWidth
         .Top = ReadyTop
         .Width = ReadyWidth
         .Height = ReadyHeight
     End With
-
-    Me.Width = formWidth + (Me.Width - Me.InsideWidth)
-    Me.Height = ReadyTop + ReadyHeight + Margin + (Me.Height - Me.InsideHeight)
 End Sub
 
 '@Description("Where what the person does in the form is sent: the adapter's events.")

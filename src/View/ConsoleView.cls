@@ -114,8 +114,8 @@ Private Sub IGridViewCommands_OnHit(ByVal gridId As PlayGridId)
     Debug.Print "Shot at grid " & gridId & ", " & this.LastShot & ": hit, the " & this.LastHitShip & "."
 End Sub
 
-Private Sub IGridViewCommands_OnSink(ByVal gridId As PlayGridId)
-    Debug.Print "Shot at grid " & gridId & ", " & this.LastShot & ": the " & this.LastHitShip & " is sunk."
+Private Sub IGridViewCommands_OnSink(ByVal gridId As PlayGridId, ByVal sunkShip As IShip)
+    Debug.Print "Shot at grid " & gridId & ", " & this.LastShot & ": the " & sunkShip.Name & " is sunk."
 End Sub
 
 Private Sub IGridViewCommands_OnRefreshGrid(ByVal grid As PlayerGrid)

@@ -247,7 +247,7 @@ Private Sub Play(ByVal gridId As PlayGridId, ByVal position As IGridCoord)
             If this.CurrentTarget.PlayGrid.IsAllSunken Then
                 View.OnGameOver this.CurrentPlayer.PlayGrid.gridId
             Else
-                View.OnSink gridId
+                View.OnSink gridId, hitShip
             End If
             
     End Select

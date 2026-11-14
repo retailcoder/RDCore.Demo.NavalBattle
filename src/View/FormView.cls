@@ -18,8 +18,12 @@ Private Type TView
     Closed As Boolean
     HumanGridId As PlayGridId
     LastShot As String
-    LastHitShip As String
+    LastHitShip As IShip
+    Grids(PlayerGrid1 To PlayerGrid2) As PlayerGrid
 End Type
+
+' how long a sinking ship's dizzy duck shows, before its anchor.
+Private Const SinkingSeconds As Single = 0.8
 
 Private this As TView
 Private WithEvents window As GameForm
@@ -96,7 +100,7 @@ Private Sub IGridViewCommands_OnKnownPositionAttack()
 End Sub
 
 Private Sub IGridViewCommands_OnUpdateFleetStatus(ByVal player As IPlayer, ByVal hitShip As IShip, Optional ByVal showAIStatus As Boolean = False)
-    this.LastHitShip = hitShip.Name
+    Set this.LastHitShip = hitShip
 End Sub
 
 Private Sub IGridViewCommands_OnMiss(ByVal gridId As PlayGridId)
@@ -104,14 +108,24 @@ Private Sub IGridViewCommands_OnMiss(ByVal gridId As PlayGridId)
 End Sub
 
 Private Sub IGridViewCommands_OnHit(ByVal gridId As PlayGridId)
-    Report gridId, "hit, the " & this.LastHitShip & "."
+    Report gridId, "hit, the " & this.LastHitShip.Name & "."
 End Sub
 
-Private Sub IGridViewCommands_OnSink(ByVal gridId As PlayGridId)
-    Report gridId, "the " & this.LastHitShip & " is sunk."
+Private Sub IGridViewCommands_OnSink(ByVal gridId As PlayGridId, ByVal sunkShip As IShip)
+    Report gridId, "the " & sunkShip.Name & " is sunk."
+    FinishSinking gridId, sunkShip
+End Sub
+
+' the grid was painted with the sunk ship's dizzy duck at its bow: after a moment, the duck is an anchor.
+Private Sub FinishSinking(ByVal gridId As PlayGridId, ByVal sunkShip As IShip)
+    If Not IsOpen Then Exit Sub
+    window.Pause SinkingSeconds
+    If IsOpen Then window.FinishSinking gridId, sunkShip
+    If IsOpen And Not this.Grids(gridId) Is Nothing Then window.PaintGrid this.Grids(gridId), ShowsShips(gridId)
 End Sub
 
 Private Sub IGridViewCommands_OnRefreshGrid(ByVal grid As PlayerGrid)
+    Set this.Grids(grid.gridId) = grid
     If IsOpen Then window.PaintGrid grid, ShowsShips(grid.gridId)
 End Sub
 
@@ -133,6 +147,10 @@ Private Sub IGridViewCommands_OnGameOver(ByVal winningGrid As PlayGridId)
     If IsOpen Then window.EndGame
     If IsOpen Then window.SetStatus text & " Close the window to leave."
     Debug.Print text
+    ' the shot that ends the game sinks the last ship, and the controller reports the game over instead of the sinking.
+    If Not this.LastHitShip Is Nothing Then
+        If this.LastHitShip.IsSunken Then FinishSinking OtherGrid(winningGrid), this.LastHitShip
+    End If
 End Sub
 
 ' what a shot did, in the status line and in the output: the grid that fired is the other one.

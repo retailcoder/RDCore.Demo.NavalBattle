@@ -43,6 +43,13 @@ Private Const PreviewColour As Long = &H7CD67C
 Private Const BadPreviewColour As Long = &H8080F0
 Private Const LineColour As Long = &H808080
 
+' the sprites, GIF files in assets/sprites with one transparent colour; the ducks are named by DuckSprite.
+Private Const SpriteFolder As String = "assets\sprites\"
+Private Const SpriteHit As String = "hit-squeak"
+Private Const SpriteMiss As String = "miss-ripple"
+Private Const SpriteDizzy As String = "sunk-dizzy"
+Private Const SpriteAnchor As String = "anchor-cracked"
+
 Private Enum FormPhase
     PhaseSetup
     PhaseShipPlacement
@@ -68,7 +75,10 @@ Private this As TForm
 Private cells(PlayerGrid1 To PlayerGrid2, 1 To GridSize, 1 To GridSize) As GridCell
 Private paintedColours(PlayerGrid1 To PlayerGrid2, 1 To GridSize, 1 To GridSize) As Long
 Private paintedCaptions(PlayerGrid1 To PlayerGrid2, 1 To GridSize, 1 To GridSize) As String
+Private paintedSprites(PlayerGrid1 To PlayerGrid2, 1 To GridSize, 1 To GridSize) As String
 Private statusLine As MSForms.Label
+Private sprites As Collection
+Private sunkShipKeys As Collection
 
 Private WithEvents cellEvents As GridCellEvents
 Attribute cellEvents.VB_VarHelpID = -1
@@ -82,11 +92,13 @@ Attribute readyButton.VB_VarHelpID = -1
 Private Sub UserForm_Initialize()
     Set cellEvents = New GridCellEvents
 
-    ' the designer block sizes the window: 16320 x 7845 twips, 816 x 392 points, 1088 x 523 pixels at 96 dpi. The board is centred on it. The
+    ' the designer block sizes the window: 16320 x 7845 twips, 816 x about 392 points, 1088 x 523 pixels at 96 dpi. The board is centred on it. The
     ' form's picture (GameForm.frx, from assets/game-form-background.jpg) is stretched over the whole of it, behind the board: the labels are
     ' transparent, and so are the cells of open water. The status line is text over the picture, in a bold, larger font to stay readable.
     ' Without a picture, the water colour shows.
     Me.BackColor = WaterColour
+    Set sunkShipKeys = New Collection
+    LoadSprites
 
     Dim boardLeft As Long
     boardLeft = GridLeft(PlayerGrid1)
@@ -183,30 +195,142 @@ Attribute EndGame.VB_Description = "The game is over: the grids and the Ready bu
     readyButton.Enabled = False
 End Sub
 
-'@Description("Paints a grid as it stands: hits, misses, water, and the ships when they are to be shown.")
+'@Description("Paints a grid as it stands: hits, misses, water, and the ships when they are to be shown. A sunk ship shows its anchor once its sinking is done, and the dizzy duck until then.")
 Public Sub PaintGrid(ByVal grid As PlayerGrid, ByVal showShips As Boolean)
-Attribute PaintGrid.VB_Description = "Paints a grid as it stands: hits, misses, water, and the ships when they are to be shown."
+Attribute PaintGrid.VB_Description = "Paints a grid as it stands: hits, misses, water, and the ships when they are to be shown. A sunk ship shows its anchor once its sinking is done, and the dizzy duck until then."
+    Dim names(1 To GridSize, 1 To GridSize) As String
     Dim X As Long
+    Dim Y As Long
     For X = 1 To GridSize
-        Dim Y As Long
         For Y = 1 To GridSize
             Select Case grid.State(GridCoord.Create(X, Y))
                 Case GridState.PreviousHit
-                    PaintCell grid.gridId, X, Y, HitColour, "X"
+                    names(X, Y) = SpriteHit
                 Case GridState.PreviousMiss
-                    PaintCell grid.gridId, X, Y, MissColour
-                Case GridState.ShipPosition
-                    PaintCell grid.gridId, X, Y, IIf(showShips, ShipColour, WaterColour)
-                Case Else
-                    PaintCell grid.gridId, X, Y, WaterColour
+                    names(X, Y) = SpriteMiss
             End Select
+        Next
+    Next
+
+    ' the ships: a duck on each cell that is not hit, when the ships are shown; a sunk ship is shown either way, its bow last.
+    Dim item As IShip
+    For Each item In grid.Fleet
+        Dim index As Long
+        For index = 0 To item.Size - 1
+            X = item.GridPosition.X + IIf(item.Orientation = Horizontal, index, 0)
+            Y = item.GridPosition.Y + IIf(item.Orientation = Vertical, index, 0)
+            Dim isBow As Boolean
+            isBow = index = item.Size - 1
+            If item.IsSunken Then
+                If isBow Then names(X, Y) = IIf(IsSinkingDone(grid.gridId, item), SpriteAnchor, SpriteDizzy)
+            ElseIf showShips And names(X, Y) = vbNullString Then
+                names(X, Y) = DuckSprite(item.Orientation, isBow)
+            End If
+        Next
+    Next
+
+    For X = 1 To GridSize
+        For Y = 1 To GridSize
+            If sprites Is Nothing Then
+                PaintCell grid.gridId, X, Y, FallbackColour(names(X, Y)), IIf(names(X, Y) = SpriteHit, "X", vbNullString)
+            Else
+                PaintCell grid.gridId, X, Y, WaterColour, vbNullString, names(X, Y)
+            End If
         Next
     Next
 End Sub
 
+'@Description("A ship's sinking is done: from now on, its bow shows the anchor.")
+Public Sub FinishSinking(ByVal gridId As PlayGridId, ByVal sunkShip As IShip)
+Attribute FinishSinking.VB_Description = "A ship's sinking is done: from now on, its bow shows the anchor."
+    If IsSinkingDone(gridId, sunkShip) Then Exit Sub
+    sunkShipKeys.Add ShipKey(gridId, sunkShip)
+End Sub
+
+'@Description("Waits the given number of seconds, while the form keeps drawing and answering.")
+Public Sub Pause(ByVal seconds As Single)
+Attribute Pause.VB_Description = "Waits the given number of seconds, while the form keeps drawing and answering."
+    Dim startTime As Single
+    startTime = Timer
+    Dim elapsed As Single
+    Do
+        DoEvents
+        elapsed = Timer - startTime
+        If elapsed < 0 Then elapsed = elapsed + 86400 ' Timer went past midnight
+    Loop While elapsed < seconds
+End Sub
+
+Private Function IsSinkingDone(ByVal gridId As PlayGridId, ByVal sunkShip As IShip) As Boolean
+    Dim key As String
+    key = ShipKey(gridId, sunkShip)
+    Dim item As Variant
+    For Each item In sunkShipKeys
+        If item = key Then
+            IsSinkingDone = True
+            Exit Function
+        End If
+    Next
+End Function
+
+Private Function ShipKey(ByVal gridId As PlayGridId, ByVal item As IShip) As String
+    ShipKey = gridId & ":" & item.GridPosition.X & "," & item.GridPosition.Y & ":" & item.Orientation
+End Function
+
+' the sprites are read once, from the workspace's assets/sprites folder. When one of them cannot be read, the form goes without them all, and
+' paints colours instead.
+Private Sub LoadSprites()
+    Dim spriteNames As Variant
+    spriteNames = Array(DuckSprite(Horizontal, True), DuckSprite(Horizontal, False), DuckSprite(Vertical, True), DuckSprite(Vertical, False), _
+        SpriteHit, SpriteMiss, SpriteDizzy, SpriteAnchor)
+
+    Dim path As String
+    Set sprites = New Collection
+    On Error GoTo NoSprites
+    Dim spriteName As Variant
+    For Each spriteName In spriteNames
+        path = CurDir$ & "\" & SpriteFolder & spriteName & ".gif"
+        sprites.Add LoadPicture(path), spriteName
+    Next
+    Exit Sub
+
+NoSprites:
+    Debug.Print "The game form paints colours: " & path & " cannot be read (" & Err.Description & ")."
+    Set sprites = Nothing
+End Sub
+
+' a ship's ducks face where it goes: right when it lies across, down when it stands; the big duck leads, at its bow, and the small ones follow.
+Private Function DuckSprite(ByVal direction As ShipOrientation, ByVal isBow As Boolean) As String
+    DuckSprite = "duck-" & IIf(isBow, "big", "small") & "-" & IIf(direction = Horizontal, "right", "down")
+End Function
+
+' without its sprites, the form paints colours as it did before them.
+Private Function FallbackColour(ByVal sprite As String) As Long
+    Select Case sprite
+        Case vbNullString
+            FallbackColour = WaterColour
+        Case SpriteMiss
+            FallbackColour = MissColour
+        Case SpriteHit, SpriteDizzy, SpriteAnchor
+            FallbackColour = HitColour
+        Case Else
+            FallbackColour = ShipColour
+    End Select
+End Function
+
 ' a cell is painted only when it changes: each change is a call to Microsoft Forms, and a grid is painted after every shot. A cell of open water is
-' transparent, so the form's picture shows through it; any other cell is filled with its colour.
-Private Sub PaintCell(ByVal gridId As PlayGridId, ByVal X As Long, ByVal Y As Long, ByVal colour As Long, Optional ByVal text As String = vbNullString)
+' transparent, so the form's picture shows through it; a cell with a sprite is transparent too, and shows the sprite; any other cell is filled
+' with its colour.
+Private Sub PaintCell(ByVal gridId As PlayGridId, ByVal X As Long, ByVal Y As Long, ByVal colour As Long, Optional ByVal text As String = vbNullString, Optional ByVal sprite As String = vbNullString)
+    If paintedSprites(gridId, X, Y) <> sprite Then
+        With cells(gridId, X, Y).Control
+            If sprite = vbNullString Then
+                Set .Picture = Nothing
+            Else
+                Set .Picture = sprites(sprite)
+            End If
+        End With
+        paintedSprites(gridId, X, Y) = sprite
+    End If
     If paintedColours(gridId, X, Y) <> colour Then
         With cells(gridId, X, Y).Control
             If colour = WaterColour Then
@@ -366,6 +490,7 @@ Private Sub AddGrid(ByVal gridId As PlayGridId)
             paintedColours(gridId, X, Y) = WaterColour
             cellLabel.BorderStyle = fmBorderStyleSingle
             cellLabel.BorderColor = LineColour
+            cellLabel.PicturePosition = fmPicturePositionCenter
 
             Set cells(gridId, X, Y) = GridCell.Create(cellLabel, gridId, position, cellEvents)
         Next

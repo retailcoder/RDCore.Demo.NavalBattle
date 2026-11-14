@@ -32,9 +32,9 @@ Public Sub OnHit(ByVal gridId As PlayGridId)
 Attribute OnHit.VB_Description = "Instructs the view to report a hit in the specified grid."
 End Sub
 
-'@Description("Instructs the view to report a sunken ship in the specified grid.")
-Public Sub OnSink(ByVal gridId As PlayGridId)
-Attribute OnSink.VB_Description = "Instructs the view to report a sunken ship in the specified grid."
+'@Description("Instructs the view to report the specified sunken ship in the specified grid.")
+Public Sub OnSink(ByVal gridId As PlayGridId, ByVal sunkShip As IShip)
+Attribute OnSink.VB_Description = "Instructs the view to report the specified sunken ship in the specified grid."
 End Sub
 
 '@Description("Instructs the view to update the specified player's fleet status, for the specified ship.")

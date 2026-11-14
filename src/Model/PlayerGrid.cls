@@ -110,7 +110,6 @@ End Property
 '@Description("Gets the size of the smallest ship still afloat on this grid.")
 Public Property Get SmallestShipSize() As Byte
 Attribute SmallestShipSize.VB_Description = "Gets the size of the smallest ship still afloat on this grid."
-    Dim result As Byte
     Dim CurrentShip As IShip
     Dim smallestShip As IShip
     For Each CurrentShip In this.ships
@@ -152,10 +151,20 @@ Attribute AddShip.VB_Description = "Adds the specified ship to the grid. Throws 
     ' will throw a duplicate key error if item.Name is already in collection
     this.ships.Add item, item.Name
     
+    Dim lastX As Long
+    lastX = item.GridPosition.X
+    Dim lastY As Long
+    lastY = item.GridPosition.Y
+    If item.Orientation = Horizontal Then
+        lastX = lastX + item.Size - 1
+    ElseIf item.Orientation = Vertical Then
+        lastY = lastY + item.Size - 1
+    End If
+
     Dim currentX As Long
-    For currentX = item.GridPosition.X To item.GridPosition.X + IIf(item.Orientation = Horizontal, item.Size - 1, 0)
+    For currentX = item.GridPosition.X To lastX
         Dim currentY As Long
-        For currentY = item.GridPosition.Y To item.GridPosition.Y + IIf(item.Orientation = Vertical, item.Size - 1, 0)
+        For currentY = item.GridPosition.Y To lastY
             this.State(currentX, currentY) = GridState.ShipPosition
         Next
     Next
@@ -183,6 +192,7 @@ Attribute IntersectsAny.VB_Description = "Gets a value indicating whether the sp
             Exit Function
         End If
     Next
+    Set IntersectsAny = Nothing
 End Function
 
 '@Description("Gets a value indicating whether the specified position/direction/size has any adjacent existing ship.")
@@ -209,6 +219,7 @@ Attribute HasAdjacentShip.VB_Description = "Gets a value indicating whether the 
             End If
         Next
     End If
+    HasAdjacentShip = False
 End Function
 
 Private Function HasAnyAdjacentShips(ByVal coord As GridCoord) As Boolean
@@ -234,6 +245,7 @@ Private Function HasAnyAdjacentShips(ByVal coord As GridCoord) As Boolean
             Next
         End If
     Next
+    HasAnyAdjacentShips = False
 End Function
 
 '@Description("(side-effecting) Attempts a hit at the specified position; returns the result of the attack, and a reference to the hit ship if successful.")
@@ -338,6 +350,7 @@ Attribute IsSunken.VB_Description = "Gets a value indicating whether the ship at
             End If
         End If
     Next
+    IsSunken = False
 End Property
 
 '@Description("Gets a value indicating whether all ships have been sunken.")
@@ -367,6 +380,7 @@ Attribute FindHitArea.VB_Description = "Finds area around a damaged ship, if one
             End If
         End If
     Next
+    Set FindHitArea = Nothing
 End Function
 
 '@Description("Removes confirmed ship positions from grid state.")

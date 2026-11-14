@@ -85,6 +85,8 @@ Private Function IGridCoord_IsAdjacent(ByVal other As IGridCoord) As Boolean
         IGridCoord_IsAdjacent = other.X = this.X - 1 Or other.X = this.X + 1
     ElseIf other.X = this.X Then
         IGridCoord_IsAdjacent = other.Y = this.Y - 1 Or other.Y = this.Y + 1
+    Else
+        IGridCoord_IsAdjacent = False
     End If
 End Function
 

@@ -37,17 +37,17 @@ Implements IShip
 '@Description("Populates and returns a dictionary associating all ship names with their respective size.")
 Public Function Fleet() As Dictionary
 Attribute Fleet.VB_Description = "Populates and returns a dictionary associating all ship names with their respective size."
-    Dim Names As Variant
-    Names = shipNames.Items
-    
+    Dim fleetNames As Variant
+    fleetNames = shipNames.Items
+
     Dim sizes As Variant
     sizes = ShipSizes.Items
-    
+
     Dim result As Dictionary
     Set result = New Dictionary
     Dim i As Long
-    For i = LBound(Names) To UBound(Names)
-        result.Add Names(i), sizes(i)
+    For i = LBound(fleetNames) To UBound(fleetNames)
+        result.Add fleetNames(i), sizes(i)
     Next
     Set Fleet = result
 End Function
@@ -89,19 +89,19 @@ Attribute Create.VB_Description = "Use from the class' default instance to creat
     End With
 End Function
 
-Private Sub ValidateInputs(ByVal kind As ShipType, ByVal Orientation As ShipOrientation, ByVal position As GridCoord)
+Private Sub ValidateInputs(ByVal kind As ShipType, ByVal direction As ShipOrientation, ByVal position As GridCoord)
     Dim shipSize As Byte
     shipSize = ShipSizes(kind)
-    
+
     Select Case True
-        
-        Case Orientation <> Horizontal And Orientation <> Vertical
+
+        Case direction <> Horizontal And direction <> Vertical
             OnInvalidArgument "orientation", "Invalid orientation."
-        
-        Case Orientation = Horizontal And position.X + shipSize - 1 > PlayerGrid.Size
+
+        Case direction = Horizontal And position.X + shipSize - 1 > PlayerGrid.Size
             OnInvalidArgument "position", "Invalid position; ship exceeds right edge of the grid."
-        
-        Case Orientation = Vertical And position.Y + shipSize - 1 > PlayerGrid.Size
+
+        Case direction = Vertical And position.Y + shipSize - 1 > PlayerGrid.Size
             OnInvalidArgument "position", "Invalid position; ship exceeds bottom edge of the grid."
     
     End Select
@@ -194,6 +194,8 @@ Private Function IShip_Hit(ByVal coord As IGridCoord) As Boolean
         this.State(coordString) = True
         this.IsHit = True
         IShip_Hit = this.State(coordString)
+    Else
+        IShip_Hit = False
     End If
 End Function
 
@@ -209,6 +211,7 @@ Private Function IShip_Intersects(ByVal shipSize As Byte, ByVal direction As Shi
             Exit Function
         End If
     Next
+    Set IShip_Intersects = Nothing
 End Function
 
 Private Property Get IShip_HitAreas() As VBA.Collection
@@ -232,6 +235,7 @@ Private Property Get IShip_HitAreas() As VBA.Collection
 End Property
 
 Private Property Get IShip_IsSunken() As Boolean
+    IShip_IsSunken = False
     If Not this.IsHit Then Exit Property
     Dim currentPoint As Variant
     For Each currentPoint In this.State.Items

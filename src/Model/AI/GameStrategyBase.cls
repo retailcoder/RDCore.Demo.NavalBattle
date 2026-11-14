@@ -53,6 +53,7 @@ End Function
 '@Description("Returns True if the specified position is a legal attack position.")
 Public Function IsLegalPosition(ByVal grid As PlayerGrid, ByVal position As IGridCoord) As Boolean
 Attribute IsLegalPosition.VB_Description = "Returns True if the specified position is a legal attack position."
+    IsLegalPosition = False
     Dim isInsideGrid As Boolean
     If Not position Is Nothing Then
         isInsideGrid = position.X >= 1 And position.X <= PlayerGrid.Size And _
@@ -198,7 +199,8 @@ Attribute VerifyShipFits.VB_Description = "Returns True if the smallest remainin
 End Function
 
 Private Function FitsHorizontally(ByVal enemyGrid As PlayerGrid, ByVal position As IGridCoord, ByVal SmallestShipSize As Byte) As Boolean
-    
+    FitsHorizontally = False
+
     Dim fits As Boolean
     Dim positionState As GridState
     
@@ -243,7 +245,8 @@ Private Function FitsHorizontally(ByVal enemyGrid As PlayerGrid, ByVal position 
 End Function
 
 Private Function FitsVertically(ByVal enemyGrid As PlayerGrid, ByVal position As IGridCoord, ByVal SmallestShipSize As Byte) As Boolean
-    
+    FitsVertically = False
+
     Dim fits As Boolean
     Dim positionState As GridState
     

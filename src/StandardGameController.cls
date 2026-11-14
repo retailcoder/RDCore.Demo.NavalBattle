@@ -224,7 +224,8 @@ Private Sub PlayAI()
 End Sub
 
 Private Sub Play(ByVal gridId As PlayGridId, ByVal position As IGridCoord)
-    Dim result As AttackResult, hitShip As IShip
+    Dim result As AttackResult
+    Dim hitShip As IShip
     result = this.CurrentTarget.PlayGrid.TryHit(position, hitShip)
     
     View.OnRefreshGrid this.CurrentTarget.PlayGrid

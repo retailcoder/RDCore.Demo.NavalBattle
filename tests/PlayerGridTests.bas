@@ -315,3 +315,35 @@ Public Sub GivenTwoSideBySideHits_GetHitAreaReturnsTwoItems()
 
     Assert.AreEqual expected, actual
 End Sub
+
+'@TestMethod
+Public Sub GivenSunkHorizontalShip_IsSunkenOnEveryCell()
+    Dim SUT As PlayerGrid
+    Set SUT = New PlayerGrid
+    SUT.AddShip Ship.Create(ShipType.Dreadnought, Horizontal, GridCoord.Create(2, 3))
+
+    Dim currentX As Long
+    For currentX = 2 To 5
+        SUT.TryHit GridCoord.Create(currentX, 3)
+    Next
+
+    For currentX = 2 To 5
+        Assert.IsTrue SUT.IsSunken(GridCoord.Create(currentX, 3)), "Not sunken at " & currentX & ",3."
+    Next
+End Sub
+
+'@TestMethod
+Public Sub GivenSunkVerticalShip_IsSunkenOnEveryCell()
+    Dim SUT As PlayerGrid
+    Set SUT = New PlayerGrid
+    SUT.AddShip Ship.Create(ShipType.Cruiser, Vertical, GridCoord.Create(6, 4))
+
+    Dim currentY As Long
+    For currentY = 4 To 6
+        SUT.TryHit GridCoord.Create(6, currentY)
+    Next
+
+    For currentY = 4 To 6
+        Assert.IsTrue SUT.IsSunken(GridCoord.Create(6, currentY)), "Not sunken at 6," & currentY & "."
+    Next
+End Sub

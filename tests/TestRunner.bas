@@ -46,7 +46,7 @@ End Sub
 '@Description("The number of tests.")
 Private Property Get TestCount() As Long
 Attribute TestCount.VB_Description = "The number of tests."
-    TestCount = 26
+    TestCount = 28
 End Property
 
 '@Description("The name of a test, by its number, and runs it where run is True.")
@@ -71,14 +71,16 @@ Attribute Test.VB_Description = "The name of a test, by its number, and runs it 
         Case 16: Test = "PlayerGridTests.GivenAdjacentShipAtHorizontalTipEnd_ReturnsTrue": If run Then PlayerGridTests.GivenAdjacentShipAtHorizontalTipEnd_ReturnsTrue
         Case 17: Test = "PlayerGridTests.GivenAdjacentShipAtVerticalTipEnd_ReturnsTrue": If run Then PlayerGridTests.GivenAdjacentShipAtVerticalTipEnd_ReturnsTrue
         Case 18: Test = "PlayerGridTests.GivenTwoSideBySideHits_GetHitAreaReturnsTwoItems": If run Then PlayerGridTests.GivenTwoSideBySideHits_GetHitAreaReturnsTwoItems
-        Case 19: Test = "ShipTests.CreatesShipOfSpecifiedType": If run Then ShipTests.CreatesShipOfSpecifiedType
-        Case 20: Test = "ShipTests.SuccessfulHit_SetsStateToTrue": If run Then ShipTests.SuccessfulHit_SetsStateToTrue
-        Case 21: Test = "ShipTests.SunkenShip_IsSunken": If run Then ShipTests.SunkenShip_IsSunken
-        Case 22: Test = "ShipTests.MissedHit_ReturnsFalse": If run Then ShipTests.MissedHit_ReturnsFalse
-        Case 23: Test = "ShipTests.SuccessfulHit_ReturnsTrue": If run Then ShipTests.SuccessfulHit_ReturnsTrue
-        Case 24: Test = "ShipTests.ShipOrientationInvalidEnumValue_Throws": If run Then ShipTests.ShipOrientationInvalidEnumValue_Throws
-        Case 25: Test = "ShipTests.IntersectingShip_IntersectReturnsGridCoord": If run Then ShipTests.IntersectingShip_IntersectReturnsGridCoord
-        Case 26: Test = "ShipTests.NonIntersectingShip_IntersectReturnsNothing": If run Then ShipTests.NonIntersectingShip_IntersectReturnsNothing
+        Case 19: Test = "PlayerGridTests.GivenSunkHorizontalShip_IsSunkenOnEveryCell": If run Then PlayerGridTests.GivenSunkHorizontalShip_IsSunkenOnEveryCell
+        Case 20: Test = "PlayerGridTests.GivenSunkVerticalShip_IsSunkenOnEveryCell": If run Then PlayerGridTests.GivenSunkVerticalShip_IsSunkenOnEveryCell
+        Case 21: Test = "ShipTests.CreatesShipOfSpecifiedType": If run Then ShipTests.CreatesShipOfSpecifiedType
+        Case 22: Test = "ShipTests.SuccessfulHit_SetsStateToTrue": If run Then ShipTests.SuccessfulHit_SetsStateToTrue
+        Case 23: Test = "ShipTests.SunkenShip_IsSunken": If run Then ShipTests.SunkenShip_IsSunken
+        Case 24: Test = "ShipTests.MissedHit_ReturnsFalse": If run Then ShipTests.MissedHit_ReturnsFalse
+        Case 25: Test = "ShipTests.SuccessfulHit_ReturnsTrue": If run Then ShipTests.SuccessfulHit_ReturnsTrue
+        Case 26: Test = "ShipTests.ShipOrientationInvalidEnumValue_Throws": If run Then ShipTests.ShipOrientationInvalidEnumValue_Throws
+        Case 27: Test = "ShipTests.IntersectingShip_IntersectReturnsGridCoord": If run Then ShipTests.IntersectingShip_IntersectReturnsGridCoord
+        Case 28: Test = "ShipTests.NonIntersectingShip_IntersectReturnsNothing": If run Then ShipTests.NonIntersectingShip_IntersectReturnsNothing
         Case Else: Test = vbNullString
     End Select
 End Function

@@ -1,7 +1,7 @@
 Attribute VB_Name = "TestRunner"
-Attribute VB_Description = "Runs the test modules, until RDCore.UnitTesting exists: each test by name, with its module's initialize and cleanup procedures, and prints each outcome and a summary. A run with a failed test ends with an error."
+Attribute VB_Description = "Runs the test modules: each test by name, with its module's initialize and cleanup procedures, and prints each outcome and a summary. A run with a failed test ends with an error."
 '@Folder("NavalBattle.Tests")
-'@ModuleDescription("Runs the test modules, until RDCore.UnitTesting exists: each test by name, with its module's initialize and cleanup procedures, and prints each outcome and a summary. A run with a failed test ends with an error.")
+'@ModuleDescription("Runs the test modules: each test by name, with its module's initialize and cleanup procedures, and prints each outcome and a summary. A run with a failed test ends with an error.")
 Option Explicit
 
 Private Type TRun

@@ -7,9 +7,9 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-Attribute VB_Description = "The assertions of the test modules, until RDCore.UnitTesting exists: the members of legacy Rubberduck's AssertClass that the tests use. A failed assertion does not stop its test; the test's outcome is its first failure, or Inconclusive."
+Attribute VB_Description = "The assertions of the test modules: the members of legacy Rubberduck's AssertClass that the tests use. A failed assertion does not stop its test; the test's outcome is its first failure, or Inconclusive."
 '@Folder("NavalBattle.Tests")
-'@ModuleDescription("The assertions of the test modules, until RDCore.UnitTesting exists: the members of legacy Rubberduck's AssertClass that the tests use. A failed assertion does not stop its test; the test's outcome is its first failure, or Inconclusive.")
+'@ModuleDescription("The assertions of the test modules: the members of legacy Rubberduck's AssertClass that the tests use. A failed assertion does not stop its test; the test's outcome is its first failure, or Inconclusive.")
 '@PredeclaredId
 Option Explicit
 
@@ -63,9 +63,9 @@ Attribute AreEqual.VB_Description = "Fails the test where the two values are not
     If expected <> actual Then Record TestFailed, "AreEqual failed: expected " & expected & ", actual " & actual & ". " & Message
 End Sub
 
-'@Description("Fails the test where the value is an object.")
+'@Description("Fails the test where the value is not Nothing.")
 Public Sub IsNothing(ByVal value As Object, Optional ByVal Message As String = vbNullString)
-Attribute IsNothing.VB_Description = "Fails the test where the value is an object."
+Attribute IsNothing.VB_Description = "Fails the test where the value is not Nothing."
     If Not value Is Nothing Then Record TestFailed, "IsNothing failed. " & Message
 End Sub
 

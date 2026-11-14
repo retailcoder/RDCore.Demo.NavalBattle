@@ -115,7 +115,7 @@ Private Sub IGridViewCommands_OnHit(ByVal gridId As PlayGridId)
     ShowDizzyShip gridId, this.LastHitShip
 End Sub
 
-' a duckling was hit: its big duck is dizzy for a moment, where the ships are shown. A hidden ship shows nothing, so it is not given away.
+' a ship was hit: its big duck is dizzy for a moment, where the ships are shown. A hidden ship shows nothing, so it is not given away.
 Private Sub ShowDizzyShip(ByVal gridId As PlayGridId, ByVal hitShip As IShip)
     If Not IsOpen Or Not ShowsShips(gridId) Or this.Grids(gridId) Is Nothing Then Exit Sub
     window.DizzyShip gridId, hitShip

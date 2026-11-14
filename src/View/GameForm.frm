@@ -161,16 +161,17 @@ Attribute BeginWaitForReady.VB_Description = "The person's ships are placed: the
     readyButton.Enabled = True
 End Sub
 
-'@Description("The computer plays: the person's clicks are ignored until it is done.")
+'@Description("The computer plays: the person's clicks are ignored until it is done. The cells that changed are drawn first, so the last shot shows while the computer thinks.")
 Public Sub BeginComputerTurn()
-Attribute BeginComputerTurn.VB_Description = "The computer plays: the person's clicks are ignored until it is done."
+Attribute BeginComputerTurn.VB_Description = "The computer plays: the person's clicks are ignored until it is done. The cells that changed are drawn first, so the last shot shows while the computer thinks."
     this.ComputerTurn = True
-    Me.Repaint
+    ' DoEvents draws only what changed; Me.Repaint would draw the whole form again, every turn, and it flickers.
+    DoEvents
 End Sub
 
-'@Description("The computer has played. When it plays both grids, the form is drawn again, so that the game can be watched.")
+'@Description("The computer has played. When it plays both grids, the cells that changed are drawn, so that the game can be watched.")
 Public Sub EndComputerTurn()
-Attribute EndComputerTurn.VB_Description = "The computer has played. When it plays both grids, the form is drawn again, so that the game can be watched."
+Attribute EndComputerTurn.VB_Description = "The computer has played. When it plays both grids, the cells that changed are drawn, so that the game can be watched."
     this.ComputerTurn = False
     If this.ComputerOnly Then DoEvents
 End Sub

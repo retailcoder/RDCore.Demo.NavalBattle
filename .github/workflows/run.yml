@@ -8,7 +8,7 @@
 #      form is UI that nobody answers when the run is unattended.
 #   2. the same seed again: the two games must print the same output.
 #   3. `rdc build`, for the runner's own OS, then the built program plays the same two games in the console, unattended.
-#      When the build writes no executable (no .NET application host for the OS), it runs as `dotnet NavalBattle.dll`.
+#      With no executable (no .NET application host for the OS), the built program runs as `dotnet NavalBattle.dll`.
 
 name: Run
 

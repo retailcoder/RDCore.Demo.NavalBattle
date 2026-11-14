@@ -4,12 +4,12 @@
 # the platform from source (rubberduck-vba/RDCore at RDCORE_REF) with its own PlatformPublish.ps1, then:
 #   1. `rdc run --unattended`, AI vs AI with a fixed seed, in the console: the game must play to "Game over" and exit 0.
 #      The command line names both players, so it asks nobody anything and runs unattended; a game against a person
-#      would fail here, as it should. On Windows the game is played in its form unless /console says otherwise, and a
+#      would fail here, as it should. On Windows the game is played in its form unless --console says otherwise, and a
 #      form is UI that nobody answers when the run is unattended.
 #   2. the same seed again: the two games must print the same output.
 #   3. `rdc build`, for the runner's own OS, then the built program plays the same two games in the console, unattended.
 #      With no executable (no .NET application host for the OS), the built program runs as `dotnet NavalBattle.dll`.
-#   4. `rdc run --unattended` with `/test`: the program runs its tests instead of a game, and exits 1 when one fails.
+#   4. `rdc run --unattended` with `--test`: the program runs its tests instead of a game, and exits 1 when one fails.
 
 name: Run
 
@@ -63,7 +63,7 @@ jobs:
         run: |
           $rdc = Join-Path $env:RUNNER_TEMP 'platform/RDCore.CLI' ($IsWindows ? 'rdc.exe' : 'rdc')
           $games = foreach ($n in 1, 2) {
-            $output = & $rdc run --unattended ./demo -- /console /seed 42 /player1 merciless /player2 fairplay 2>&1 | Out-String
+            $output = & $rdc run --unattended ./demo -- --console --seed 42 --player1 merciless --player2 fairplay 2>&1 | Out-String
             Write-Host $output
             if ($LASTEXITCODE -ne 0) { throw "Game $n exited with $LASTEXITCODE." }
             if ($output -notmatch 'Game over: grid \d wins\.') { throw "Game $n did not play to the end." }
@@ -80,7 +80,7 @@ jobs:
           $exe = Join-Path $out ($IsWindows ? 'NavalBattle.exe' : 'NavalBattle')
           $play = (Test-Path $exe) ? { & $exe @args } : { dotnet (Join-Path $out 'NavalBattle.dll') @args }
           $games = foreach ($n in 1, 2) {
-            $output = & $play --unattended /console /seed 42 /player1 merciless /player2 fairplay 2>&1 | Out-String
+            $output = & $play --unattended --console --seed 42 --player1 merciless --player2 fairplay 2>&1 | Out-String
             Write-Host $output
             if ($LASTEXITCODE -ne 0) { throw "Game $n exited with $LASTEXITCODE." }
             if ($output -notmatch 'Game over: grid \d wins\.') { throw "Game $n did not play to the end." }
@@ -91,5 +91,5 @@ jobs:
       - name: Run the tests
         run: |
           $rdc = Join-Path $env:RUNNER_TEMP 'platform/RDCore.CLI' ($IsWindows ? 'rdc.exe' : 'rdc')
-          & $rdc run --unattended ./demo -- /test
+          & $rdc run --unattended ./demo -- --test
           if ($LASTEXITCODE -ne 0) { throw "The tests exited with $LASTEXITCODE." }

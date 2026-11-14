@@ -19,20 +19,20 @@ Le jeu s'exécute avec `rdc`, la ligne de commande de RDCore, compilée à parti
 rdc run .
 ```
 
-Sous Windows, le jeu ouvre une fenêtre avec les deux grilles. Choisissez qui joue chaque grille, Human ou l'un des joueurs de l'ordinateur, puis cliquez sur **Ready**. Une personne place ses cinq navires sur sa propre grille : pointez une case pour y déplacer le navire, cliquez avec le bouton droit pour le tourner, et cliquez pour le placer. Cliquez de nouveau sur **Ready**, puis tirez sur l'autre grille en cliquant sur ses cases. Quand l'ordinateur joue les deux grilles, toute la partie se déroule dans la fenêtre. Fermer la fenêtre termine la partie. Avec `/console` après `--` (voir plus bas), le jeu se joue plutôt dans la console.
+Sous Windows, le jeu ouvre une fenêtre avec les deux grilles. Choisissez qui joue chaque grille, Human ou l'un des joueurs de l'ordinateur, puis cliquez sur **Ready**. Une personne place ses cinq navires sur sa propre grille : pointez une case pour y déplacer le navire, cliquez avec le bouton droit pour le tourner, et cliquez pour le placer. Cliquez de nouveau sur **Ready**, puis tirez sur l'autre grille en cliquant sur ses cases. Quand l'ordinateur joue les deux grilles, toute la partie se déroule dans la fenêtre. Fermer la fenêtre termine la partie. Avec `--console` après `--` (voir plus bas), le jeu se joue plutôt dans la console.
 
 Dans la console, le jeu demande qui joue chaque grille : Human, Random, Fair-play ou Merciless (la première lettre suffit). Une personne place ses cinq navires, puis joue à tour de rôle avec l'ordinateur, un tir chacun, jusqu'à ce qu'une flotte soit coulée. Une case est une lettre de colonne et un numéro de ligne, comme `B3`; un navire part de sa première case vers la droite, ou vers le bas avec un `V` : `B3 V`. Une réponse vide termine la partie. Sous Windows, les questions sont des boîtes de dialogue. Le jeu lui-même est en anglais.
 
-Après `--`, `/player1 <joueur>` et `/player2 <joueur>` nomment les joueurs (la fenêtre s'ouvre avec ces joueurs déjà choisis), `/console` fait jouer dans la console sous Windows aussi, et `/seed <nombre>` fixe la graine aléatoire, pour qu'une partie puisse être rejouée coup pour coup :
+Après `--`, `--player1 <joueur>` et `--player2 <joueur>` nomment les joueurs (la fenêtre s'ouvre avec ces joueurs déjà choisis), `--console` fait jouer dans la console sous Windows aussi, et `--seed <nombre>` fixe la graine aléatoire, pour qu'une partie puisse être rejouée coup pour coup :
 
 ```
-rdc run . -- /player1 merciless /player2 fairplay /seed 42
+rdc run . -- --player1 merciless --player2 fairplay --seed 42
 ```
 
-`/test` exécute les tests de `tests/` au lieu d'une partie. Il affiche le résultat de chaque test et un décompte, et se termine avec le code 1 quand un test échoue :
+`--test` exécute les tests de `tests/` au lieu d'une partie. Il affiche le résultat de chaque test et un décompte, et se termine avec le code 1 quand un test échoue :
 
 ```
-rdc run . -- /test
+rdc run . -- --test
 ```
 
 ## Licence

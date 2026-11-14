@@ -35,6 +35,7 @@ End Sub
 
 Private Sub window_Closed()
     this.Closed = True
+    If Not this.ViewEvents Is Nothing Then this.ViewEvents.ViewClosed
 End Sub
 
 ' once the person closes the window, a game that is still being played goes on without it, and is no longer shown.

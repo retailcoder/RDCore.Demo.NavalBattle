@@ -36,6 +36,7 @@ Public Event OnHit(ByVal gridId As PlayGridId, ByVal position As IGridCoord, ByV
 Public Event OnMiss(ByVal gridId As PlayGridId, ByVal position As IGridCoord)
 
 Public Event OnGameOver(ByVal winner As IPlayer)
+Public Event OnViewClosed()
 
 Private Type TAdapter
     ShipsToPosition As Byte
@@ -100,6 +101,10 @@ End Sub
 
 Private Sub IGridViewEvents_PreviewShipPosition(ByVal gridId As PlayGridId, ByVal position As IGridCoord)
     RaiseEvent OnPreviewCurrentShipPosition(gridId, position)
+End Sub
+
+Private Sub IGridViewEvents_ViewClosed()
+    RaiseEvent OnViewClosed
 End Sub
 
 

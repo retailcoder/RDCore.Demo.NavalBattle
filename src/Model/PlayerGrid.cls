@@ -335,6 +335,15 @@ Attribute IsSunken.VB_Description = "Gets a value indicating whether the ship at
                         Exit Property
                     End If
                 End If
+            Else
+                If CurrentShip.GridPosition.X = position.X Then
+                    If position.Y >= CurrentShip.GridPosition.Y And _
+                       position.Y <= CurrentShip.GridPosition.Y + CurrentShip.Size - 1 _
+                    Then
+                        IsSunken = True
+                        Exit Property
+                    End If
+                End If
             End If
         End If
     Next

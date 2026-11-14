@@ -24,6 +24,7 @@ Private Type TController
     CurrentPlayer As IPlayer
     CurrentTarget As IPlayer
     CurrentShip As IShip
+    ViewClosed As Boolean
 End Type
 Private WithEvents viewAdapter As GridViewAdapter
 Attribute viewAdapter.VB_VarHelpID = -1
@@ -124,6 +125,11 @@ Private Sub viewAdapter_OnGameOver(ByVal winner As IPlayer)
     Teardown
 End Sub
 
+' the view is closed and nobody sees the game: the turn being played ends, and no other starts.
+Private Sub viewAdapter_OnViewClosed()
+    this.ViewClosed = True
+End Sub
+
 Private Sub viewAdapter_OnPreviewCurrentShipPosition(ByVal gridId As PlayGridId, ByVal position As IGridCoord)
     On Error Resume Next
     Set this.CurrentShip = Ship.Create(this.CurrentShip.ShipKind, this.CurrentShip.Orientation, position)
@@ -194,7 +200,7 @@ Private Sub viewAdapter_OnAttackPosition(ByVal gridId As PlayGridId, ByVal posit
     Play gridId, position
     EndCurrentPlayerTurn
     
-    If this.CurrentPlayer.PlayerType = ComputerControlled And Not this.CurrentPlayer.PlayGrid.IsAllSunken Then
+    If this.CurrentPlayer.PlayerType = ComputerControlled And Not this.CurrentPlayer.PlayGrid.IsAllSunken And Not this.ViewClosed Then
         PlayAI
         EndCurrentPlayerTurn
     End If
@@ -209,7 +215,7 @@ CleanFail:
 End Sub
 
 Private Sub PlayAIvsAI()
-    Do Until this.CurrentTarget.PlayGrid.IsAllSunken Or this.CurrentPlayer.PlayGrid.IsAllSunken
+    Do Until this.CurrentTarget.PlayGrid.IsAllSunken Or this.CurrentPlayer.PlayGrid.IsAllSunken Or this.ViewClosed
         PlayAI
         EndCurrentPlayerTurn
     Loop

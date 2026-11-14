@@ -24,6 +24,8 @@ End Type
 
 ' how long a sinking ship's dizzy duck shows, before its anchor.
 Private Const SinkingSeconds As Single = 0.8
+' how long a hit ship's big duck stays dizzy.
+Private Const DizzySeconds As Single = 0.6
 
 Private this As TView
 Private WithEvents window As GameForm
@@ -110,6 +112,18 @@ End Sub
 
 Private Sub IGridViewCommands_OnHit(ByVal gridId As PlayGridId)
     Report gridId, "hit, the " & this.LastHitShip.Name & "."
+    ShowDizzyShip gridId, this.LastHitShip
+End Sub
+
+' a duckling was hit: its big duck is dizzy for a moment, where the ships are shown. A hidden ship shows nothing, so it is not given away.
+Private Sub ShowDizzyShip(ByVal gridId As PlayGridId, ByVal hitShip As IShip)
+    If Not IsOpen Or Not ShowsShips(gridId) Or this.Grids(gridId) Is Nothing Then Exit Sub
+    window.DizzyShip gridId, hitShip
+    window.PaintGrid this.Grids(gridId), True
+    window.Pause DizzySeconds
+    If Not IsOpen Then Exit Sub
+    window.DizzyShipRecovers
+    window.PaintGrid this.Grids(gridId), True
 End Sub
 
 Private Sub IGridViewCommands_OnSink(ByVal gridId As PlayGridId, ByVal sunkShip As IShip)

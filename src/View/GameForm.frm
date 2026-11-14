@@ -79,6 +79,7 @@ Private paintedSprites(PlayerGrid1 To PlayerGrid2, 1 To GridSize, 1 To GridSize)
 Private statusLine As MSForms.Label
 Private sprites As Collection
 Private sunkShipKeys As Collection
+Private dizzyShipKey As String
 
 Private WithEvents cellEvents As GridCellEvents
 Attribute cellEvents.VB_VarHelpID = -1
@@ -196,9 +197,9 @@ Attribute EndGame.VB_Description = "The game is over: the grids and the Ready bu
     readyButton.Enabled = False
 End Sub
 
-'@Description("Paints a grid as it stands: hits, misses, water, and the ships when they are to be shown. A sunk ship shows its anchor once its sinking is done, and the dizzy duck until then.")
+'@Description("Paints a grid as it stands: hits, misses, water, and the ships when they are to be shown. A sunk ship shows its anchor once its sinking is done, and the dizzy duck until then; the big duck of a ship that was just hit is dizzy too.")
 Public Sub PaintGrid(ByVal grid As PlayerGrid, ByVal showShips As Boolean)
-Attribute PaintGrid.VB_Description = "Paints a grid as it stands: hits, misses, water, and the ships when they are to be shown. A sunk ship shows its anchor once its sinking is done, and the dizzy duck until then."
+Attribute PaintGrid.VB_Description = "Paints a grid as it stands: hits, misses, water, and the ships when they are to be shown. A sunk ship shows its anchor once its sinking is done, and the dizzy duck until then; the big duck of a ship that was just hit is dizzy too."
     Dim names(1 To GridSize, 1 To GridSize) As String
     Dim X As Long
     Dim Y As Long
@@ -225,7 +226,11 @@ Attribute PaintGrid.VB_Description = "Paints a grid as it stands: hits, misses, 
             If item.IsSunken Then
                 If isBow Then names(X, Y) = IIf(IsSinkingDone(grid.gridId, item), SpriteAnchor, SpriteDizzy)
             ElseIf showShips And names(X, Y) = vbNullString Then
-                names(X, Y) = DuckSprite(item.Orientation, isBow)
+                If isBow And ShipKey(grid.gridId, item) = dizzyShipKey Then
+                    names(X, Y) = SpriteDizzy
+                Else
+                    names(X, Y) = DuckSprite(item.Orientation, isBow)
+                End If
             End If
         Next
     Next
@@ -246,6 +251,18 @@ Public Sub FinishSinking(ByVal gridId As PlayGridId, ByVal sunkShip As IShip)
 Attribute FinishSinking.VB_Description = "A ship's sinking is done: from now on, its bow shows the anchor."
     If IsSinkingDone(gridId, sunkShip) Then Exit Sub
     sunkShipKeys.Add ShipKey(gridId, sunkShip)
+End Sub
+
+'@Description("A ship was hit: its big duck is dizzy, until DizzyShipRecovers. Nothing shows where the ships are not shown.")
+Public Sub DizzyShip(ByVal gridId As PlayGridId, ByVal hitShip As IShip)
+Attribute DizzyShip.VB_Description = "A ship was hit: its big duck is dizzy, until DizzyShipRecovers. Nothing shows where the ships are not shown."
+    dizzyShipKey = ShipKey(gridId, hitShip)
+End Sub
+
+'@Description("The dizzy big duck is itself again.")
+Public Sub DizzyShipRecovers()
+Attribute DizzyShipRecovers.VB_Description = "The dizzy big duck is itself again."
+    dizzyShipKey = vbNullString
 End Sub
 
 '@Description("Waits the given number of seconds, while the form keeps drawing and answering.")

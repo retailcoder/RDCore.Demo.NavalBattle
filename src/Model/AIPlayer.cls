@@ -18,24 +18,34 @@ Implements IPlayer
 Private Declare PtrSafe Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As Long)
 #End If
 
-Private Const Delay As Long = 800
-
 Private Type TPlayer
     PlayerType As PlayerType
     PlayGrid As PlayerGrid
     Strategy As IGameStrategy
+    PauseMilliseconds As Long
 End Type
 
 Private this As TPlayer
 
-Public Function Create(ByVal grid As PlayerGrid, ByVal GameStrategy As IGameStrategy) As IPlayer
+'@Description("Creates a computer player. It waits the given number of milliseconds before each shot, so a person can watch it play; 0 plays at once.")
+Public Function Create(ByVal grid As PlayerGrid, ByVal GameStrategy As IGameStrategy, ByVal pauseMilliseconds As Long) As IPlayer
+Attribute Create.VB_Description = "Creates a computer player. It waits the given number of milliseconds before each shot, so a person can watch it play; 0 plays at once."
     With New AIPlayer
         .PlayerType = ComputerControlled
         Set .Strategy = GameStrategy
         Set .PlayGrid = grid
+        .PauseMilliseconds = pauseMilliseconds
         Set Create = .Self
     End With
 End Function
+
+Public Property Get PauseMilliseconds() As Long
+    PauseMilliseconds = this.PauseMilliseconds
+End Property
+
+Public Property Let PauseMilliseconds(ByVal value As Long)
+    this.PauseMilliseconds = value
+End Property
 
 Public Property Get Self() As IPlayer
     Set Self = Me
@@ -75,7 +85,7 @@ End Sub
 
 Private Function IPlayer_Play(ByVal enemyGrid As PlayerGrid) As IGridCoord
     
-    Pause Delay
+    If this.PauseMilliseconds > 0 Then Pause this.PauseMilliseconds
     Set IPlayer_Play = this.Strategy.Play(enemyGrid)
     
     Static shots As Long

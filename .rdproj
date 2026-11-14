@@ -8,6 +8,9 @@
         "RelativeUri": "src/Program.bas"
       },
       {
+        "RelativeUri": "src/CommandLineSwitches.bas"
+      },
+      {
         "RelativeUri": "src/IGameController.cls"
       },
       {
@@ -24,6 +27,9 @@
       },
       {
         "RelativeUri": "tests/ShipTests.bas"
+      },
+      {
+        "RelativeUri": "tests/CommandLineSwitchesTests.bas"
       },
       {
         "RelativeUri": "src/Model/AIPlayer.cls"

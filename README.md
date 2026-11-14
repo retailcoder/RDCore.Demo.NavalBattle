@@ -19,20 +19,20 @@ The game runs with `rdc`, the RDCore command line, built from the [RDCore](https
 rdc run .
 ```
 
-On Windows, the game opens a window with both grids. Pick who plays each grid, Human or one of the computer's players, then click **Ready**. A person places their five ships on their own grid: point at a cell to move the ship there, right-click to turn it, and click to place it. Click **Ready** again, then fire at the other grid by clicking its cells. When the computer plays both grids, the whole game plays out in the window. Closing the window ends the game. With `/console` after `--` (see below), the game plays in the console instead.
+On Windows, the game opens a window with both grids. Pick who plays each grid, Human or one of the computer's players, then click **Ready**. A person places their five ships on their own grid: point at a cell to move the ship there, right-click to turn it, and click to place it. Click **Ready** again, then fire at the other grid by clicking its cells. When the computer plays both grids, the whole game plays out in the window. Closing the window ends the game. With `--console` after `--` (see below), the game plays in the console instead.
 
 In the console, the game asks who plays each grid: Human, Random, Fair-play or Merciless (the first letter is enough). A person places their five ships, then takes turns with the computer, one shot each, until a fleet is sunk. A cell is a column letter and a row number, like `B3`; a ship goes across the grid from its first cell, or down with a `V`: `B3 V`. An empty answer ends the game. On Windows, the questions are dialog boxes.
 
-After `--`, `/player1 <player>` and `/player2 <player>` name the players (the window opens with them already picked), `/console` plays in the console on Windows too, and `/seed <number>` fixes the random seed, so that a game can be played again move for move:
+After `--`, `--player1 <player>` and `--player2 <player>` name the players (the window opens with them already picked), `--console` plays in the console on Windows too, and `--seed <number>` fixes the random seed, so that a game can be played again move for move:
 
 ```
-rdc run . -- /player1 merciless /player2 fairplay /seed 42
+rdc run . -- --player1 merciless --player2 fairplay --seed 42
 ```
 
-`/test` runs the tests in `tests/` instead of a game. It prints each test's outcome and a count, and exits 1 when a test fails:
+`--test` runs the tests in `tests/` instead of a game. It prints each test's outcome and a count, and exits 1 when a test fails:
 
 ```
-rdc run . -- /test
+rdc run . -- --test
 ```
 
 ## Licence

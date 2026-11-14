@@ -46,7 +46,7 @@ End Sub
 '@Description("The number of tests.")
 Private Property Get TestCount() As Long
 Attribute TestCount.VB_Description = "The number of tests."
-    TestCount = 28
+    TestCount = 32
 End Property
 
 '@Description("The name of a test, by its number, and runs it where run is True.")
@@ -81,6 +81,10 @@ Attribute Test.VB_Description = "The name of a test, by its number, and runs it 
         Case 26: Test = "ShipTests.ShipOrientationInvalidEnumValue_Throws": If run Then ShipTests.ShipOrientationInvalidEnumValue_Throws
         Case 27: Test = "ShipTests.IntersectingShip_IntersectReturnsGridCoord": If run Then ShipTests.IntersectingShip_IntersectReturnsGridCoord
         Case 28: Test = "ShipTests.NonIntersectingShip_IntersectReturnsNothing": If run Then ShipTests.NonIntersectingShip_IntersectReturnsNothing
+        Case 29: Test = "CommandLineSwitchesTests.RuntimeSwitchBefore_TheSeedIsRead": If run Then CommandLineSwitchesTests.RuntimeSwitchBefore_TheSeedIsRead
+        Case 30: Test = "CommandLineSwitchesTests.RuntimeSwitchAfter_TheSeedIsRead": If run Then CommandLineSwitchesTests.RuntimeSwitchAfter_TheSeedIsRead
+        Case 31: Test = "CommandLineSwitchesTests.RuntimeSwitchInTheValuesPlace_IsNoValue": If run Then CommandLineSwitchesTests.RuntimeSwitchInTheValuesPlace_IsNoValue
+        Case 32: Test = "CommandLineSwitchesTests.SwitchesItIsNotAskedAbout_AreIgnored": If run Then CommandLineSwitchesTests.SwitchesItIsNotAskedAbout_AreIgnored
         Case Else: Test = vbNullString
     End Select
 End Function
@@ -117,10 +121,12 @@ Attribute EnterModule.VB_Description = "Cleans up the current module and initial
     Select Case this.CurrentModule
         Case "PlayerGridTests": PlayerGridTests.ModuleCleanup
         Case "ShipTests": ShipTests.ModuleCleanup
+        Case "CommandLineSwitchesTests": CommandLineSwitchesTests.ModuleCleanup
     End Select
     this.CurrentModule = moduleName
     Select Case moduleName
         Case "PlayerGridTests": PlayerGridTests.ModuleInitialize
         Case "ShipTests": ShipTests.ModuleInitialize
+        Case "CommandLineSwitchesTests": CommandLineSwitchesTests.ModuleInitialize
     End Select
 End Sub

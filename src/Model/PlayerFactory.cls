@@ -15,17 +15,29 @@ Option Explicit
 
 Private Type TFactory
     Random As IRandomizer
+    AIPauseMilliseconds As Long
 End Type
 
 Private this As TFactory
 Implements IPlayerFactory
 
-Public Function Create(ByVal randomizer As IRandomizer) As IPlayerFactory
+'@Description("Creates the factory. Its computer players wait the given number of milliseconds before each shot; 0 plays at once.")
+Public Function Create(ByVal randomizer As IRandomizer, ByVal aiPauseMilliseconds As Long) As IPlayerFactory
+Attribute Create.VB_Description = "Creates the factory. Its computer players wait the given number of milliseconds before each shot; 0 plays at once."
     With New PlayerFactory
         Set .Random = randomizer
+        .AIPauseMilliseconds = aiPauseMilliseconds
         Set Create = .Self
     End With
 End Function
+
+Public Property Get AIPauseMilliseconds() As Long
+    AIPauseMilliseconds = this.AIPauseMilliseconds
+End Property
+
+Public Property Let AIPauseMilliseconds(ByVal value As Long)
+    this.AIPauseMilliseconds = value
+End Property
 
 Public Property Get Self() As IPlayerFactory
     Set Self = Me
@@ -59,13 +71,13 @@ End Function
 Private Function CreateAIPlayer(ByVal grid As PlayerGrid, ByVal difficulty As AIDifficulty) As IPlayer
     Select Case difficulty
         Case AIDifficulty.RandomAI
-            Set CreateAIPlayer = AIPlayer.Create(grid, RandomShotStrategy.Create(this.Random))
+            Set CreateAIPlayer = AIPlayer.Create(grid, RandomShotStrategy.Create(this.Random), this.AIPauseMilliseconds)
             
         Case AIDifficulty.FairplayAI
-            Set CreateAIPlayer = AIPlayer.Create(grid, FairPlayStrategy.Create(this.Random))
+            Set CreateAIPlayer = AIPlayer.Create(grid, FairPlayStrategy.Create(this.Random), this.AIPauseMilliseconds)
             
         Case AIDifficulty.MercilessAI
-            Set CreateAIPlayer = AIPlayer.Create(grid, MercilessStrategy.Create(this.Random))
+            Set CreateAIPlayer = AIPlayer.Create(grid, MercilessStrategy.Create(this.Random), this.AIPauseMilliseconds)
             
         Case Else
             Debug.Assert False

@@ -5,12 +5,13 @@ Attribute VB_Description = "The program's entry point."
 Option Explicit
 
 Private Const ClassNotRegistered As Long = 429
+Private Const WatchableAIPause As Long = 800
 
 Private controller As IGameController
 
-'@Description("Plays a game: in the game form on Windows, and in the console elsewhere, or when --console is on the command line. The command line can name the players, --player1 <player> --player2 <player> (Human, Random, Fair-play or Merciless), and fix the random seed so a game can be replayed: --seed <number>. The form opens with the players it names already picked; the console asks for a player it does not name. --test runs the tests instead of a game, in the console.")
+'@Description("Plays a game: in the game form on Windows, and in the console elsewhere, or when --console is on the command line. The command line can name the players, --player1 <player> --player2 <player> (Human, Random, Fair-play or Merciless), and fix the random seed so a game can be replayed: --seed <number>. The form opens with the players it names already picked; the console asks for a player it does not name. --test runs the tests instead of a game, in the console. Under --unattended, nobody watches: the computer plays without its pause before each shot.")
 Public Sub Main()
-Attribute Main.VB_Description = "Plays a game: in the game form on Windows, and in the console elsewhere, or when --console is on the command line. The command line can name the players, --player1 <player> --player2 <player> (Human, Random, Fair-play or Merciless), and fix the random seed so a game can be replayed: --seed <number>. The form opens with the players it names already picked; the console asks for a player it does not name. --test runs the tests instead of a game, in the console."
+Attribute Main.VB_Description = "Plays a game: in the game form on Windows, and in the console elsewhere, or when --console is on the command line. The command line can name the players, --player1 <player> --player2 <player> (Human, Random, Fair-play or Merciless), and fix the random seed so a game can be replayed: --seed <number>. The form opens with the players it names already picked; the console asks for a player it does not name. --test runs the tests instead of a game, in the console. Under --unattended, nobody watches: the computer plays without its pause before each shot."
     If HasSwitch(Command$, "--test") Then
         TestRunner.RunAll
         Exit Sub
@@ -75,6 +76,10 @@ Attribute StartGame.VB_Description = "Makes the controller of a new game, over t
     Dim randomizer As IRandomizer
     Set randomizer = New GameRandomizer
 
-    Set controller = StandardGameController.Create(adapter, randomizer, PlayerFactory.Create(randomizer))
+    ' nobody watches an unattended run: the computer plays at once.
+    Dim aiPause As Long
+    If Not HasSwitch(Command$, "--unattended") Then aiPause = WatchableAIPause
+
+    Set controller = StandardGameController.Create(adapter, randomizer, PlayerFactory.Create(randomizer, aiPause))
     controller.NewGame
 End Sub

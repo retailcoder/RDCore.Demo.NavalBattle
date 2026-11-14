@@ -35,6 +35,8 @@ rdc run . -- --player1 merciless --player2 fairplay --seed 42
 rdc run . -- --test
 ```
 
+Avec `--unattended` sur la ligne de commande du programme, personne ne regarde la partie : l'ordinateur tire sans la pause qu'il prend avant chaque tir.
+
 ## Licence
 
 Bataille navale RD-VBA est distribuée sous la licence **MIT** : voir [LICENSE](LICENSE) et [NOTICE.md](NOTICE.md).

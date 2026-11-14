@@ -35,6 +35,8 @@ rdc run . -- --player1 merciless --player2 fairplay --seed 42
 rdc run . -- --test
 ```
 
+With `--unattended` on the program's command line, nobody watches the game: the computer shoots without the pause it takes before each shot.
+
 ## Licence
 
 RD-VBA Naval Battle is licensed under the **MIT** licence: see [LICENSE](LICENSE) and [NOTICE.md](NOTICE.md).

@@ -6,9 +6,14 @@ Option Explicit
 
 Private controller As IGameController
 
-'@Description("Plays a game in the console. The command line can name the players, /player1 <player> /player2 <player> (Human, Random, Fair-play or Merciless), and fix the random seed so a game can be replayed: /seed <number>. A player it does not name is asked for.")
+'@Description("Plays a game in the console. The command line can name the players, /player1 <player> /player2 <player> (Human, Random, Fair-play or Merciless), and fix the random seed so a game can be replayed: /seed <number>. A player it does not name is asked for. /test runs the tests instead of a game.")
 Public Sub Main()
-Attribute Main.VB_Description = "Plays a game in the console. The command line can name the players, /player1 <player> /player2 <player> (Human, Random, Fair-play or Merciless), and fix the random seed so a game can be replayed: /seed <number>. A player it does not name is asked for."
+Attribute Main.VB_Description = "Plays a game in the console. The command line can name the players, /player1 <player> /player2 <player> (Human, Random, Fair-play or Merciless), and fix the random seed so a game can be replayed: /seed <number>. A player it does not name is asked for. /test runs the tests instead of a game."
+    If InStr(1, " " & Command$ & " ", " /test ", vbTextCompare) > 0 Then
+        TestRunner.RunAll
+        Exit Sub
+    End If
+
     Dim seed As String
     If TryGetArgument(Command$, "/seed", seed) And IsNumeric(seed) Then
         Rnd -1

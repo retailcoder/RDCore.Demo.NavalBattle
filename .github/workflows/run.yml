@@ -9,6 +9,7 @@
 #   2. the same seed again: the two games must print the same output.
 #   3. `rdc build`, for the runner's own OS, then the built program plays the same two games in the console, unattended.
 #      With no executable (no .NET application host for the OS), the built program runs as `dotnet NavalBattle.dll`.
+#   4. `rdc run --unattended` with `/test`: the program runs its tests instead of a game, and exits 1 when one fails.
 
 name: Run
 
@@ -86,3 +87,9 @@ jobs:
             $output
           }
           if ($games[0] -ne $games[1]) { throw 'The same seed played two different games.' }
+
+      - name: Run the tests
+        run: |
+          $rdc = Join-Path $env:RUNNER_TEMP 'platform/RDCore.CLI' ($IsWindows ? 'rdc.exe' : 'rdc')
+          & $rdc run --unattended ./demo -- /test
+          if ($LASTEXITCODE -ne 0) { throw "The tests exited with $LASTEXITCODE." }

@@ -29,6 +29,12 @@ After `--`, `/player1 <player>` and `/player2 <player>` name the players (the wi
 rdc run . -- /player1 merciless /player2 fairplay /seed 42
 ```
 
+`/test` runs the tests in `tests/` instead of a game. It prints each test's outcome and a count, and exits 1 when a test fails:
+
+```
+rdc run . -- /test
+```
+
 ## Licence
 
 RD-VBA Naval Battle is licensed under the **MIT** licence: see [LICENSE](LICENSE) and [NOTICE.md](NOTICE.md).

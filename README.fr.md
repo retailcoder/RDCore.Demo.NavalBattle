@@ -29,6 +29,12 @@ Après `--`, `/player1 <joueur>` et `/player2 <joueur>` nomment les joueurs (la 
 rdc run . -- /player1 merciless /player2 fairplay /seed 42
 ```
 
+`/test` exécute les tests de `tests/` au lieu d'une partie. Il affiche le résultat de chaque test et un décompte, et se termine avec le code 1 quand un test échoue :
+
+```
+rdc run . -- /test
+```
+
 ## Licence
 
 Bataille navale RD-VBA est distribuée sous la licence **MIT** : voir [LICENSE](LICENSE) et [NOTICE.md](NOTICE.md).

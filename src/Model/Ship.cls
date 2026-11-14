@@ -16,11 +16,11 @@ Option Explicit
 Private ShipSizes As Dictionary
 Private shipNames As Dictionary
 
-Private Const ShipNameCarrier As String = "Aircraft Carrier"
-Private Const ShipNameDreadnought As String = "Dreadnought"
-Private Const ShipNameSubmarine As String = "Submarine"
-Private Const ShipNameCruiser As String = "Cruiser"
-Private Const ShipNameDestroyer As String = "Destroyer"
+Private Const ShipNameCarrier As String = "Quackraft Carrier"
+Private Const ShipNameDreadnought As String = "Battlequacker"
+Private Const ShipNameSubmarine As String = "Rubber Diver"
+Private Const ShipNameCruiser As String = "Duck Cruiser"
+Private Const ShipNameDestroyer As String = "Duckstroyer"
 
 Private Type TShip
     ShipKind As ShipType

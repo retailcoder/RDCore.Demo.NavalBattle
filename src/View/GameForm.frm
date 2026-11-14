@@ -92,7 +92,7 @@ Attribute readyButton.VB_VarHelpID = -1
 Private Sub UserForm_Initialize()
     Set cellEvents = New GridCellEvents
 
-    ' the designer block sizes the window: 16320 x 7845 twips, 816 x about 392 points, 1088 x 523 pixels at 96 dpi. The board is centred on it. The
+    ' the designer block sizes the window: 16320 x 7845 twips, 816 x 392.25 points, 1088 x 523 pixels at 96 dpi. The board is centred on it. The
     ' form's picture (GameForm.frx, from assets/game-form-background.jpg) is stretched over the whole of it, behind the board: the labels are
     ' transparent, and so are the cells of open water. The status line is text over the picture, in a bold, larger font to stay readable.
     ' Without a picture, the water colour shows.
@@ -303,7 +303,7 @@ Private Function DuckSprite(ByVal direction As ShipOrientation, ByVal isBow As B
     DuckSprite = "duck-" & IIf(isBow, "big", "small") & "-" & IIf(direction = Horizontal, "right", "down")
 End Function
 
-' without its sprites, the form paints colours as it did before them.
+' without its sprites, the form paints each cell with its colour.
 Private Function FallbackColour(ByVal sprite As String) As Long
     Select Case sprite
         Case vbNullString

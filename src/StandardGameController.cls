@@ -125,7 +125,7 @@ Private Sub viewAdapter_OnGameOver(ByVal winner As IPlayer)
     Teardown
 End Sub
 
-' nobody sees the game anymore: the turn being played ends, and no other starts.
+' the view is closed and nobody sees the game: the turn being played ends, and no other starts.
 Private Sub viewAdapter_OnViewClosed()
     this.ViewClosed = True
 End Sub

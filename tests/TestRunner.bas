@@ -46,7 +46,7 @@ End Sub
 '@Description("The number of tests.")
 Private Property Get TestCount() As Long
 Attribute TestCount.VB_Description = "The number of tests."
-    TestCount = 28
+    TestCount = 29
 End Property
 
 '@Description("The name of a test, by its number, and runs it where run is True.")
@@ -81,6 +81,7 @@ Attribute Test.VB_Description = "The name of a test, by its number, and runs it 
         Case 26: Test = "ShipTests.ShipOrientationInvalidEnumValue_Throws": If run Then ShipTests.ShipOrientationInvalidEnumValue_Throws
         Case 27: Test = "ShipTests.IntersectingShip_IntersectReturnsGridCoord": If run Then ShipTests.IntersectingShip_IntersectReturnsGridCoord
         Case 28: Test = "ShipTests.NonIntersectingShip_IntersectReturnsNothing": If run Then ShipTests.NonIntersectingShip_IntersectReturnsNothing
+        Case 29: Test = "GameControllerTests.ComputerVsComputer_OnSinkNamesEachSunkShip": If run Then GameControllerTests.ComputerVsComputer_OnSinkNamesEachSunkShip
         Case Else: Test = vbNullString
     End Select
 End Function
@@ -117,10 +118,12 @@ Attribute EnterModule.VB_Description = "Cleans up the current module and initial
     Select Case this.CurrentModule
         Case "PlayerGridTests": PlayerGridTests.ModuleCleanup
         Case "ShipTests": ShipTests.ModuleCleanup
+        Case "GameControllerTests": GameControllerTests.ModuleCleanup
     End Select
     this.CurrentModule = moduleName
     Select Case moduleName
         Case "PlayerGridTests": PlayerGridTests.ModuleInitialize
         Case "ShipTests": ShipTests.ModuleInitialize
+        Case "GameControllerTests": GameControllerTests.ModuleInitialize
     End Select
 End Sub

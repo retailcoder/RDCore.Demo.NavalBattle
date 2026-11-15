@@ -128,6 +128,68 @@ Public Sub EverySprite_IsAGifInTheWorkspaceAssets()
     Assert.AreEqual CurDir$ & "\assets\sprites\hit-squeak.gif", SUT.Path("hit-squeak")
 End Sub
 
+'@TestMethod
+Public Sub FleetGrid_IsTheFirstGridPaintedWithItsShips()
+    Dim SUT As BoardSprites
+    Set SUT = New BoardSprites
+
+    Assert.AreEqual 0, SUT.FleetGridId, "before any paint"
+    Assert.IsFalse SUT.IsFleetGrid(PlayerGrid1, False), "grid 1, its ships hidden"
+    Assert.IsTrue SUT.IsFleetGrid(PlayerGrid2, True), "grid 2, its ships shown"
+    Assert.IsFalse SUT.IsFleetGrid(PlayerGrid1, True), "grid 1, its ships shown later"
+    Assert.IsTrue SUT.IsFleetGrid(PlayerGrid2, False), "grid 2, its ships hidden later"
+    Assert.AreEqual PlayerGrid2, SUT.FleetGridId, "after"
+End Sub
+
+'@TestMethod
+Public Sub FleetSprites_ShowEachShipAcross_InTheOrderTheyWerePlaced()
+    Dim grid As PlayerGrid
+    Set grid = PlayerGrid.Create(PlayerGrid1)
+    grid.AddShip Ship.Create(ShipType.Cruiser, Vertical, GridCoord.Create(5, 5))
+    grid.AddShip Ship.Create(ShipType.Destroyer, Horizontal, GridCoord.Create(1, 1))
+    Dim SUT As BoardSprites
+    Set SUT = New BoardSprites
+
+    Assert.AreEqual 2, SUT.FleetSprites(grid).Count, "the ships"
+    Dim cruiser As Variant
+    cruiser = FleetShipSprites(SUT, grid, 1)
+    Assert.AreEqual 3, UBound(cruiser), "the first ship placed, the cruiser"
+    Assert.AreEqual "duck-small-right", cruiser(1), "its stern, across"
+    Assert.AreEqual "duck-big-right", cruiser(3), "its bow, across"
+    Dim destroyer As Variant
+    destroyer = FleetShipSprites(SUT, grid, 2)
+    Assert.AreEqual 2, UBound(destroyer), "the second ship placed, the destroyer"
+End Sub
+
+'@TestMethod
+Public Sub FleetSprites_ShowTheHits_ThenTheSunkShipsBow()
+    Dim grid As PlayerGrid
+    Set grid = DestroyerGrid(Vertical)
+    Dim SUT As BoardSprites
+    Set SUT = New BoardSprites
+    Dim destroyer As Variant
+
+    grid.TryHit GridCoord.Create(2, 3)
+    destroyer = FleetShipSprites(SUT, grid, 1)
+    Assert.AreEqual "hit-squeak", destroyer(1), "the hit stern"
+    Assert.AreEqual "duck-big-right", destroyer(2), "the bow"
+
+    grid.TryHit GridCoord.Create(2, 4)
+    destroyer = FleetShipSprites(SUT, grid, 1)
+    Assert.AreEqual "sunk-dizzy", destroyer(2), "the bow, while it sinks"
+
+    SUT.FinishSinking PlayerGrid1, grid.Fleet(1)
+    destroyer = FleetShipSprites(SUT, grid, 1)
+    Assert.AreEqual "anchor-cracked", destroyer(2), "the bow, once it sank"
+End Sub
+
+' what the given BoardSprites shows of a ship in the fleet status, by its place in the fleet.
+Private Function FleetShipSprites(ByVal board As BoardSprites, ByVal grid As PlayerGrid, ByVal shipNumber As Long) As Variant
+    Dim fleet As Collection
+    Set fleet = board.FleetSprites(grid)
+    FleetShipSprites = fleet(shipNumber)
+End Function
+
 ' what a new BoardSprites shows on a grid.
 Private Function ShownSprites(ByVal grid As PlayerGrid, ByVal showShips As Boolean) As Variant
     Dim board As BoardSprites

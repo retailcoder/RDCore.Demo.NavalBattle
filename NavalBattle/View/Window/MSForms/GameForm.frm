@@ -13,9 +13,9 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-Attribute VB_Description = "The game's window. It has no designed controls: it makes its grids, player pickers, status line and Ready button when it is loaded. WindowView paints it, and what the person does in it is sent to the view's events."
+Attribute VB_Description = "The game's window. It has no designed controls: it makes its status line, its banner and the player pickers on it, its grids, its fleet status and its Ready button when it is loaded. WindowView paints it, and what the person does in it is sent to the view's events."
 '@Folder("NavalBattle.View.Window.MSForms")
-'@ModuleDescription("The game's window. It has no designed controls: it makes its grids, player pickers, status line and Ready button when it is loaded. WindowView paints it, and what the person does in it is sent to the view's events.")
+'@ModuleDescription("The game's window. It has no designed controls: it makes its status line, its banner and the player pickers on it, its grids, its fleet status and its Ready button when it is loaded. WindowView paints it, and what the person does in it is sent to the view's events.")
 Option Explicit
 Implements IGameWindow
 
@@ -26,9 +26,11 @@ Private Const PanelFontSize As Long = 12
 ' a text label's top, in a line or a cell taller than its text, so that the text sits in the middle.
 Private Const TextOffset As Long = (CellSize - 16) \ 2
 
-' the parts go where BoardLayout says. The status bar is white, with a thin black border, of which only the bottom shows.
+' the parts go where BoardLayout says. The status bar is white, with a thin black border, of which only the bottom shows. Each column's banner
+' is a light grey band, with a thin grey border: an empty label, behind its text and its player picker.
 Private Const StatusColour As Long = &HFFFFFF
 Private Const StatusBorderColour As Long = &H0
+Private Const BannerColour As Long = &HE6E6E6
 
 Private Const LineColour As Long = &H808080
 
@@ -39,6 +41,10 @@ Private paintedColours(PlayerGrid1 To PlayerGrid2, 1 To GridSize, 1 To GridSize)
 Private paintedCaptions(PlayerGrid1 To PlayerGrid2, 1 To GridSize, 1 To GridSize) As String
 Private paintedSprites(PlayerGrid1 To PlayerGrid2, 1 To GridSize, 1 To GridSize) As String
 Private statusLine As MSForms.Label
+Private fleetCaption As MSForms.Label
+' the fleet status's ships, in the order they were placed: each one's cells, from its stern, made when the ship first shows.
+Private fleetCells As Collection
+Private fleetNames As Collection
 Private sprites As Collection
 ' what each cell shows, and what the person does in the window: the game's window logic, which this form only draws.
 Private board As BoardSprites
@@ -61,7 +67,9 @@ Private Sub UserForm_Initialize()
 
     ' the designer block sizes the window: 16320 x 7845 twips, 816 x 392.25 points, 1088 x 523 pixels at 96 dpi. The board is centred on it. The
     ' form's picture (GameForm.frx, from assets/game-form-background.jpg) is stretched over the whole of it, behind the board: the labels are
-    ' transparent, and so are the cells of open water. The status line is bold, larger text on a white bar across the top of the window.
+    ' transparent, and so are the cells of open water. The status line is bold, larger text on a white bar across the top of the window. A grey
+    ' banner runs across the window under it, with each column's caption over it: the grids' player pickers, then the players' names, and the
+    ' fleet status's. The Ready button starts the row of buttons at the bottom left, on open water.
     ' Without a picture, the water colour shows.
     Me.BackColor = board.Water
     LoadSprites
@@ -73,6 +81,7 @@ Private Sub UserForm_Initialize()
         .BorderColor = StatusBorderColour
     End With
     Set statusLine = AddPanel("Status", BoardLayout.StatusTextLeft, BoardLayout.StatusTextTop, BoardLayout.StatusTextWidth, LineHeight, "Pick the players, then click Ready.")
+    AddBanner
 
     Dim gridId As PlayGridId
     For gridId = PlayerGrid1 To PlayerGrid2
@@ -82,13 +91,18 @@ Private Sub UserForm_Initialize()
     Set firstPlayerPicker = AddPlayerPicker(PlayerGrid1, PlayerName(Unspecific))
     Set secondPlayerPicker = AddPlayerPicker(PlayerGrid2, PlayerName(MercilessAI))
 
+    Set fleetCaption = AddPanel("FleetCaption", BoardLayout.FleetCaptionLeft, BoardLayout.BannerTextTop + 2, BoardLayout.CaptionWidth, LineHeight, "Fleet status")
+    fleetCaption.TextAlign = fmTextAlignCenter
+    Set fleetCells = New Collection
+    Set fleetNames = New Collection
+
     Set readyButton = Me.Controls.Add("Forms.CommandButton.1", "Ready", True)
     With readyButton
         .Caption = "Ready"
-        .Left = BoardLayout.ReadyLeft
-        .Top = BoardLayout.ReadyTop
-        .Width = ReadyWidth
-        .Height = ReadyHeight
+        .Left = BoardLayout.ButtonLeft(1)
+        .Top = BoardLayout.ButtonTop
+        .Width = ButtonWidth
+        .Height = ButtonHeight
         .Font.Name = TextFontName
         .Font.Size = TextFontSize
     End With
@@ -156,6 +170,69 @@ Private Sub IGameWindow_PaintGrid(ByVal grid As PlayerGrid, ByVal showShips As B
             End If
         Next
     Next
+    If board.IsFleetGrid(grid.gridId, showShips) Then PaintFleet grid
+End Sub
+
+' the fleet status: each ship placed so far, by its name, lying across, with what its cells show on the grid. A sunk ship's name is struck out.
+Private Sub PaintFleet(ByVal grid As PlayerGrid)
+    fleetCaption.Caption = "Grid " & grid.gridId & " fleet"
+    Dim ships As Collection
+    Set ships = grid.Fleet
+    Dim shipSprites As Collection
+    Set shipSprites = board.FleetSprites(grid)
+    Dim shipNumber As Long
+    For shipNumber = 1 To ships.Count
+        Dim item As IShip
+        Set item = ships(shipNumber)
+        If shipNumber > fleetCells.Count Then AddFleetShip shipNumber, item
+        Dim shipName As MSForms.Label
+        Set shipName = fleetNames(shipNumber)
+        shipName.Font.Strikethrough = item.IsSunken
+
+        Dim cells As Collection
+        Set cells = fleetCells(shipNumber)
+        Dim cellSprites As Variant
+        cellSprites = shipSprites(shipNumber)
+        Dim column As Long
+        For column = 1 To item.Size
+            PaintFleetCell cells(column), cellSprites(column)
+        Next
+    Next
+End Sub
+
+' a fleet cell is painted only when it changes, as a grid's is: its Tag holds the sprite it shows.
+Private Sub PaintFleetCell(ByVal cell As MSForms.Label, ByVal sprite As String)
+    If cell.Tag = sprite Then Exit Sub
+    If sprites Is Nothing Then
+        cell.BackColor = board.FallbackColour(sprite)
+        cell.BackStyle = IIf(sprite = vbNullString, fmBackStyleTransparent, fmBackStyleOpaque)
+        cell.Caption = IIf(board.IsHit(sprite), "X", vbNullString)
+    ElseIf sprite = vbNullString Then
+        Set cell.Picture = Nothing
+    Else
+        Set cell.Picture = sprites(sprite)
+    End If
+    cell.Tag = sprite
+End Sub
+
+Private Sub AddFleetShip(ByVal shipNumber As Long, ByVal item As IShip)
+    Dim shipName As MSForms.Label
+    Set shipName = AddPanel("Ship" & shipNumber & "Name", BoardLayout.ShipCellLeft(1), BoardLayout.ShipNameTop(shipNumber) + TextOffset, BoardLayout.CaptionWidth, LineHeight - TextOffset, item.Name)
+    shipName.Font.Size = TextFontSize
+    fleetNames.Add shipName
+
+    Dim cells As Collection
+    Set cells = New Collection
+    Dim column As Long
+    For column = 1 To item.Size
+        Dim cell As MSForms.Label
+        Set cell = AddLabel("Ship" & shipNumber & "Cell" & column, BoardLayout.ShipCellLeft(column), BoardLayout.ShipCellTop(shipNumber), CellSize, CellSize, vbNullString, fmTextAlignCenter)
+        cell.BorderStyle = fmBorderStyleSingle
+        cell.BorderColor = LineColour
+        cell.PicturePosition = fmPicturePositionCenter
+        cells.Add cell
+    Next
+    fleetCells.Add cells
 End Sub
 
 Private Sub IGameWindow_FinishSinking(ByVal gridId As PlayGridId, ByVal sunkShip As IShip)
@@ -327,15 +404,16 @@ Private Sub AddGrid(ByVal gridId As PlayGridId)
     Next
 End Sub
 
+' a grid's caption on the banner, then its picker after it.
 Private Function AddPlayerPicker(ByVal gridId As PlayGridId, ByVal initialPlayer As String) As MSForms.ComboBox
-    AddLabel "Grid" & gridId & "PlayerCaption", BoardLayout.GridLeft(gridId), BoardLayout.PlayerTop + 2, PlayerCaptionWidth, LineHeight, "Grid " & gridId & ":"
+    AddLabel "Grid" & gridId & "PlayerCaption", BoardLayout.GridCaptionLeft(gridId) + BannerPadding, BoardLayout.BannerTextTop + 2, PlayerCaptionWidth - BannerPadding, LineHeight, "Grid " & gridId & ":"
 
     Dim picker As MSForms.ComboBox
     Set picker = Me.Controls.Add("Forms.ComboBox.1", "Grid" & gridId & "Player", True)
     With picker
-        .Left = BoardLayout.GridLeft(gridId) + PlayerCaptionWidth
-        .Top = BoardLayout.PlayerTop
-        .Width = BoardLayout.GridWidth - PlayerCaptionWidth
+        .Left = BoardLayout.PickerLeft(gridId)
+        .Top = BoardLayout.BannerTextTop
+        .Width = BoardLayout.PickerWidth
         .Height = LineHeight
         .Font.Name = TextFontName
         .Font.Size = TextFontSize
@@ -349,14 +427,28 @@ Private Function AddPlayerPicker(ByVal gridId As PlayGridId, ByVal initialPlayer
     Set AddPlayerPicker = picker
 End Function
 
-' the players are confirmed: a grid's picker goes, and its caption names the player, in bold so it reads over the ducks.
+' the players are confirmed: a grid's picker goes, and its caption names the player, centred over the grid's cells and in bold.
 Private Sub ShowPlayer(ByVal gridId As PlayGridId, ByVal picker As MSForms.ComboBox)
     Dim caption As MSForms.Label
     Set caption = Me.Controls("Grid" & gridId & "PlayerCaption")
     caption.Caption = "Grid " & gridId & ": " & picker.Value
-    caption.Width = BoardLayout.GridWidth
+    caption.Left = BoardLayout.GridCaptionLeft(gridId)
+    caption.Width = BoardLayout.CaptionWidth
+    caption.TextAlign = fmTextAlignCenter
     caption.Font.Bold = True
+    caption.Font.Size = PanelFontSize
     picker.Visible = False
+End Sub
+
+' the banner across the window: an empty label, sent to the back, so that the captions and the pickers show over it whatever order they were made in.
+Private Sub AddBanner()
+    With AddLabel("Banner", BoardLayout.BannerLeft, BoardLayout.BannerTop, BoardLayout.BannerWidth, BoardLayout.BannerHeight, vbNullString)
+        .BackStyle = fmBackStyleOpaque
+        .BackColor = BannerColour
+        .BorderStyle = fmBorderStyleSingle
+        .BorderColor = StatusBorderColour
+        .ZOrder fmZOrderBack
+    End With
 End Sub
 
 Private Function AddLabel(ByVal controlName As String, ByVal leftEdge As Single, ByVal topEdge As Single, ByVal labelWidth As Single, ByVal labelHeight As Single, ByVal text As String, Optional ByVal alignment As fmTextAlign = fmTextAlignLeft) As MSForms.Label

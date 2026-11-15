@@ -36,15 +36,23 @@ Public Sub StatusText_IsInsideTheBar()
 End Sub
 
 '@TestMethod
-Public Sub Grids_AreSideBySide_CentredUnderTheStatusBar()
+Public Sub Columns_AreSideBySide_CentredUnderTheBanner()
     Dim leftSpace As Long
     leftSpace = BoardLayout.GridLeft(PlayerGrid1)
     Dim rightSpace As Long
-    rightSpace = BoardLayout.WindowWidth - (BoardLayout.GridLeft(PlayerGrid2) + BoardLayout.GridWidth)
+    rightSpace = BoardLayout.WindowWidth - (BoardLayout.FleetLeft + BoardLayout.GridWidth)
 
     Assert.IsTrue BoardLayout.GridLeft(PlayerGrid1) + BoardLayout.GridWidth < BoardLayout.GridLeft(PlayerGrid2), "the grids overlap"
+    Assert.IsTrue BoardLayout.GridLeft(PlayerGrid2) + BoardLayout.GridWidth < BoardLayout.FleetLeft, "grid 2 and the fleet status overlap"
     Assert.IsTrue Abs(leftSpace - rightSpace) <= 1, "not centred: " & leftSpace & " left, " & rightSpace & " right"
-    Assert.IsTrue BoardLayout.GridTop > BoardLayout.StatusBarTop + BoardLayout.StatusBarHeight, "under the status bar"
+    Assert.IsTrue BoardLayout.GridTop >= BoardLayout.BannerTop + BoardLayout.BannerHeight, "under the banner"
+End Sub
+
+'@TestMethod
+Public Sub Banner_IsAcrossTheWindow_OnTheStatusBarsBottomBorder()
+    Assert.AreEqual BoardLayout.StatusBarLeft, BoardLayout.BannerLeft, "its left"
+    Assert.AreEqual BoardLayout.StatusBarWidth, BoardLayout.BannerWidth, "its width"
+    Assert.AreEqual BoardLayout.StatusBarTop + BoardLayout.StatusBarHeight - BoardLayout.StatusBleed, BoardLayout.BannerTop, "its top, on the status bar's bottom border"
 End Sub
 
 '@TestMethod
@@ -56,9 +64,34 @@ Public Sub Cells_FollowTheRowNumbers_AndTheLettersFollowTheLastRow()
 End Sub
 
 '@TestMethod
-Public Sub PlayersAndReady_AreUnderTheGrids_InsideTheWindow()
-    Assert.IsTrue BoardLayout.PlayerTop >= BoardLayout.CellTop(BoardLayout.GridSize + 2), "the players' line"
-    Assert.IsTrue BoardLayout.ReadyTop >= BoardLayout.PlayerTop + BoardLayout.LineHeight, "Ready"
-    Assert.IsTrue BoardLayout.ReadyTop + BoardLayout.ReadyHeight <= BoardLayout.WindowHeight - BoardLayout.Margin, "the window's height"
-    Assert.AreEqual BoardLayout.GridLeft(PlayerGrid2) + BoardLayout.GridWidth, BoardLayout.ReadyLeft + BoardLayout.ReadyWidth, "Ready ends with grid 2"
+Public Sub Captions_AreOverTheirCells_OnTheBanner_AndHoldThePickers()
+    Assert.AreEqual BoardLayout.CellLeft(PlayerGrid2, 1), BoardLayout.GridCaptionLeft(PlayerGrid2), "over grid 2's cells"
+    Assert.AreEqual BoardLayout.CellLeft(PlayerGrid2, BoardLayout.GridSize) + BoardLayout.CellSize, BoardLayout.GridCaptionLeft(PlayerGrid2) + BoardLayout.CaptionWidth, "as wide as its cells"
+    Assert.AreEqual BoardLayout.ShipCellLeft(1), BoardLayout.FleetCaptionLeft, "over the fleet status's cells"
+    Assert.IsTrue BoardLayout.BannerTextTop > BoardLayout.BannerTop, "a picker's top, on the banner"
+    Assert.IsTrue BoardLayout.BannerTextTop + BoardLayout.LineHeight < BoardLayout.BannerTop + BoardLayout.BannerHeight, "a picker's bottom, on the banner"
+    Assert.IsTrue BoardLayout.PickerLeft(PlayerGrid2) > BoardLayout.GridCaptionLeft(PlayerGrid2), "a picker, after its caption"
+    Assert.IsTrue BoardLayout.PickerLeft(PlayerGrid2) + BoardLayout.PickerWidth < BoardLayout.GridCaptionLeft(PlayerGrid2) + BoardLayout.CaptionWidth, "a picker's right, inside its caption"
+End Sub
+
+'@TestMethod
+Public Sub FleetShips_AreUnderTheirBanner_OneUnderTheOther_InsideTheWindow()
+    ' the carrier, five cells, is the longest ship.
+    Const LongestShip As Long = 5
+    Assert.AreEqual BoardLayout.GridTop, BoardLayout.ShipNameTop(1), "the first ship's name"
+    Assert.AreEqual BoardLayout.ShipNameTop(1) + BoardLayout.LineHeight, BoardLayout.ShipCellTop(1), "its cells, under its name"
+    Assert.IsTrue BoardLayout.ShipNameTop(2) >= BoardLayout.ShipCellTop(1) + BoardLayout.CellSize, "the next ship, under the first one's cells"
+    Assert.IsTrue BoardLayout.ShipCellTop(PlayerGrid.ShipsPerGrid) + BoardLayout.CellSize <= BoardLayout.WindowHeight - BoardLayout.Margin, "the window's height"
+    Assert.IsTrue BoardLayout.ShipCellLeft(LongestShip) + BoardLayout.CellSize <= BoardLayout.FleetLeft + BoardLayout.GridWidth, "the longest ship, inside its column"
+End Sub
+
+'@TestMethod
+Public Sub Buttons_AreARow_AtTheBottomLeft_UnderTheGrids()
+    Dim gap As Long
+    gap = BoardLayout.ButtonLeft(2) - (BoardLayout.ButtonLeft(1) + BoardLayout.ButtonWidth)
+
+    Assert.AreEqual BoardLayout.Margin, BoardLayout.ButtonLeft(1), "the first button, at the left margin"
+    Assert.AreEqual BoardLayout.WindowHeight - BoardLayout.Margin, BoardLayout.ButtonTop + BoardLayout.ButtonHeight, "the row, at the bottom margin"
+    Assert.IsTrue BoardLayout.ButtonTop >= BoardLayout.CellTop(BoardLayout.GridSize + 2), "under the letters"
+    Assert.IsTrue gap >= 8 And gap <= 12, "the gap between two buttons: " & gap
 End Sub

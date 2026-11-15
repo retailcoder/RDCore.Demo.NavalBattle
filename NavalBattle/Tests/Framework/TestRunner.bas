@@ -48,7 +48,7 @@ End Sub
 '@Description("The number of tests.")
 Private Property Get TestCount() As Long
 Attribute TestCount.VB_Description = "The number of tests."
-    TestCount = 75
+    TestCount = 82
 End Property
 
 '@Description("The name of a test, by its number, and runs it where run is True.")
@@ -105,9 +105,9 @@ Attribute Test.VB_Description = "The name of a test, by its number, and runs it 
         Case 48: Test = "ShipTests.CreateInside_WhereTheShipFits_KeepsThePosition": If run Then ShipTests.CreateInside_WhereTheShipFits_KeepsThePosition
         Case 49: Test = "BoardLayoutTests.StatusBar_ShowsOnlyItsBottomBorder": If run Then BoardLayoutTests.StatusBar_ShowsOnlyItsBottomBorder
         Case 50: Test = "BoardLayoutTests.StatusText_IsInsideTheBar": If run Then BoardLayoutTests.StatusText_IsInsideTheBar
-        Case 51: Test = "BoardLayoutTests.Grids_AreSideBySide_CentredUnderTheStatusBar": If run Then BoardLayoutTests.Grids_AreSideBySide_CentredUnderTheStatusBar
+        Case 51: Test = "BoardLayoutTests.Columns_AreSideBySide_CentredUnderTheBanner": If run Then BoardLayoutTests.Columns_AreSideBySide_CentredUnderTheBanner
         Case 52: Test = "BoardLayoutTests.Cells_FollowTheRowNumbers_AndTheLettersFollowTheLastRow": If run Then BoardLayoutTests.Cells_FollowTheRowNumbers_AndTheLettersFollowTheLastRow
-        Case 53: Test = "BoardLayoutTests.PlayersAndReady_AreUnderTheGrids_InsideTheWindow": If run Then BoardLayoutTests.PlayersAndReady_AreUnderTheGrids_InsideTheWindow
+        Case 53: Test = "BoardLayoutTests.Captions_AreOverTheirCells_OnTheBanner_AndHoldThePickers": If run Then BoardLayoutTests.Captions_AreOverTheirCells_OnTheBanner_AndHoldThePickers
         Case 54: Test = "BoardInputTests.LockedGrid_TakesNoClicks": If run Then BoardInputTests.LockedGrid_TakesNoClicks
         Case 55: Test = "BoardInputTests.ShipPlacementClick_PreviewsThenConfirms": If run Then BoardInputTests.ShipPlacementClick_PreviewsThenConfirms
         Case 56: Test = "BoardInputTests.ShipPlacementHover_PreviewsOncePerCell": If run Then BoardInputTests.ShipPlacementHover_PreviewsOncePerCell
@@ -130,6 +130,13 @@ Attribute Test.VB_Description = "The name of a test, by its number, and runs it 
         Case 73: Test = "BoardFormTests.Cells_AreLoadedFromTheDesignedCell": If run Then BoardFormTests.Cells_AreLoadedFromTheDesignedCell
         Case 74: Test = "BoardFormTests.PlayerPickers_OfferEveryPlayer": If run Then BoardFormTests.PlayerPickers_OfferEveryPlayer
         Case 75: Test = "BoardFormTests.ConfirmedPlayers_ShowInBold": If run Then BoardFormTests.ConfirmedPlayers_ShowInBold
+        Case 76: Test = "BoardLayoutTests.FleetShips_AreUnderTheirBanner_OneUnderTheOther_InsideTheWindow": If run Then BoardLayoutTests.FleetShips_AreUnderTheirBanner_OneUnderTheOther_InsideTheWindow
+        Case 77: Test = "BoardLayoutTests.Buttons_AreARow_AtTheBottomLeft_UnderTheGrids": If run Then BoardLayoutTests.Buttons_AreARow_AtTheBottomLeft_UnderTheGrids
+        Case 78: Test = "BoardSpritesTests.FleetGrid_IsTheFirstGridPaintedWithItsShips": If run Then BoardSpritesTests.FleetGrid_IsTheFirstGridPaintedWithItsShips
+        Case 79: Test = "BoardSpritesTests.FleetSprites_ShowEachShipAcross_InTheOrderTheyWerePlaced": If run Then BoardSpritesTests.FleetSprites_ShowEachShipAcross_InTheOrderTheyWerePlaced
+        Case 80: Test = "BoardSpritesTests.FleetSprites_ShowTheHits_ThenTheSunkShipsBow": If run Then BoardSpritesTests.FleetSprites_ShowTheHits_ThenTheSunkShipsBow
+        Case 81: Test = "BoardFormTests.FleetStatus_ShowsEveryShipPlaced": If run Then BoardFormTests.FleetStatus_ShowsEveryShipPlaced
+        Case 82: Test = "BoardLayoutTests.Banner_IsAcrossTheWindow_OnTheStatusBarsBottomBorder": If run Then BoardLayoutTests.Banner_IsAcrossTheWindow_OnTheStatusBarsBottomBorder
         Case Else: Test = vbNullString
     End Select
 End Function

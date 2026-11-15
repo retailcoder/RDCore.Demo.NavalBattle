@@ -7,9 +7,9 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-Attribute VB_Description = "What each cell of a game window's grids shows: a hit, a miss, a duck, a dizzy duck or an anchor, by its sprite's name, and the colour it shows instead where the sprites cannot be read. It knows which hit ship is dizzy, and which sunk ships are done sinking."
+Attribute VB_Description = "What each cell of a game window's grids shows: a hit, a miss, a duck, a dizzy duck or an anchor, by its sprite's name, and the colour it shows instead where the sprites cannot be read. It knows which hit ship is dizzy, which sunk ships are done sinking, and which grid's fleet the fleet status shows."
 '@Folder("NavalBattle.View.Window")
-'@ModuleDescription("What each cell of a game window's grids shows: a hit, a miss, a duck, a dizzy duck or an anchor, by its sprite's name, and the colour it shows instead where the sprites cannot be read. It knows which hit ship is dizzy, and which sunk ships are done sinking.")
+'@ModuleDescription("What each cell of a game window's grids shows: a hit, a miss, a duck, a dizzy duck or an anchor, by its sprite's name, and the colour it shows instead where the sprites cannot be read. It knows which hit ship is dizzy, which sunk ships are done sinking, and which grid's fleet the fleet status shows.")
 Option Explicit
 
 ' the sprites, GIF files in assets/sprites with one transparent colour; the ducks are named by DuckSprite.
@@ -29,6 +29,7 @@ Private Const BadPreviewColour As Long = &H8080F0
 Private Type TSprites
     SunkShipKeys As Collection
     DizzyShipKey As String
+    FleetGridId As PlayGridId
 End Type
 
 Private this As TSprites
@@ -88,6 +89,54 @@ Attribute CellSprites.VB_Description = "The sprite each cell of a grid shows, by
         Next
     Next
     CellSprites = result
+End Function
+
+'@Description("The grid whose fleet the fleet status shows, or 0 before it is known: the first grid painted with its ships shown, which is the person's own when a person plays.")
+Public Property Get FleetGridId() As PlayGridId
+Attribute FleetGridId.VB_Description = "The grid whose fleet the fleet status shows, or 0 before it is known: the first grid painted with its ships shown, which is the person's own when a person plays."
+    FleetGridId = this.FleetGridId
+End Property
+
+'@Description("Whether a grid painted with its ships shown, or not, is the one the fleet status shows. The first grid painted with its ships shown is, from then on.")
+Public Function IsFleetGrid(ByVal gridId As PlayGridId, ByVal showShips As Boolean) As Boolean
+Attribute IsFleetGrid.VB_Description = "Whether a grid painted with its ships shown, or not, is the one the fleet status shows. The first grid painted with its ships shown is, from then on."
+    If this.FleetGridId = 0 And showShips Then this.FleetGridId = gridId
+    IsFleetGrid = gridId = this.FleetGridId
+End Function
+
+'@Description("What the fleet status shows of a grid's ships, in the order they were placed: for each ship, an array of its cells' sprites from its stern, at 1, to its bow. Each ship lies across, and shows what its cells show on the grid: a duck where it is not hit, the hit where it is, and its bow dizzy, then the anchor.")
+Public Function FleetSprites(ByVal grid As PlayerGrid) As Collection
+Attribute FleetSprites.VB_Description = "What the fleet status shows of a grid's ships, in the order they were placed: for each ship, an array of its cells' sprites from its stern, at 1, to its bow. Each ship lies across, and shows what its cells show on the grid: a duck where it is not hit, the hit where it is, and its bow dizzy, then the anchor."
+    Dim onGrid As Variant
+    onGrid = CellSprites(grid, True)
+    Dim result As Collection
+    Set result = New Collection
+    Dim item As IShip
+    For Each item In grid.Fleet
+        Dim cells() As String
+        ReDim cells(1 To item.Size)
+        Dim index As Long
+        For index = 1 To item.Size
+            Dim X As Long
+            X = item.GridPosition.X + IIf(item.Orientation = Horizontal, index - 1, 0)
+            Dim Y As Long
+            Y = item.GridPosition.Y + IIf(item.Orientation = Vertical, index - 1, 0)
+            cells(index) = AcrossSprite(onGrid(X, Y))
+        Next
+        result.Add cells
+    Next
+    Set FleetSprites = result
+End Function
+
+' a standing ship's duck lies across in the fleet status; every other sprite is the same either way.
+Private Function AcrossSprite(ByVal spriteName As String) As String
+    If spriteName = DuckSprite(Vertical, True) Then
+        AcrossSprite = DuckSprite(Horizontal, True)
+    ElseIf spriteName = DuckSprite(Vertical, False) Then
+        AcrossSprite = DuckSprite(Horizontal, False)
+    Else
+        AcrossSprite = spriteName
+    End If
 End Function
 
 '@Description("The colour a cell shows in place of its sprite, where the sprites cannot be read: open water, a miss, a hit (a dizzy duck and an anchor are hits too), or a ship.")

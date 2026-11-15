@@ -17,6 +17,7 @@ Public Enum TestOutcome
     TestPassed
     TestFailed
     TestInconclusive
+    TestIgnored
 End Enum
 
 Private Type TAssert
@@ -87,6 +88,11 @@ Attribute Inconclusive.VB_Description = "Makes the test inconclusive: what it ne
     Record TestInconclusive, "Inconclusive. " & Message
 End Sub
 
+'@Description("Ignores the test, instead of running it: what it covers does not work yet, for the given reason, which names the gap. The test runner calls it in place of the test.")
+Public Sub Ignore(ByVal reason As String)
+Attribute Ignore.VB_Description = "Ignores the test, instead of running it: what it covers does not work yet, for the given reason, which names the gap. The test runner calls it in place of the test."
+    Record TestIgnored, reason
+End Sub
 '@Description("Records an outcome: the first one that is not Passed is the test's.")
 Private Sub Record(ByVal value As TestOutcome, ByVal text As String)
 Attribute Record.VB_Description = "Records an outcome: the first one that is not Passed is the test's."

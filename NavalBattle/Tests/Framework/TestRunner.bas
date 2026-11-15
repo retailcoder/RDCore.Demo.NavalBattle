@@ -9,6 +9,7 @@ Private Type TRun
     Passed As Long
     Failed As Long
     Inconclusive As Long
+    Ignored As Long
 End Type
 
 Private this As TRun
@@ -20,6 +21,7 @@ Attribute RunAll.VB_Description = "Runs every test, prints each outcome and a su
     this.Passed = 0
     this.Failed = 0
     this.Inconclusive = 0
+    this.Ignored = 0
 
     Dim index As Long
     Dim name As String
@@ -34,7 +36,7 @@ NextTest:
     Next
     EnterModule vbNullString
 
-    Debug.Print TestCount & " tests: " & this.Passed & " passed, " & this.Failed & " failed, " & this.Inconclusive & " inconclusive."
+    Debug.Print TestCount & " tests: " & this.Passed & " passed, " & this.Failed & " failed, " & this.Inconclusive & " inconclusive, " & this.Ignored & " ignored."
     If this.Failed > 0 Then Err.Raise vbObjectError + 1, "TestRunner", this.Failed & " of " & TestCount & " tests failed."
     Exit Sub
 
@@ -46,7 +48,7 @@ End Sub
 '@Description("The number of tests.")
 Private Property Get TestCount() As Long
 Attribute TestCount.VB_Description = "The number of tests."
-    TestCount = 48
+    TestCount = 72
 End Property
 
 '@Description("The name of a test, by its number, and runs it where run is True.")
@@ -101,6 +103,30 @@ Attribute Test.VB_Description = "The name of a test, by its number, and runs it 
         Case 46: Test = "ShipTests.CreateInside_PastTheRightEdge_AnchorsWhereTheShipFits": If run Then ShipTests.CreateInside_PastTheRightEdge_AnchorsWhereTheShipFits
         Case 47: Test = "ShipTests.CreateInside_PastTheBottomEdge_AnchorsWhereTheShipFits": If run Then ShipTests.CreateInside_PastTheBottomEdge_AnchorsWhereTheShipFits
         Case 48: Test = "ShipTests.CreateInside_WhereTheShipFits_KeepsThePosition": If run Then ShipTests.CreateInside_WhereTheShipFits_KeepsThePosition
+        Case 49: Test = "BoardLayoutTests.StatusBar_ShowsOnlyItsBottomBorder": If run Then BoardLayoutTests.StatusBar_ShowsOnlyItsBottomBorder
+        Case 50: Test = "BoardLayoutTests.StatusText_IsInsideTheBar": If run Then BoardLayoutTests.StatusText_IsInsideTheBar
+        Case 51: Test = "BoardLayoutTests.Grids_AreSideBySide_CentredUnderTheStatusBar": If run Then BoardLayoutTests.Grids_AreSideBySide_CentredUnderTheStatusBar
+        Case 52: Test = "BoardLayoutTests.Cells_FollowTheRowNumbers_AndTheLettersFollowTheLastRow": If run Then BoardLayoutTests.Cells_FollowTheRowNumbers_AndTheLettersFollowTheLastRow
+        Case 53: Test = "BoardLayoutTests.PlayersAndReady_AreUnderTheGrids_InsideTheWindow": If run Then BoardLayoutTests.PlayersAndReady_AreUnderTheGrids_InsideTheWindow
+        Case 54: Test = "BoardInputTests.LockedGrid_TakesNoClicks": If run Then BoardInputTests.LockedGrid_TakesNoClicks
+        Case 55: Test = "BoardInputTests.ShipPlacementClick_PreviewsThenConfirms": If run Then BoardInputTests.ShipPlacementClick_PreviewsThenConfirms
+        Case 56: Test = "BoardInputTests.ShipPlacementHover_PreviewsOncePerCell": If run Then BoardInputTests.ShipPlacementHover_PreviewsOncePerCell
+        Case 57: Test = "BoardInputTests.ShipPlacementRightClick_TurnsTheShip": If run Then BoardInputTests.ShipPlacementRightClick_TurnsTheShip
+        Case 58: Test = "BoardInputTests.Ready_ConfirmsThePlayers_AndMakesThem": If run Then BoardInputTests.Ready_ConfirmsThePlayers_AndMakesThem
+        Case 59: Test = "BoardInputTests.Ready_TwoPeople_AreRefused": If run Then BoardInputTests.Ready_TwoPeople_AreRefused
+        Case 60: Test = "BoardInputTests.Ready_TwoComputers_PlayTheWholeGame": If run Then BoardInputTests.Ready_TwoComputers_PlayTheWholeGame
+        Case 61: Test = "BoardInputTests.PlayerPicked_SaysWhoPlays_UntilTheGameStarts": If run Then BoardInputTests.PlayerPicked_SaysWhoPlays_UntilTheGameStarts
+        Case 62: Test = "BoardInputTests.ReadyOnceShipsArePlaced_StartsTheBattle": If run Then BoardInputTests.ReadyOnceShipsArePlaced_StartsTheBattle
+        Case 63: Test = "BoardInputTests.ComputerTurn_TakesNoClicks": If run Then BoardInputTests.ComputerTurn_TakesNoClicks
+        Case 64: Test = "BoardInputTests.EndGame_HidesReady_AndTakesNoClicks": If run Then BoardInputTests.EndGame_HidesReady_AndTakesNoClicks
+        Case 65: Test = "BoardSpritesTests.OpenWater_ShowsNoSprite": If run Then BoardSpritesTests.OpenWater_ShowsNoSprite
+        Case 66: Test = "BoardSpritesTests.HitsAndMisses_ShowWhereTheyWerePlayed": If run Then BoardSpritesTests.HitsAndMisses_ShowWhereTheyWerePlayed
+        Case 67: Test = "BoardSpritesTests.Ships_ShowTheirDucks_TheBigOneAtTheBow": If run Then BoardSpritesTests.Ships_ShowTheirDucks_TheBigOneAtTheBow
+        Case 68: Test = "BoardSpritesTests.HiddenShips_ShowOnlyTheirHits": If run Then BoardSpritesTests.HiddenShips_ShowOnlyTheirHits
+        Case 69: Test = "BoardSpritesTests.DizzyShip_ShowsItsBowDizzy_UntilItRecovers": If run Then BoardSpritesTests.DizzyShip_ShowsItsBowDizzy_UntilItRecovers
+        Case 70: Test = "BoardSpritesTests.SunkShip_ShowsDizzy_ThenTheAnchor_EvenHidden": If run Then BoardSpritesTests.SunkShip_ShowsDizzy_ThenTheAnchor_EvenHidden
+        Case 71: Test = "BoardSpritesTests.FallbackColours_TellWaterShipsHitsAndMissesApart": If run Then BoardSpritesTests.FallbackColours_TellWaterShipsHitsAndMissesApart
+        Case 72: Test = "BoardSpritesTests.EverySprite_IsAGifInTheWorkspaceAssets": If run Then BoardSpritesTests.EverySprite_IsAGifInTheWorkspaceAssets
         Case Else: Test = vbNullString
     End Select
 End Function
@@ -127,6 +153,9 @@ Attribute AfterTest.VB_Description = "Ends the test, and prints and counts its o
         Case TestInconclusive
             this.Inconclusive = this.Inconclusive + 1
             Debug.Print "Inconclusive  " & name & ": " & reason
+        Case TestIgnored
+            this.Ignored = this.Ignored + 1
+            Debug.Print "Ignored       " & name & ": " & reason
     End Select
 End Sub
 
@@ -140,6 +169,9 @@ Attribute EnterModule.VB_Description = "Cleans up the current module and initial
         Case "CommandLineSwitchesTests": CommandLineSwitchesTests.ModuleCleanup
         Case "GameControllerTests": GameControllerTests.ModuleCleanup
         Case "PlayerChoicesTests": PlayerChoicesTests.ModuleCleanup
+        Case "BoardLayoutTests": BoardLayoutTests.ModuleCleanup
+        Case "BoardInputTests": BoardInputTests.ModuleCleanup
+        Case "BoardSpritesTests": BoardSpritesTests.ModuleCleanup
     End Select
     this.CurrentModule = moduleName
     Select Case moduleName
@@ -148,5 +180,8 @@ Attribute EnterModule.VB_Description = "Cleans up the current module and initial
         Case "CommandLineSwitchesTests": CommandLineSwitchesTests.ModuleInitialize
         Case "GameControllerTests": GameControllerTests.ModuleInitialize
         Case "PlayerChoicesTests": PlayerChoicesTests.ModuleInitialize
+        Case "BoardLayoutTests": BoardLayoutTests.ModuleInitialize
+        Case "BoardInputTests": BoardInputTests.ModuleInitialize
+        Case "BoardSpritesTests": BoardSpritesTests.ModuleInitialize
     End Select
 End Sub

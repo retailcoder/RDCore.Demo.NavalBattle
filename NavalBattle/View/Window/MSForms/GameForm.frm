@@ -30,8 +30,6 @@ Private Const TextOffset As Long = (CellSize - 16) \ 2
 Private Const StatusColour As Long = &HFFFFFF
 Private Const StatusBorderColour As Long = &H0
 
-Private Const PreviewColour As Long = &H7CD67C
-Private Const BadPreviewColour As Long = &H8080F0
 Private Const LineColour As Long = &H808080
 
 ' who is told when the person closes the window.
@@ -232,7 +230,7 @@ End Sub
 
 Private Sub IGameWindow_PaintShipPreview(ByVal grid As PlayerGrid, ByVal previewShip As IShip)
     Dim colour As Long
-    colour = IIf(grid.CanAddShip(previewShip.GridPosition, previewShip.Orientation, previewShip.Size), PreviewColour, BadPreviewColour)
+    colour = board.ShipPreviewColour(grid.CanAddShip(previewShip.GridPosition, previewShip.Orientation, previewShip.Size))
 
     Dim index As Long
     For index = 0 To previewShip.Size - 1

@@ -23,6 +23,8 @@ Private Const WaterColour As Long = &HF5E1C8
 Private Const ShipColour As Long = &H707070
 Private Const HitColour As Long = &H3C3CE6
 Private Const MissColour As Long = &HFFFFFF
+Private Const PreviewColour As Long = &H7CD67C
+Private Const BadPreviewColour As Long = &H8080F0
 
 Private Type TSprites
     SunkShipKeys As Collection
@@ -101,6 +103,12 @@ Attribute FallbackColour.VB_Description = "The colour a cell shows in place of i
         Case Else
             FallbackColour = ShipColour
     End Select
+End Function
+
+'@Description("The colour of a ship being placed: green where it fits, red where it does not.")
+Public Function ShipPreviewColour(ByVal fits As Boolean) As Long
+Attribute ShipPreviewColour.VB_Description = "The colour of a ship being placed: green where it fits, red where it does not."
+    ShipPreviewColour = IIf(fits, PreviewColour, BadPreviewColour)
 End Function
 
 '@Description("The colour of open water.")

@@ -14,15 +14,6 @@ Option Explicit
 Implements IGridViewCommands
 Implements IGridViewEvents
 
-Public Enum ViewMode
-    NewGame
-    MessageShown
-    FleetPosition
-    Player1
-    Player2
-    GameOver
-End Enum
-
 Public Event OnCreatePlayer(ByVal gridId As PlayGridId, ByVal pt As PlayerType, ByVal difficulty As AIDifficulty)
 
 Public Event OnPreviewCurrentShipPosition(ByVal gridId As PlayGridId, ByVal position As IGridCoord)
@@ -32,10 +23,7 @@ Public Event OnConfirmCurrentShipPosition(ByVal gridId As PlayGridId, ByVal posi
 Public Event OnPlayerReady()
 
 Public Event OnAttackPosition(ByVal gridId As PlayGridId, ByVal position As IGridCoord)
-Public Event OnHit(ByVal gridId As PlayGridId, ByVal position As IGridCoord, ByVal hitShip As IShip)
-Public Event OnMiss(ByVal gridId As PlayGridId, ByVal position As IGridCoord)
 
-Public Event OnGameOver(ByVal winner As IPlayer)
 Public Event OnViewClosed()
 
 Private Type TAdapter
@@ -135,13 +123,13 @@ Private Sub IGridViewCommands_OnConfirmShipPosition(ByVal player As IPlayer, ByV
     this.ShipsToPosition = this.ShipsToPosition - 1
 End Sub
 
-Private Sub IGridViewCommands_OnGameOver(ByVal winningGrid As PlayGridId)
-    this.GridView.OnGameOver winningGrid
+Private Sub IGridViewCommands_OnGameOver(ByVal winningGrid As PlayGridId, ByVal position As IGridCoord, ByVal sunkShip As IShip)
+    this.GridView.OnGameOver winningGrid, position, sunkShip
     Set this.GridView.Events = Nothing
 End Sub
 
-Private Sub IGridViewCommands_OnHit(ByVal gridId As PlayGridId)
-    this.GridView.OnHit gridId
+Private Sub IGridViewCommands_OnHit(ByVal gridId As PlayGridId, ByVal position As IGridCoord, ByVal hitShip As IShip)
+    this.GridView.OnHit gridId, position, hitShip
 End Sub
 
 Private Sub IGridViewCommands_OnInvalidShipPosition()
@@ -156,8 +144,8 @@ Private Sub IGridViewCommands_OnLockGrid(ByVal gridId As PlayGridId)
     this.GridView.OnLockGrid gridId
 End Sub
 
-Private Sub IGridViewCommands_OnMiss(ByVal gridId As PlayGridId)
-    this.GridView.OnMiss gridId
+Private Sub IGridViewCommands_OnMiss(ByVal gridId As PlayGridId, ByVal position As IGridCoord)
+    this.GridView.OnMiss gridId, position
 End Sub
 
 Private Sub IGridViewCommands_OnNewGame()
@@ -173,16 +161,8 @@ Private Sub IGridViewCommands_OnRefreshGrid(ByVal grid As PlayerGrid)
     this.GridView.OnRefreshGrid grid
 End Sub
 
-Private Sub IGridViewCommands_OnSelectPosition(ByVal gridId As PlayGridId, ByVal position As IGridCoord)
-    this.GridView.OnSelectPosition gridId, position
-End Sub
-
-Private Sub IGridViewCommands_OnSink(ByVal gridId As PlayGridId, ByVal sunkShip As IShip)
-    this.GridView.OnSink gridId, sunkShip
-End Sub
-
-Private Sub IGridViewCommands_OnUpdateFleetStatus(ByVal player As IPlayer, ByVal hitShip As IShip, Optional ByVal showAIStatus As Boolean = False)
-    this.GridView.OnUpdateFleetStatus player, hitShip, showAIStatus
+Private Sub IGridViewCommands_OnSink(ByVal gridId As PlayGridId, ByVal position As IGridCoord, ByVal sunkShip As IShip)
+    this.GridView.OnSink gridId, position, sunkShip
 End Sub
 
 Private Sub IGridViewCommands_OnBeginWaitForComputerPlayer()

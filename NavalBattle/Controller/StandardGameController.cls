@@ -121,10 +121,6 @@ Private Sub OnShipPositionStart()
     
 End Sub
 
-Private Sub viewAdapter_OnGameOver(ByVal winner As IPlayer)
-    Teardown
-End Sub
-
 ' the view is closed and nobody sees the game: the turn being played ends, and no other starts.
 Private Sub viewAdapter_OnViewClosed()
     this.ViewClosed = True
@@ -235,25 +231,20 @@ Private Sub Play(ByVal gridId As PlayGridId, ByVal position As IGridCoord)
     result = this.CurrentTarget.PlayGrid.TryHit(position, hitShip)
     
     View.OnRefreshGrid this.CurrentTarget.PlayGrid
-    View.OnSelectPosition gridId, position
-    
-    Dim showAIfleet As Boolean
-    showAIfleet = (this.Player1.PlayerType = ComputerControlled And this.Player2.PlayerType = ComputerControlled) Or result = Sunk
+
     Select Case result
-    
+
         Case AttackResult.Miss
-            View.OnMiss gridId
-            
+            View.OnMiss gridId, position
+
         Case AttackResult.Hit
-            View.OnUpdateFleetStatus this.CurrentTarget, hitShip, showAIfleet
-            View.OnHit gridId
-            
+            View.OnHit gridId, position, hitShip
+
         Case AttackResult.Sunk
-            View.OnUpdateFleetStatus this.CurrentTarget, hitShip, showAIfleet
             If this.CurrentTarget.PlayGrid.IsAllSunken Then
-                View.OnGameOver this.CurrentPlayer.PlayGrid.gridId
+                View.OnGameOver this.CurrentPlayer.PlayGrid.gridId, position, hitShip
             Else
-                View.OnSink gridId, hitShip
+                View.OnSink gridId, position, hitShip
             End If
             
     End Select

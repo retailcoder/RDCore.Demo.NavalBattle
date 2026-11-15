@@ -16,14 +16,18 @@ Implements IGridViewCommands
 Private Type TView
     ViewEvents As IGridViewEvents
     SunkGridIds As Collection
+    SunkPositions As Collection
     SunkShips As Collection
     WinningGrid As PlayGridId
+    LastPosition As IGridCoord
+    LastShip As IShip
 End Type
 
 Private this As TView
 
 Private Sub Class_Initialize()
     Set this.SunkGridIds = New Collection
+    Set this.SunkPositions = New Collection
     Set this.SunkShips = New Collection
 End Sub
 
@@ -39,6 +43,12 @@ Attribute SunkGridIds.VB_Description = "Gets the grid of each sinking the view w
     Set SunkGridIds = this.SunkGridIds
 End Property
 
+'@Description("Gets the position of the shot of each sinking the view was told of, in order.")
+Public Property Get SunkPositions() As Collection
+Attribute SunkPositions.VB_Description = "Gets the position of the shot of each sinking the view was told of, in order."
+    Set SunkPositions = this.SunkPositions
+End Property
+
 '@Description("Gets the ship of each sinking the view was told of, in order.")
 Public Property Get SunkShips() As Collection
 Attribute SunkShips.VB_Description = "Gets the ship of each sinking the view was told of, in order."
@@ -51,6 +61,18 @@ Attribute WinningGrid.VB_Description = "Gets the grid that won, or 0 while the g
     WinningGrid = this.WinningGrid
 End Property
 
+'@Description("Gets the position of the shot that ended the game, or Nothing while the game is not over.")
+Public Property Get LastPosition() As IGridCoord
+Attribute LastPosition.VB_Description = "Gets the position of the shot that ended the game, or Nothing while the game is not over."
+    Set LastPosition = this.LastPosition
+End Property
+
+'@Description("Gets the ship whose sinking ended the game, or Nothing while the game is not over.")
+Public Property Get LastShip() As IShip
+Attribute LastShip.VB_Description = "Gets the ship whose sinking ended the game, or Nothing while the game is not over."
+    Set LastShip = this.LastShip
+End Property
+
 Private Property Get IGridViewCommands_Events() As IGridViewEvents
     Set IGridViewCommands_Events = this.ViewEvents
 End Property
@@ -59,25 +81,22 @@ Private Property Set IGridViewCommands_Events(ByVal value As IGridViewEvents)
     Set this.ViewEvents = value
 End Property
 
-Private Sub IGridViewCommands_OnSink(ByVal gridId As PlayGridId, ByVal sunkShip As IShip)
+Private Sub IGridViewCommands_OnSink(ByVal gridId As PlayGridId, ByVal position As IGridCoord, ByVal sunkShip As IShip)
     this.SunkGridIds.Add gridId
+    this.SunkPositions.Add position
     this.SunkShips.Add sunkShip
 End Sub
 
-Private Sub IGridViewCommands_OnGameOver(ByVal winningGrid As PlayGridId)
+Private Sub IGridViewCommands_OnGameOver(ByVal winningGrid As PlayGridId, ByVal position As IGridCoord, ByVal sunkShip As IShip)
     this.WinningGrid = winningGrid
+    Set this.LastPosition = position
+    Set this.LastShip = sunkShip
 End Sub
 
-Private Sub IGridViewCommands_OnMiss(ByVal gridId As PlayGridId)
+Private Sub IGridViewCommands_OnMiss(ByVal gridId As PlayGridId, ByVal position As IGridCoord)
 End Sub
 
-Private Sub IGridViewCommands_OnHit(ByVal gridId As PlayGridId)
-End Sub
-
-Private Sub IGridViewCommands_OnUpdateFleetStatus(ByVal player As IPlayer, ByVal hitShip As IShip, Optional ByVal showAIStatus As Boolean = False)
-End Sub
-
-Private Sub IGridViewCommands_OnSelectPosition(ByVal gridId As PlayGridId, ByVal position As IGridCoord)
+Private Sub IGridViewCommands_OnHit(ByVal gridId As PlayGridId, ByVal position As IGridCoord, ByVal hitShip As IShip)
 End Sub
 
 Private Sub IGridViewCommands_OnLockGrid(ByVal gridId As PlayGridId)

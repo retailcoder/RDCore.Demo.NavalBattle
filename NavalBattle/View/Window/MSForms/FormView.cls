@@ -17,8 +17,6 @@ Private Type TView
     ViewEvents As IGridViewEvents
     Closed As Boolean
     HumanGridId As PlayGridId
-    LastShot As String
-    LastHitShip As IShip
     Grids(PlayerGrid1 To PlayerGrid2) As PlayerGrid
 End Type
 
@@ -94,25 +92,17 @@ Private Sub IGridViewCommands_OnBeginAttack(ByVal currentPlayerGridId As PlayGri
     If IsOpen Then window.SetStatus "Your fleet is in place. Click Ready, then fire at grid " & OtherGrid(this.HumanGridId) & "."
 End Sub
 
-Private Sub IGridViewCommands_OnSelectPosition(ByVal gridId As PlayGridId, ByVal position As IGridCoord)
-    this.LastShot = Chr$(64 + position.X) & position.Y
-End Sub
-
 Private Sub IGridViewCommands_OnKnownPositionAttack()
     If IsOpen Then window.SetStatus "That cell was already played: pick another."
 End Sub
 
-Private Sub IGridViewCommands_OnUpdateFleetStatus(ByVal player As IPlayer, ByVal hitShip As IShip, Optional ByVal showAIStatus As Boolean = False)
-    Set this.LastHitShip = hitShip
+Private Sub IGridViewCommands_OnMiss(ByVal gridId As PlayGridId, ByVal position As IGridCoord)
+    Report gridId, position, "miss."
 End Sub
 
-Private Sub IGridViewCommands_OnMiss(ByVal gridId As PlayGridId)
-    Report gridId, "miss."
-End Sub
-
-Private Sub IGridViewCommands_OnHit(ByVal gridId As PlayGridId)
-    Report gridId, "hit, the " & this.LastHitShip.Name & "."
-    ShowDizzyShip gridId, this.LastHitShip
+Private Sub IGridViewCommands_OnHit(ByVal gridId As PlayGridId, ByVal position As IGridCoord, ByVal hitShip As IShip)
+    Report gridId, position, "hit, the " & hitShip.Name & "."
+    ShowDizzyShip gridId, hitShip
 End Sub
 
 ' a ship was hit: its big duck is dizzy for a moment, where the ships are shown. A hidden ship shows nothing, so it is not given away.
@@ -126,8 +116,8 @@ Private Sub ShowDizzyShip(ByVal gridId As PlayGridId, ByVal hitShip As IShip)
     window.PaintGrid this.Grids(gridId), True
 End Sub
 
-Private Sub IGridViewCommands_OnSink(ByVal gridId As PlayGridId, ByVal sunkShip As IShip)
-    Report gridId, "the " & sunkShip.Name & " is sunk."
+Private Sub IGridViewCommands_OnSink(ByVal gridId As PlayGridId, ByVal position As IGridCoord, ByVal sunkShip As IShip)
+    Report gridId, position, "the " & sunkShip.Name & " is sunk."
     FinishSinking gridId, sunkShip
 End Sub
 
@@ -155,7 +145,7 @@ Private Sub IGridViewCommands_OnEndWaitForComputerPlayer()
     If IsOpen Then window.EndComputerTurn
 End Sub
 
-Private Sub IGridViewCommands_OnGameOver(ByVal winningGrid As PlayGridId)
+Private Sub IGridViewCommands_OnGameOver(ByVal winningGrid As PlayGridId, ByVal position As IGridCoord, ByVal sunkShip As IShip)
     Dim text As String
     text = "Game over: grid " & winningGrid & " wins."
     If this.HumanGridId <> 0 Then text = text & IIf(winningGrid = this.HumanGridId, " Well played!", " Better luck next time.")
@@ -163,15 +153,13 @@ Private Sub IGridViewCommands_OnGameOver(ByVal winningGrid As PlayGridId)
     If IsOpen Then window.SetStatus text & " Close the window to leave."
     Debug.Print text
     ' the shot that ends the game sinks the last ship, and the controller reports the game over instead of the sinking.
-    If Not this.LastHitShip Is Nothing Then
-        If this.LastHitShip.IsSunken Then FinishSinking OtherGrid(winningGrid), this.LastHitShip
-    End If
+    FinishSinking OtherGrid(winningGrid), sunkShip
 End Sub
 
 ' what a shot did, in the status line and in the output: the grid that fired is the other one.
-Private Sub Report(ByVal gridId As PlayGridId, ByVal result As String)
+Private Sub Report(ByVal gridId As PlayGridId, ByVal position As IGridCoord, ByVal result As String)
     Dim text As String
-    text = "Grid " & OtherGrid(gridId) & " fires at " & this.LastShot & ": " & result
+    text = "Grid " & OtherGrid(gridId) & " fires at " & Chr$(64 + position.X) & position.Y & ": " & result
     If IsOpen Then window.SetStatus text
     Debug.Print text
 End Sub

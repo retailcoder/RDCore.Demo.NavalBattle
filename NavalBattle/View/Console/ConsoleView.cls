@@ -29,8 +29,6 @@ Private Type TView
     HumanGridId As PlayGridId
     HumanIsReady As Boolean
     PreviewShip As IShip
-    LastShot As String
-    LastHitShip As String
 End Type
 
 Private this As TView
@@ -94,28 +92,20 @@ Private Sub IGridViewCommands_OnBeginAttack(ByVal currentPlayerGridId As PlayGri
     this.Phase = PhaseAttack
 End Sub
 
-Private Sub IGridViewCommands_OnSelectPosition(ByVal gridId As PlayGridId, ByVal position As IGridCoord)
-    this.LastShot = CellName(position.X, position.Y)
-End Sub
-
 Private Sub IGridViewCommands_OnKnownPositionAttack()
     Debug.Print "That position was already played."
 End Sub
 
-Private Sub IGridViewCommands_OnUpdateFleetStatus(ByVal player As IPlayer, ByVal hitShip As IShip, Optional ByVal showAIStatus As Boolean = False)
-    this.LastHitShip = hitShip.Name
+Private Sub IGridViewCommands_OnMiss(ByVal gridId As PlayGridId, ByVal position As IGridCoord)
+    Debug.Print "Shot at grid " & gridId & ", " & CellName(position.X, position.Y) & ": miss."
 End Sub
 
-Private Sub IGridViewCommands_OnMiss(ByVal gridId As PlayGridId)
-    Debug.Print "Shot at grid " & gridId & ", " & this.LastShot & ": miss."
+Private Sub IGridViewCommands_OnHit(ByVal gridId As PlayGridId, ByVal position As IGridCoord, ByVal hitShip As IShip)
+    Debug.Print "Shot at grid " & gridId & ", " & CellName(position.X, position.Y) & ": hit, the " & hitShip.Name & "."
 End Sub
 
-Private Sub IGridViewCommands_OnHit(ByVal gridId As PlayGridId)
-    Debug.Print "Shot at grid " & gridId & ", " & this.LastShot & ": hit, the " & this.LastHitShip & "."
-End Sub
-
-Private Sub IGridViewCommands_OnSink(ByVal gridId As PlayGridId, ByVal sunkShip As IShip)
-    Debug.Print "Shot at grid " & gridId & ", " & this.LastShot & ": the " & sunkShip.Name & " is sunk."
+Private Sub IGridViewCommands_OnSink(ByVal gridId As PlayGridId, ByVal position As IGridCoord, ByVal sunkShip As IShip)
+    Debug.Print "Shot at grid " & gridId & ", " & CellName(position.X, position.Y) & ": the " & sunkShip.Name & " is sunk."
 End Sub
 
 Private Sub IGridViewCommands_OnRefreshGrid(ByVal grid As PlayerGrid)
@@ -131,7 +121,7 @@ End Sub
 Private Sub IGridViewCommands_OnEndWaitForComputerPlayer()
 End Sub
 
-Private Sub IGridViewCommands_OnGameOver(ByVal winningGrid As PlayGridId)
+Private Sub IGridViewCommands_OnGameOver(ByVal winningGrid As PlayGridId, ByVal position As IGridCoord, ByVal sunkShip As IShip)
     this.Phase = PhaseOver
     PrintGrids True, True
     Debug.Print "Game over: grid " & winningGrid & " wins."

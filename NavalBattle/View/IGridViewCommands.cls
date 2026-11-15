@@ -22,29 +22,19 @@ End Property
 Public Property Set Events(ByVal value As IGridViewEvents)
 End Property
 
-'@Description("Instructs the view to report to a miss in the specified grid.")
-Public Sub OnMiss(ByVal gridId As PlayGridId)
-Attribute OnMiss.VB_Description = "Instructs the view to report to a miss in the specified grid."
+'@Description("Instructs the view to report a shot at the given position of the given grid that missed.")
+Public Sub OnMiss(ByVal gridId As PlayGridId, ByVal position As IGridCoord)
+Attribute OnMiss.VB_Description = "Instructs the view to report a shot at the given position of the given grid that missed."
 End Sub
 
-'@Description("Instructs the view to report a hit in the specified grid.")
-Public Sub OnHit(ByVal gridId As PlayGridId)
-Attribute OnHit.VB_Description = "Instructs the view to report a hit in the specified grid."
+'@Description("Instructs the view to report a shot at the given position of the given grid that hit the given ship, without sinking it.")
+Public Sub OnHit(ByVal gridId As PlayGridId, ByVal position As IGridCoord, ByVal hitShip As IShip)
+Attribute OnHit.VB_Description = "Instructs the view to report a shot at the given position of the given grid that hit the given ship, without sinking it."
 End Sub
 
-'@Description("Instructs the view to report the specified sunken ship in the specified grid.")
-Public Sub OnSink(ByVal gridId As PlayGridId, ByVal sunkShip As IShip)
-Attribute OnSink.VB_Description = "Instructs the view to report the specified sunken ship in the specified grid."
-End Sub
-
-'@Description("Instructs the view to update the specified player's fleet status, for the specified ship.")
-Public Sub OnUpdateFleetStatus(ByVal player As IPlayer, ByVal hitShip As IShip, Optional ByVal showAIStatus As Boolean = False)
-Attribute OnUpdateFleetStatus.VB_Description = "Instructs the view to update the specified player's fleet status, for the specified ship."
-End Sub
-
-'@Description("Instructs the view to select the specified position in the specified grid.")
-Public Sub OnSelectPosition(ByVal gridId As PlayGridId, ByVal position As IGridCoord)
-Attribute OnSelectPosition.VB_Description = "Instructs the view to select the specified position in the specified grid."
+'@Description("Instructs the view to report a shot at the given position of the given grid that sank the given ship. The shot that sinks a grid's last ship is reported by OnGameOver instead.")
+Public Sub OnSink(ByVal gridId As PlayGridId, ByVal position As IGridCoord, ByVal sunkShip As IShip)
+Attribute OnSink.VB_Description = "Instructs the view to report a shot at the given position of the given grid that sank the given ship. The shot that sinks a grid's last ship is reported by OnGameOver instead."
 End Sub
 
 '@Description("Instructs the view to lock the specified grid, preventing user interaction.")
@@ -57,9 +47,9 @@ Public Sub OnNewGame()
 Attribute OnNewGame.VB_Description = "Instructs the view to begin a new game."
 End Sub
 
-'@Description("Instructs the view to report the end of the game.")
-Public Sub OnGameOver(ByVal winningGrid As PlayGridId)
-Attribute OnGameOver.VB_Description = "Instructs the view to report the end of the game."
+'@Description("Instructs the view to report the end of the game: the given grid wins, with the shot at the given position of the other grid that sank its last ship, the given one.")
+Public Sub OnGameOver(ByVal winningGrid As PlayGridId, ByVal position As IGridCoord, ByVal sunkShip As IShip)
+Attribute OnGameOver.VB_Description = "Instructs the view to report the end of the game: the given grid wins, with the shot at the given position of the other grid that sank its last ship, the given one."
 End Sub
 
 '@Description("Instructs the view to begin positioning the specified ship.")

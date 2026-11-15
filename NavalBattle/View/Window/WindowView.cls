@@ -2,19 +2,22 @@ VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "FormView"
+Attribute VB_Name = "WindowView"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
-Attribute VB_PredeclaredId = False
+Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-Attribute VB_Description = "An implementation of IGridViewCommands that plays the game in the game form: the commands paint its grids and status line, and what the person does in it is sent to the adapter."
-'@Folder("NavalBattle.View.Window.MSForms")
-'@ModuleDescription("An implementation of IGridViewCommands that plays the game in the game form: the commands paint its grids and status line, and what the person does in it is sent to the adapter.")
+Attribute VB_Description = "An implementation of IGridViewCommands that plays the game in a game window: the commands paint its grids and status line, and what the person does in it is sent to the adapter."
+'@Folder("NavalBattle.View.Window")
+'@ModuleDescription("An implementation of IGridViewCommands that plays the game in a game window: the commands paint its grids and status line, and what the person does in it is sent to the adapter.")
+'@PredeclaredId
 Option Explicit
 Implements IGridViewCommands
+Implements IGameWindowEvents
 
 Private Type TView
     ViewEvents As IGridViewEvents
+    Window As IGameWindow
     Closed As Boolean
     HumanGridId As PlayGridId
     Grids(PlayerGrid1 To PlayerGrid2) As PlayerGrid
@@ -26,14 +29,31 @@ Private Const SinkingSeconds As Single = 0.8
 Private Const DizzySeconds As Single = 0.6
 
 Private this As TView
-Private WithEvents window As GameForm
-Attribute window.VB_VarHelpID = -1
 
-Private Sub Class_Initialize()
-    Set window = New GameForm
-End Sub
+'@Description("Use from the class' default instance to create a view that plays the game in the given window.")
+Public Function Create(ByVal gameWindow As IGameWindow) As WindowView
+Attribute Create.VB_Description = "Use from the class' default instance to create a view that plays the game in the given window."
+    With New WindowView
+        Set .Window = gameWindow
+        Set Create = .Self
+    End With
+End Function
 
-Private Sub window_Closed()
+Public Property Get Self() As WindowView
+    Set Self = Me
+End Property
+
+Public Property Get Window() As IGameWindow
+    Set Window = this.Window
+End Property
+
+' the window tells this view when it is closed, and lets go of it then.
+Public Property Set Window(ByVal value As IGameWindow)
+    Set this.Window = value
+    Set value.Listener = Me
+End Property
+
+Private Sub IGameWindowEvents_Closed()
     this.Closed = True
     If Not this.ViewEvents Is Nothing Then this.ViewEvents.ViewClosed
 End Sub
@@ -43,9 +63,9 @@ Private Function IsOpen() As Boolean
     IsOpen = Not this.Closed
 End Function
 
-'@Description("Shows the game form, with the given players picked (Human, Random, Fair-play or Merciless; the first letter is enough), and returns when it is closed. A player that is not given keeps the form's own pick.")
+'@Description("Shows the game window, with the given players picked (Human, Random, Fair-play or Merciless; the first letter is enough), and returns when it is closed. A player that is not given keeps the window's own pick.")
 Public Sub Play(Optional ByVal firstPlayer As String, Optional ByVal secondPlayer As String)
-Attribute Play.VB_Description = "Shows the game form, with the given players picked (Human, Random, Fair-play or Merciless; the first letter is enough), and returns when it is closed. A player that is not given keeps the form's own pick."
+Attribute Play.VB_Description = "Shows the game window, with the given players picked (Human, Random, Fair-play or Merciless; the first letter is enough), and returns when it is closed. A player that is not given keeps the window's own pick."
     If IsOpen Then window.PickPlayer PlayerGrid1, firstPlayer
     If IsOpen Then window.PickPlayer PlayerGrid2, secondPlayer
     If IsOpen Then window.Show
@@ -57,7 +77,7 @@ End Property
 
 Private Property Set IGridViewCommands_Events(ByVal value As IGridViewEvents)
     Set this.ViewEvents = value
-    If IsOpen Then Set window.ViewEvents = value
+    If IsOpen Then Set window.Events = value
 End Property
 
 Private Sub IGridViewCommands_OnNewGame()

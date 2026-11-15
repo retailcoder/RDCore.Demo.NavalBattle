@@ -104,7 +104,13 @@
         "RelativeUri": "NavalBattle/View/Console/ConsoleView.cls"
       },
       {
-        "RelativeUri": "NavalBattle/View/Window/MSForms/FormView.cls"
+        "RelativeUri": "NavalBattle/View/Window/WindowView.cls"
+      },
+      {
+        "RelativeUri": "NavalBattle/View/Window/IGameWindow.cls"
+      },
+      {
+        "RelativeUri": "NavalBattle/View/Window/IGameWindowEvents.cls"
       },
       {
         "RelativeUri": "NavalBattle/Controller/GridViewAdapter.cls"

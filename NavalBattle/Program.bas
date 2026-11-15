@@ -41,11 +41,11 @@ End Sub
 '@Description("Plays a game in the game form, and returns True when the form is closed; returns False at once when Microsoft Forms is not installed.")
 Private Function TryPlayInForm(ByVal firstPlayer As String, ByVal secondPlayer As String) As Boolean
 Attribute TryPlayInForm.VB_Description = "Plays a game in the game form, and returns True when the form is closed; returns False at once when Microsoft Forms is not installed."
-    Dim view As FormView
+    Dim view As WindowView
     Dim adapter As GridViewAdapter
 
     On Error GoTo NoForms
-    Set view = New FormView
+    Set view = WindowView.Create(New GameForm)
     Set adapter = GridViewAdapter.Create(view)
     On Error GoTo 0
 

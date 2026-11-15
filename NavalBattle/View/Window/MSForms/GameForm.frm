@@ -13,10 +13,11 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-Attribute VB_Description = "The game's window. It has no designed controls: it makes its grids, player pickers, status line and Ready button when it is loaded. FormView paints it, and what the person does in it is sent to the view's events."
+Attribute VB_Description = "The game's window. It has no designed controls: it makes its grids, player pickers, status line and Ready button when it is loaded. WindowView paints it, and what the person does in it is sent to the view's events."
 '@Folder("NavalBattle.View.Window.MSForms")
-'@ModuleDescription("The game's window. It has no designed controls: it makes its grids, player pickers, status line and Ready button when it is loaded. FormView paints it, and what the person does in it is sent to the view's events.")
+'@ModuleDescription("The game's window. It has no designed controls: it makes its grids, player pickers, status line and Ready button when it is loaded. WindowView paints it, and what the person does in it is sent to the view's events.")
 Option Explicit
+Implements IGameWindow
 
 Private Const GridSize As Long = 10
 Private Const CellSize As Long = 26
@@ -74,10 +75,8 @@ Private Type TForm
     PreviewX As Long
     PreviewY As Long
     Locked(PlayerGrid1 To PlayerGrid2) As Boolean
+    Listener As IGameWindowEvents
 End Type
-
-' the person closed the window.
-Public Event Closed()
 
 Private this As TForm
 Private cells(PlayerGrid1 To PlayerGrid2, 1 To GridSize, 1 To GridSize) As GridCell
@@ -137,67 +136,61 @@ Private Sub UserForm_Initialize()
     End With
 End Sub
 
-'@Description("Where what the person does in the form is sent: the adapter's events.")
-Public Property Set ViewEvents(ByVal value As IGridViewEvents)
-Attribute ViewEvents.VB_Description = "Where what the person does in the form is sent: the adapter's events."
+Private Property Set IGameWindow_Events(ByVal value As IGridViewEvents)
     Set this.ViewEvents = value
 End Property
 
-'@Description("Picks the player of a grid: Human, Random, Fair-play or Merciless; the first letter is enough. Anything else keeps the pick as it is.")
-Public Sub PickPlayer(ByVal gridId As PlayGridId, ByVal player As String)
-Attribute PickPlayer.VB_Description = "Picks the player of a grid: Human, Random, Fair-play or Merciless; the first letter is enough. Anything else keeps the pick as it is."
+Private Property Set IGameWindow_Listener(ByVal value As IGameWindowEvents)
+    Set this.Listener = value
+End Property
+
+Private Sub IGameWindow_Show()
+    Me.Show
+End Sub
+
+Private Sub IGameWindow_PickPlayer(ByVal gridId As PlayGridId, ByVal player As String)
     Dim difficulty As AIDifficulty
     If TryParsePlayer(player, difficulty) Then PickerOf(gridId).Value = PlayerName(difficulty)
 End Sub
 
-'@Description("Sets the text of the status line.")
-Public Sub SetStatus(ByVal text As String)
-Attribute SetStatus.VB_Description = "Sets the text of the status line."
+Private Sub IGameWindow_SetStatus(ByVal text As String)
+    SetStatus text
+End Sub
+
+Private Sub SetStatus(ByVal text As String)
     statusLine.Caption = text
 End Sub
 
-'@Description("The person places their ships on the given grid: pointing at a cell moves the ship there, a right-click turns it, and a click places it.")
-Public Sub BeginShipPlacement(ByVal gridId As PlayGridId)
-Attribute BeginShipPlacement.VB_Description = "The person places their ships on the given grid: pointing at a cell moves the ship there, a right-click turns it, and a click places it."
+Private Sub IGameWindow_BeginShipPlacement(ByVal gridId As PlayGridId)
     this.Phase = PhaseShipPlacement
     this.HumanGridId = gridId
     this.PreviewX = 0
     this.PreviewY = 0
 End Sub
 
-'@Description("The person's ships are placed: the next click of Ready starts the battle.")
-Public Sub BeginWaitForReady()
-Attribute BeginWaitForReady.VB_Description = "The person's ships are placed: the next click of Ready starts the battle."
+Private Sub IGameWindow_BeginWaitForReady()
     this.Phase = PhaseWaitForReady
     readyButton.Visible = True
 End Sub
 
-'@Description("The computer plays: the person's clicks are ignored until it is done. The cells that changed are drawn first, so the last shot shows while the computer thinks.")
-Public Sub BeginComputerTurn()
-Attribute BeginComputerTurn.VB_Description = "The computer plays: the person's clicks are ignored until it is done. The cells that changed are drawn first, so the last shot shows while the computer thinks."
+Private Sub IGameWindow_BeginComputerTurn()
     this.ComputerTurn = True
     ' DoEvents draws only what changed; Me.Repaint would draw the whole form again, every turn, and it flickers.
     DoEvents
 End Sub
 
-'@Description("The computer has played. When it plays both grids, the cells that changed are drawn, so that the game can be watched.")
-Public Sub EndComputerTurn()
-Attribute EndComputerTurn.VB_Description = "The computer has played. When it plays both grids, the cells that changed are drawn, so that the game can be watched."
+Private Sub IGameWindow_EndComputerTurn()
     this.ComputerTurn = False
     If this.ComputerOnly Then DoEvents
 End Sub
 
-'@Description("The game is over: the grids do nothing more, and the Ready button is gone.")
-Public Sub EndGame()
-Attribute EndGame.VB_Description = "The game is over: the grids do nothing more, and the Ready button is gone."
+Private Sub IGameWindow_EndGame()
     this.Phase = PhaseOver
     this.ComputerTurn = False
     readyButton.Visible = False
 End Sub
 
-'@Description("Paints a grid as it stands: hits, misses, water, and the ships when they are to be shown. A sunk ship shows its anchor once its sinking is done, and the dizzy duck until then; the big duck of a ship that was just hit is dizzy too.")
-Public Sub PaintGrid(ByVal grid As PlayerGrid, ByVal showShips As Boolean)
-Attribute PaintGrid.VB_Description = "Paints a grid as it stands: hits, misses, water, and the ships when they are to be shown. A sunk ship shows its anchor once its sinking is done, and the dizzy duck until then; the big duck of a ship that was just hit is dizzy too."
+Private Sub IGameWindow_PaintGrid(ByVal grid As PlayerGrid, ByVal showShips As Boolean)
     Dim names(1 To GridSize, 1 To GridSize) As String
     Dim X As Long
     Dim Y As Long
@@ -244,28 +237,20 @@ Attribute PaintGrid.VB_Description = "Paints a grid as it stands: hits, misses, 
     Next
 End Sub
 
-'@Description("A ship's sinking is done: from now on, its bow shows the anchor.")
-Public Sub FinishSinking(ByVal gridId As PlayGridId, ByVal sunkShip As IShip)
-Attribute FinishSinking.VB_Description = "A ship's sinking is done: from now on, its bow shows the anchor."
+Private Sub IGameWindow_FinishSinking(ByVal gridId As PlayGridId, ByVal sunkShip As IShip)
     If IsSinkingDone(gridId, sunkShip) Then Exit Sub
     sunkShipKeys.Add ShipKey(gridId, sunkShip)
 End Sub
 
-'@Description("A ship was hit: its big duck is dizzy, until DizzyShipRecovers. Nothing shows where the ships are not shown.")
-Public Sub DizzyShip(ByVal gridId As PlayGridId, ByVal hitShip As IShip)
-Attribute DizzyShip.VB_Description = "A ship was hit: its big duck is dizzy, until DizzyShipRecovers. Nothing shows where the ships are not shown."
+Private Sub IGameWindow_DizzyShip(ByVal gridId As PlayGridId, ByVal hitShip As IShip)
     dizzyShipKey = ShipKey(gridId, hitShip)
 End Sub
 
-'@Description("The dizzy big duck is itself again.")
-Public Sub DizzyShipRecovers()
-Attribute DizzyShipRecovers.VB_Description = "The dizzy big duck is itself again."
+Private Sub IGameWindow_DizzyShipRecovers()
     dizzyShipKey = vbNullString
 End Sub
 
-'@Description("Waits the given number of seconds, while the form keeps drawing and answering.")
-Public Sub Pause(ByVal seconds As Single)
-Attribute Pause.VB_Description = "Waits the given number of seconds, while the form keeps drawing and answering."
+Private Sub IGameWindow_Pause(ByVal seconds As Single)
     Dim startTime As Single
     startTime = Timer
     Dim elapsed As Single
@@ -364,9 +349,7 @@ Private Sub PaintCell(ByVal gridId As PlayGridId, ByVal X As Long, ByVal Y As Lo
     End If
 End Sub
 
-'@Description("Paints where a ship would go, over the grid: green where it can go, red where it cannot.")
-Public Sub PaintShipPreview(ByVal grid As PlayerGrid, ByVal previewShip As IShip)
-Attribute PaintShipPreview.VB_Description = "Paints where a ship would go, over the grid: green where it can go, red where it cannot."
+Private Sub IGameWindow_PaintShipPreview(ByVal grid As PlayerGrid, ByVal previewShip As IShip)
     Dim colour As Long
     colour = IIf(grid.CanAddShip(previewShip.GridPosition, previewShip.Orientation, previewShip.Size), PreviewColour, BadPreviewColour)
 
@@ -380,9 +363,8 @@ Attribute PaintShipPreview.VB_Description = "Paints where a ship would go, over 
     Next
 End Sub
 
-'@Description("Locks or unlocks a grid: a locked grid's cells do nothing when they are pointed at or clicked. The cells stay enabled, since a disabled label greys its picture.")
-Public Sub LockGrid(ByVal gridId As PlayGridId, ByVal locked As Boolean)
-Attribute LockGrid.VB_Description = "Locks or unlocks a grid: a locked grid's cells do nothing when they are pointed at or clicked. The cells stay enabled, since a disabled label greys its picture."
+' the cells stay enabled, since a disabled label greys its picture: the cells' handlers ignore a locked grid instead.
+Private Sub IGameWindow_LockGrid(ByVal gridId As PlayGridId, ByVal locked As Boolean)
     this.Locked(gridId) = locked
 End Sub
 
@@ -471,7 +453,8 @@ End Function
 Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
     Set this.ViewEvents = Nothing
     Erase cells
-    RaiseEvent Closed
+    If Not this.Listener Is Nothing Then this.Listener.Closed
+    Set this.Listener = Nothing
 End Sub
 
 ' the top of a grid's row: row 1 is at the grid's top.

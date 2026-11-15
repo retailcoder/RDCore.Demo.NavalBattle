@@ -4,6 +4,23 @@ Attribute VB_Description = "Reads the program's --name switches on its command l
 '@ModuleDescription("Reads the program's --name switches on its command line. A switch it is not asked about is ignored, never refused: the runtime leaves its own switches, such as --unattended, on the command line.")
 Option Explicit
 
+' the views a game can be played in, as GameViews names them.
+Public Const ViewMicrosoftForms As String = "MSForms"
+Public Const ViewRDForms As String = "RDForms"
+Public Const ViewConsole As String = "Console"
+
+'@Description("The views to try a game in, in order, until one opens: --console plays in the console alone; --rdforms in the RDForms window, then the console; with neither, the Microsoft Forms window on Windows, then the RDForms window, then the console. --console wins over --rdforms.")
+Public Function GameViews(ByVal commandLine As String, ByVal onWindows As Boolean) As Variant
+Attribute GameViews.VB_Description = "The views to try a game in, in order, until one opens: --console plays in the console alone; --rdforms in the RDForms window, then the console; with neither, the Microsoft Forms window on Windows, then the RDForms window, then the console. --console wins over --rdforms."
+    If HasSwitch(commandLine, "--console") Then
+        GameViews = Array(ViewConsole)
+    ElseIf HasSwitch(commandLine, "--rdforms") Or Not onWindows Then
+        GameViews = Array(ViewRDForms, ViewConsole)
+    Else
+        GameViews = Array(ViewMicrosoftForms, ViewRDForms, ViewConsole)
+    End If
+End Function
+
 '@Description("Gets the value that follows a --name switch on the command line. Another switch is not a value: --seed --unattended has no seed.")
 Public Function TryGetArgument(ByVal commandLine As String, ByVal argumentName As String, ByRef outValue As String) As Boolean
 Attribute TryGetArgument.VB_Description = "Gets the value that follows a --name switch on the command line. Another switch is not a value: --seed --unattended has no seed."

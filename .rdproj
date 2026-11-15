@@ -113,6 +113,12 @@
     "References": [
       {
         "Name": "MSForms"
+      },
+      {
+        "Name": "VB"
+      },
+      {
+        "Name": "VBRUN"
       }
     ],
     "OtherFiles": [],

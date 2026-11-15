@@ -46,7 +46,7 @@ End Sub
 '@Description("The number of tests.")
 Private Property Get TestCount() As Long
 Attribute TestCount.VB_Description = "The number of tests."
-    TestCount = 32
+    TestCount = 36
 End Property
 
 '@Description("The name of a test, by its number, and runs it where run is True.")
@@ -85,6 +85,10 @@ Attribute Test.VB_Description = "The name of a test, by its number, and runs it 
         Case 30: Test = "CommandLineSwitchesTests.RuntimeSwitchAfter_TheSeedIsRead": If run Then CommandLineSwitchesTests.RuntimeSwitchAfter_TheSeedIsRead
         Case 31: Test = "CommandLineSwitchesTests.RuntimeSwitchInTheValuesPlace_IsNoValue": If run Then CommandLineSwitchesTests.RuntimeSwitchInTheValuesPlace_IsNoValue
         Case 32: Test = "CommandLineSwitchesTests.SwitchesItIsNotAskedAbout_AreIgnored": If run Then CommandLineSwitchesTests.SwitchesItIsNotAskedAbout_AreIgnored
+        Case 33: Test = "CommandLineSwitchesTests.NoViewSwitchOnWindows_TriesMicrosoftFormsThenRDFormsThenTheConsole": If run Then CommandLineSwitchesTests.NoViewSwitchOnWindows_TriesMicrosoftFormsThenRDFormsThenTheConsole
+        Case 34: Test = "CommandLineSwitchesTests.NoViewSwitchElsewhere_TriesRDFormsThenTheConsole": If run Then CommandLineSwitchesTests.NoViewSwitchElsewhere_TriesRDFormsThenTheConsole
+        Case 35: Test = "CommandLineSwitchesTests.RDFormsSwitch_TriesRDFormsThenTheConsole": If run Then CommandLineSwitchesTests.RDFormsSwitch_TriesRDFormsThenTheConsole
+        Case 36: Test = "CommandLineSwitchesTests.ConsoleSwitch_PlaysInTheConsoleAlone_EvenWithRDForms": If run Then CommandLineSwitchesTests.ConsoleSwitch_PlaysInTheConsoleAlone_EvenWithRDForms
         Case Else: Test = vbNullString
     End Select
 End Function

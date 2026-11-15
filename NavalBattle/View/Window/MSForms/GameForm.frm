@@ -468,14 +468,20 @@ Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
     RaiseEvent Closed
 End Sub
 
+' the top of a grid's row: row 1 is at the grid's top.
+Private Function CellTop(ByVal row As Long) As Long
+    CellTop = GridTop + (row - 1) * CellSize
+End Function
+
 Private Sub AddGrid(ByVal gridId As PlayGridId)
     Dim leftEdge As Long
     leftEdge = GridLeft(gridId)
 
+    ' the row numbers on the left, and the column letters under the last row.
     Dim index As Long
     For index = 1 To GridSize
-        AddLabel "Grid" & gridId & "Column" & index, leftEdge + index * CellSize, GridTop + TextOffset, CellSize, CellSize - TextOffset, Chr$(64 + index), fmTextAlignCenter
-        AddLabel "Grid" & gridId & "Row" & index, leftEdge, GridTop + index * CellSize + TextOffset, CellSize, CellSize - TextOffset, CStr(index), fmTextAlignCenter
+        AddLabel "Grid" & gridId & "Column" & index, leftEdge + index * CellSize, CellTop(GridSize + 1) + TextOffset, CellSize, CellSize - TextOffset, Chr$(64 + index), fmTextAlignCenter
+        AddLabel "Grid" & gridId & "Row" & index, leftEdge, CellTop(index) + TextOffset, CellSize, CellSize - TextOffset, CStr(index), fmTextAlignCenter
     Next
 
     Dim X As Long
@@ -486,7 +492,7 @@ Private Sub AddGrid(ByVal gridId As PlayGridId)
             Set position = GridCoord.Create(X, Y)
 
             Dim cellLabel As MSForms.Label
-            Set cellLabel = AddLabel("Grid" & gridId & "Cell" & CellName(position), leftEdge + X * CellSize, GridTop + Y * CellSize, CellSize, CellSize, vbNullString, fmTextAlignCenter)
+            Set cellLabel = AddLabel("Grid" & gridId & "Cell" & CellName(position), leftEdge + X * CellSize, CellTop(Y), CellSize, CellSize, vbNullString, fmTextAlignCenter)
             paintedColours(gridId, X, Y) = WaterColour
             cellLabel.BorderStyle = fmBorderStyleSingle
             cellLabel.BorderColor = LineColour

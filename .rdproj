@@ -32,6 +32,18 @@
         "RelativeUri": "tests/CommandLineSwitchesTests.bas"
       },
       {
+        "RelativeUri": "tests/GameControllerTests.bas"
+      },
+      {
+        "RelativeUri": "tests/ScriptedPlayer.cls"
+      },
+      {
+        "RelativeUri": "tests/ScriptedPlayerFactory.cls"
+      },
+      {
+        "RelativeUri": "tests/SinkRecorderView.cls"
+      },
+      {
         "RelativeUri": "src/Model/AIPlayer.cls"
       },
       {

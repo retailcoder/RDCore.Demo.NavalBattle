@@ -177,8 +177,8 @@ Private Sub IGridViewCommands_OnSelectPosition(ByVal gridId As PlayGridId, ByVal
     this.GridView.OnSelectPosition gridId, position
 End Sub
 
-Private Sub IGridViewCommands_OnSink(ByVal gridId As PlayGridId)
-    this.GridView.OnSink gridId
+Private Sub IGridViewCommands_OnSink(ByVal gridId As PlayGridId, ByVal sunkShip As IShip)
+    this.GridView.OnSink gridId, sunkShip
 End Sub
 
 Private Sub IGridViewCommands_OnUpdateFleetStatus(ByVal player As IPlayer, ByVal hitShip As IShip, Optional ByVal showAIStatus As Boolean = False)

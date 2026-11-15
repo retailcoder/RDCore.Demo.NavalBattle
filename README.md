@@ -29,7 +29,7 @@ After the path, `--player1 <player>` and `--player2 <player>` name the players (
 rdc run . --player1 merciless --player2 fairplay --seed 42
 ```
 
-`--test` runs the tests in `tests/` instead of a game. It prints each test's outcome and a count, and exits 1 when a test fails:
+`--test` runs the tests in `NavalBattle/Tests/` instead of a game. It prints each test's outcome and a count, and exits 1 when a test fails:
 
 ```
 rdc run . --test

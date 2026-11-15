@@ -11,7 +11,7 @@ Le contenu de ce référentiel est distribué sous la licence **MIT** : voir [LI
 
 ## Composants tiers
 
-Le fichier `lib/Dictionary.cls` est **VBA-Dictionary**, © 2020 Tim Hall, distribué sous la licence **MIT** :
+Le fichier `NavalBattle/Lib/Dictionary.cls` est **VBA-Dictionary**, © 2020 Tim Hall, distribué sous la licence **MIT** :
 <https://github.com/VBA-tools/VBA-Dictionary>. Son avis de licence est reproduit en tête du fichier. Une seule ligne y est modifiée, pour que le
 dictionnaire n'utilise jamais `Scripting.Dictionary`.
 
@@ -38,7 +38,7 @@ The content of this repository is licensed under the **MIT** licence: see [LICEN
 
 ## Third-party components
 
-The file `lib/Dictionary.cls` is **VBA-Dictionary**, © 2020 Tim Hall, licensed under the **MIT** licence:
+The file `NavalBattle/Lib/Dictionary.cls` is **VBA-Dictionary**, © 2020 Tim Hall, licensed under the **MIT** licence:
 <https://github.com/VBA-tools/VBA-Dictionary>. Its licence notice is reproduced at the top of the file. One line of it is changed, so that the dictionary
 never uses `Scripting.Dictionary`.
 

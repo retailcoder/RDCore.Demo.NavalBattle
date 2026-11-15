@@ -29,7 +29,7 @@ Après le chemin, `--player1 <joueur>` et `--player2 <joueur>` nomment les joueu
 rdc run . --player1 merciless --player2 fairplay --seed 42
 ```
 
-`--test` exécute les tests de `tests/` au lieu d'une partie. Il affiche le résultat de chaque test et un décompte, et se termine avec le code 1 quand un test échoue :
+`--test` exécute les tests de `NavalBattle/Tests/` au lieu d'une partie. Il affiche le résultat de chaque test et un décompte, et se termine avec le code 1 quand un test échoue :
 
 ```
 rdc run . --test

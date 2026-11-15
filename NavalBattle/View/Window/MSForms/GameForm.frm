@@ -20,7 +20,7 @@ Option Explicit
 Implements IGameWindow
 
 Private Const GridSize As Long = 10
-Private Const CellSize As Long = 26
+Private Const CellSize As Long = 18
 Private Const Margin As Long = 12
 Private Const GridGap As Long = 48
 ' the client area's width in points: the designer block's ClientWidth, in twips (20 to the point).
@@ -34,12 +34,16 @@ Private Const PanelFontSize As Long = 12
 ' a text label's top, in a line or a cell taller than its text, so that the text sits in the middle.
 Private Const TextOffset As Long = (CellSize - 16) \ 2
 
-' from the top: the grids, each grid's player under it, then the status line and the Ready button on one line: the window is 392 points high.
-Private Const GridTop As Long = Margin
+' from the top: the status bar, the grids, each grid's player under them, then the Ready button: the window is 392 points high.
+' the status bar is white, with a thin black border: it starts a point past the window's top, left and right edges, so that only its bottom border shows.
+Private Const StatusBleed As Long = 1
+Private Const StatusPadding As Long = 8
+Private Const StatusBarHeight As Long = LineHeight + 2 * StatusPadding + StatusBleed
+Private Const StatusColour As Long = &HFFFFFF
+Private Const StatusBorderColour As Long = &H0
+Private Const GridTop As Long = StatusBarHeight - StatusBleed + Margin
 Private Const PickerTop As Long = GridTop + (GridSize + 1) * CellSize + 8
-Private Const StatusTop As Long = PickerTop + LineHeight + 8
-Private Const StatusHeight As Long = 2 * LineHeight
-Private Const ReadyTop As Long = StatusTop + 4
+Private Const ReadyTop As Long = PickerTop + LineHeight + 8
 Private Const ReadyWidth As Long = 80
 Private Const ReadyHeight As Long = 28
 
@@ -102,19 +106,22 @@ Private Sub UserForm_Initialize()
 
     ' the designer block sizes the window: 16320 x 7845 twips, 816 x 392.25 points, 1088 x 523 pixels at 96 dpi. The board is centred on it. The
     ' form's picture (GameForm.frx, from assets/game-form-background.jpg) is stretched over the whole of it, behind the board: the labels are
-    ' transparent, and so are the cells of open water. The status line is text over the picture, in a bold, larger font to stay readable.
+    ' transparent, and so are the cells of open water. The status line is bold, larger text on a white bar across the top of the window.
     ' Without a picture, the water colour shows.
     Me.BackColor = WaterColour
     Set sunkShipKeys = New Collection
     LoadSprites
 
-    Dim boardLeft As Long
-    boardLeft = GridLeft(PlayerGrid1)
     Dim boardRight As Long
     boardRight = GridLeft(PlayerGrid2) + GridWidth
 
-    Set statusLine = AddPanel("Status", boardLeft, StatusTop, boardRight - boardLeft - ReadyWidth - Margin, StatusHeight, "Pick the players, then click Ready.")
-    statusLine.WordWrap = True
+    With AddLabel("StatusBar", -StatusBleed, -StatusBleed, FormWidth + 2 * StatusBleed, StatusBarHeight, vbNullString)
+        .BackStyle = fmBackStyleOpaque
+        .BackColor = StatusColour
+        .BorderStyle = fmBorderStyleSingle
+        .BorderColor = StatusBorderColour
+    End With
+    Set statusLine = AddPanel("Status", Margin, StatusPadding, FormWidth - 2 * Margin, LineHeight, "Pick the players, then click Ready.")
 
     Dim gridId As PlayGridId
     For gridId = PlayerGrid1 To PlayerGrid2

@@ -64,6 +64,22 @@ Attribute Names.VB_Description = "Gets an array of all ship names."
     Names = shipNames.Items
 End Function
 
+'@Description("Use from the class' default instance to create a new ship at the given position or, where it would cross the grid's right or bottom edge, as close to it as the ship fits: its anchor moves back along its direction.")
+Public Function CreateInside(ByVal kind As ShipType, ByVal direction As ShipOrientation, ByVal position As IGridCoord) As Ship
+Attribute CreateInside.VB_Description = "Use from the class' default instance to create a new ship at the given position or, where it would cross the grid's right or bottom edge, as close to it as the ship fits: its anchor moves back along its direction."
+    Dim lastAnchor As Long
+    lastAnchor = PlayerGrid.Size - ShipSizes(kind) + 1
+
+    Dim X As Long
+    X = position.X
+    Dim Y As Long
+    Y = position.Y
+    If direction = Horizontal And X > lastAnchor Then X = lastAnchor
+    If direction = Vertical And Y > lastAnchor Then Y = lastAnchor
+
+    Set CreateInside = Create(kind, direction, GridCoord.Create(X, Y))
+End Function
+
 '@Description("Use from the class' default instance to create a new ship instance using parameters.")
 Public Function Create(ByVal kind As ShipType, ByVal direction As ShipOrientation, ByVal position As IGridCoord) As Ship
 Attribute Create.VB_Description = "Use from the class' default instance to create a new ship instance using parameters."

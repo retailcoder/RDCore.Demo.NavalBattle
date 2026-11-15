@@ -164,3 +164,28 @@ Public Sub NonIntersectingShip_IntersectReturnsNothing()
     Assert.IsNothing Ship1.Intersects(Ship2.Size, Ship2.Orientation, Ship2.GridPosition)
 End Sub
 
+'@TestMethod
+Public Sub CreateInside_PastTheRightEdge_AnchorsWhereTheShipFits()
+    ' a carrier is 5 cells: at J5 across, it would end past the grid; it starts at F5 instead, and ends at J5.
+    Dim SUT As IShip
+    Set SUT = Ship.CreateInside(ShipType.Carrier, Horizontal, GridCoord.Create(10, 5))
+    Assert.AreEqual 6&, SUT.GridPosition.X, "X"
+    Assert.AreEqual 5&, SUT.GridPosition.Y, "Y"
+End Sub
+
+'@TestMethod
+Public Sub CreateInside_PastTheBottomEdge_AnchorsWhereTheShipFits()
+    Dim SUT As IShip
+    Set SUT = Ship.CreateInside(ShipType.Carrier, Vertical, GridCoord.Create(3, 9))
+    Assert.AreEqual 3&, SUT.GridPosition.X, "X"
+    Assert.AreEqual 6&, SUT.GridPosition.Y, "Y"
+End Sub
+
+'@TestMethod
+Public Sub CreateInside_WhereTheShipFits_KeepsThePosition()
+    Dim SUT As IShip
+    Set SUT = Ship.CreateInside(ShipType.Destroyer, Horizontal, GridCoord.Create(9, 10))
+    Assert.AreEqual 9&, SUT.GridPosition.X, "X"
+    Assert.AreEqual 10&, SUT.GridPosition.Y, "Y"
+End Sub
+

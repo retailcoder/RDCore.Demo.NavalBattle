@@ -126,10 +126,9 @@ Private Sub viewAdapter_OnViewClosed()
     this.ViewClosed = True
 End Sub
 
+' the ship follows the position it is given, and stays inside the grid where it would cross an edge.
 Private Sub viewAdapter_OnPreviewCurrentShipPosition(ByVal gridId As PlayGridId, ByVal position As IGridCoord)
-    On Error Resume Next
-    Set this.CurrentShip = Ship.Create(this.CurrentShip.ShipKind, this.CurrentShip.Orientation, position)
-    On Error GoTo 0
+    Set this.CurrentShip = Ship.CreateInside(this.CurrentShip.ShipKind, this.CurrentShip.Orientation, position)
     If gridId = 1 Then
         View.OnPreviewShipPosition this.Player1, this.CurrentShip
     Else
@@ -138,9 +137,7 @@ Private Sub viewAdapter_OnPreviewCurrentShipPosition(ByVal gridId As PlayGridId,
 End Sub
 
 Private Sub viewAdapter_OnRotateCurrentShipPosition(ByVal gridId As PlayGridId, ByVal position As IGridCoord)
-    On Error Resume Next
-    Set this.CurrentShip = Ship.Create(this.CurrentShip.ShipKind, IIf(this.CurrentShip.Orientation = Horizontal, Vertical, Horizontal), position)
-    On Error GoTo 0
+    Set this.CurrentShip = Ship.CreateInside(this.CurrentShip.ShipKind, IIf(this.CurrentShip.Orientation = Horizontal, Vertical, Horizontal), position)
     If gridId = 1 Then
         View.OnPreviewShipPosition this.Player1, this.CurrentShip
     Else

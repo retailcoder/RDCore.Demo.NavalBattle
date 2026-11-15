@@ -46,7 +46,7 @@ End Sub
 '@Description("The number of tests.")
 Private Property Get TestCount() As Long
 Attribute TestCount.VB_Description = "The number of tests."
-    TestCount = 45
+    TestCount = 48
 End Property
 
 '@Description("The name of a test, by its number, and runs it where run is True.")
@@ -98,6 +98,9 @@ Attribute Test.VB_Description = "The name of a test, by its number, and runs it 
         Case 43: Test = "GameControllerTests.ComputerVsComputer_BothGridsStayLocked": If run Then GameControllerTests.ComputerVsComputer_BothGridsStayLocked
         Case 44: Test = "GameControllerTests.PersonPlacingShips_OnlyTheirGridIsUnlocked": If run Then GameControllerTests.PersonPlacingShips_OnlyTheirGridIsUnlocked
         Case 45: Test = "GameControllerTests.PersonFiring_OnlyTheOtherGridIsUnlocked": If run Then GameControllerTests.PersonFiring_OnlyTheOtherGridIsUnlocked
+        Case 46: Test = "ShipTests.CreateInside_PastTheRightEdge_AnchorsWhereTheShipFits": If run Then ShipTests.CreateInside_PastTheRightEdge_AnchorsWhereTheShipFits
+        Case 47: Test = "ShipTests.CreateInside_PastTheBottomEdge_AnchorsWhereTheShipFits": If run Then ShipTests.CreateInside_PastTheBottomEdge_AnchorsWhereTheShipFits
+        Case 48: Test = "ShipTests.CreateInside_WhereTheShipFits_KeepsThePosition": If run Then ShipTests.CreateInside_WhereTheShipFits_KeepsThePosition
         Case Else: Test = vbNullString
     End Select
 End Function

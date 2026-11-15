@@ -46,7 +46,7 @@ End Sub
 '@Description("The number of tests.")
 Private Property Get TestCount() As Long
 Attribute TestCount.VB_Description = "The number of tests."
-    TestCount = 32
+    TestCount = 33
 End Property
 
 '@Description("The name of a test, by its number, and runs it where run is True.")
@@ -85,6 +85,7 @@ Attribute Test.VB_Description = "The name of a test, by its number, and runs it 
         Case 30: Test = "CommandLineSwitchesTests.RuntimeSwitchAfter_TheSeedIsRead": If run Then CommandLineSwitchesTests.RuntimeSwitchAfter_TheSeedIsRead
         Case 31: Test = "CommandLineSwitchesTests.RuntimeSwitchInTheValuesPlace_IsNoValue": If run Then CommandLineSwitchesTests.RuntimeSwitchInTheValuesPlace_IsNoValue
         Case 32: Test = "CommandLineSwitchesTests.SwitchesItIsNotAskedAbout_AreIgnored": If run Then CommandLineSwitchesTests.SwitchesItIsNotAskedAbout_AreIgnored
+        Case 33: Test = "GameControllerTests.ComputerVsComputer_OnSinkNamesEachSunkShip": If run Then GameControllerTests.ComputerVsComputer_OnSinkNamesEachSunkShip
         Case Else: Test = vbNullString
     End Select
 End Function
@@ -122,11 +123,13 @@ Attribute EnterModule.VB_Description = "Cleans up the current module and initial
         Case "PlayerGridTests": PlayerGridTests.ModuleCleanup
         Case "ShipTests": ShipTests.ModuleCleanup
         Case "CommandLineSwitchesTests": CommandLineSwitchesTests.ModuleCleanup
+        Case "GameControllerTests": GameControllerTests.ModuleCleanup
     End Select
     this.CurrentModule = moduleName
     Select Case moduleName
         Case "PlayerGridTests": PlayerGridTests.ModuleInitialize
         Case "ShipTests": ShipTests.ModuleInitialize
         Case "CommandLineSwitchesTests": CommandLineSwitchesTests.ModuleInitialize
+        Case "GameControllerTests": GameControllerTests.ModuleInitialize
     End Select
 End Sub

@@ -37,9 +37,14 @@ Public Sub OnSink(ByVal gridId As PlayGridId, ByVal position As IGridCoord, ByVa
 Attribute OnSink.VB_Description = "Instructs the view to report a shot at the given position of the given grid that sank the given ship. The shot that sinks a grid's last ship is reported by OnGameOver instead."
 End Sub
 
-'@Description("Instructs the view to lock the specified grid, preventing user interaction.")
+'@Description("Instructs the view to lock the specified grid: a person can do nothing with it until it is unlocked. Both grids are locked when a game starts and when it is over.")
 Public Sub OnLockGrid(ByVal gridId As PlayGridId)
-Attribute OnLockGrid.VB_Description = "Instructs the view to lock the specified grid, preventing user interaction."
+Attribute OnLockGrid.VB_Description = "Instructs the view to lock the specified grid: a person can do nothing with it until it is unlocked. Both grids are locked when a game starts and when it is over."
+End Sub
+
+'@Description("Instructs the view to unlock the specified grid: the person's own grid while they place their ships, then the other grid while they fire at it.")
+Public Sub OnUnlockGrid(ByVal gridId As PlayGridId)
+Attribute OnUnlockGrid.VB_Description = "Instructs the view to unlock the specified grid: the person's own grid while they place their ships, then the other grid while they fire at it."
 End Sub
 
 '@Description("Instructs the view to begin a new game.")

@@ -135,6 +135,11 @@ Private Sub IGridViewCommands_OnRefreshGrid(ByVal grid As PlayerGrid)
 End Sub
 
 Private Sub IGridViewCommands_OnLockGrid(ByVal gridId As PlayGridId)
+    If IsOpen Then window.LockGrid gridId, True
+End Sub
+
+Private Sub IGridViewCommands_OnUnlockGrid(ByVal gridId As PlayGridId)
+    If IsOpen Then window.LockGrid gridId, False
 End Sub
 
 Private Sub IGridViewCommands_OnBeginWaitForComputerPlayer()

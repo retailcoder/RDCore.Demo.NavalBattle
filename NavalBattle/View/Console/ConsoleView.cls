@@ -112,7 +112,11 @@ Private Sub IGridViewCommands_OnRefreshGrid(ByVal grid As PlayerGrid)
     Set this.Grids(grid.gridId) = grid
 End Sub
 
+' the console asks for what it needs, so it has no grid a person could act on out of turn.
 Private Sub IGridViewCommands_OnLockGrid(ByVal gridId As PlayGridId)
+End Sub
+
+Private Sub IGridViewCommands_OnUnlockGrid(ByVal gridId As PlayGridId)
 End Sub
 
 Private Sub IGridViewCommands_OnBeginWaitForComputerPlayer()

@@ -108,14 +108,23 @@ Private Property Get IGridViewCommands_Events() As IGridViewEvents
     Set IGridViewCommands_Events = Me
 End Property
 
+' the person fires at the other grid now: their own grid is locked, and the other one unlocked.
 Private Sub IGridViewCommands_OnBeginAttack(ByVal currentPlayerGridId As PlayGridId)
+    this.GridView.OnLockGrid currentPlayerGridId
+    this.GridView.OnUnlockGrid OtherGrid(currentPlayerGridId)
     this.GridView.OnBeginAttack currentPlayerGridId
 End Sub
 
+' the person places a ship on their own grid: it is unlocked, and the other one locked.
 Private Sub IGridViewCommands_OnBeginShipPosition(ByVal CurrentShip As IShip, ByVal player As IPlayer)
-    this.GridView.OnLockGrid IIf(player.PlayGrid.gridId = 1, 2, 1)
+    this.GridView.OnLockGrid OtherGrid(player.PlayGrid.gridId)
+    this.GridView.OnUnlockGrid player.PlayGrid.gridId
     this.GridView.OnBeginShipPosition CurrentShip, player
 End Sub
+
+Private Function OtherGrid(ByVal gridId As PlayGridId) As PlayGridId
+    OtherGrid = IIf(gridId = PlayerGrid1, PlayerGrid2, PlayerGrid1)
+End Function
 
 Private Sub IGridViewCommands_OnConfirmShipPosition(ByVal player As IPlayer, ByVal newShip As IShip)
     If player.PlayerType = ComputerControlled Then Exit Sub
@@ -124,6 +133,8 @@ Private Sub IGridViewCommands_OnConfirmShipPosition(ByVal player As IPlayer, ByV
 End Sub
 
 Private Sub IGridViewCommands_OnGameOver(ByVal winningGrid As PlayGridId, ByVal position As IGridCoord, ByVal sunkShip As IShip)
+    this.GridView.OnLockGrid PlayerGrid1
+    this.GridView.OnLockGrid PlayerGrid2
     this.GridView.OnGameOver winningGrid, position, sunkShip
     Set this.GridView.Events = Nothing
 End Sub
@@ -144,11 +155,17 @@ Private Sub IGridViewCommands_OnLockGrid(ByVal gridId As PlayGridId)
     this.GridView.OnLockGrid gridId
 End Sub
 
+Private Sub IGridViewCommands_OnUnlockGrid(ByVal gridId As PlayGridId)
+    this.GridView.OnUnlockGrid gridId
+End Sub
+
 Private Sub IGridViewCommands_OnMiss(ByVal gridId As PlayGridId, ByVal position As IGridCoord)
     this.GridView.OnMiss gridId, position
 End Sub
 
 Private Sub IGridViewCommands_OnNewGame()
+    this.GridView.OnLockGrid PlayerGrid1
+    this.GridView.OnLockGrid PlayerGrid2
     this.GridView.OnNewGame
 End Sub
 

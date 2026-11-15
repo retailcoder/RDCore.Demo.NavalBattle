@@ -7,9 +7,9 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-Attribute VB_Description = "A view for the controller tests: it shows nothing, and records each sinking it is told of, and the winner."
+Attribute VB_Description = "A view for the controller tests: it shows nothing, and records each sinking it is told of, which grids are locked, and the winner."
 '@Folder("NavalBattle.Tests.Doubles")
-'@ModuleDescription("A view for the controller tests: it shows nothing, and records each sinking it is told of, and the winner.")
+'@ModuleDescription("A view for the controller tests: it shows nothing, and records each sinking it is told of, which grids are locked, and the winner.")
 Option Explicit
 Implements IGridViewCommands
 
@@ -21,6 +21,8 @@ Private Type TView
     WinningGrid As PlayGridId
     LastPosition As IGridCoord
     LastShip As IShip
+    Locked(PlayerGrid1 To PlayerGrid2) As Boolean
+    Unlocks As Long
 End Type
 
 Private this As TView
@@ -30,6 +32,18 @@ Private Sub Class_Initialize()
     Set this.SunkPositions = New Collection
     Set this.SunkShips = New Collection
 End Sub
+
+'@Description("Gets whether the given grid is locked now.")
+Public Property Get IsLocked(ByVal gridId As PlayGridId) As Boolean
+Attribute IsLocked.VB_Description = "Gets whether the given grid is locked now."
+    IsLocked = this.Locked(gridId)
+End Property
+
+'@Description("Gets how many times the view was told to unlock a grid.")
+Public Property Get Unlocks() As Long
+Attribute Unlocks.VB_Description = "Gets how many times the view was told to unlock a grid."
+    Unlocks = this.Unlocks
+End Property
 
 '@Description("Gets the view's events, to play the game as a person would: the controller's adapter sets them.")
 Public Property Get ViewEvents() As IGridViewEvents
@@ -100,6 +114,12 @@ Private Sub IGridViewCommands_OnHit(ByVal gridId As PlayGridId, ByVal position A
 End Sub
 
 Private Sub IGridViewCommands_OnLockGrid(ByVal gridId As PlayGridId)
+    this.Locked(gridId) = True
+End Sub
+
+Private Sub IGridViewCommands_OnUnlockGrid(ByVal gridId As PlayGridId)
+    this.Locked(gridId) = False
+    this.Unlocks = this.Unlocks + 1
 End Sub
 
 Private Sub IGridViewCommands_OnNewGame()

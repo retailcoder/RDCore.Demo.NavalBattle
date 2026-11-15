@@ -73,6 +73,7 @@ Private Type TForm
     ComputerOnly As Boolean
     PreviewX As Long
     PreviewY As Long
+    Locked(PlayerGrid1 To PlayerGrid2) As Boolean
 End Type
 
 ' the person closed the window.
@@ -379,26 +380,30 @@ Attribute PaintShipPreview.VB_Description = "Paints where a ship would go, over 
     Next
 End Sub
 
+'@Description("Locks or unlocks a grid: a locked grid's cells do nothing when they are pointed at or clicked. The cells stay enabled, since a disabled label greys its picture.")
+Public Sub LockGrid(ByVal gridId As PlayGridId, ByVal locked As Boolean)
+Attribute LockGrid.VB_Description = "Locks or unlocks a grid: a locked grid's cells do nothing when they are pointed at or clicked. The cells stay enabled, since a disabled label greys its picture."
+    this.Locked(gridId) = locked
+End Sub
+
 Private Sub cellEvents_Clicked(ByVal gridId As PlayGridId, ByVal position As IGridCoord)
-    If this.ComputerTurn Or this.ViewEvents Is Nothing Then Exit Sub
+    If this.Locked(gridId) Or this.ComputerTurn Or this.ViewEvents Is Nothing Then Exit Sub
     Select Case this.Phase
         Case PhaseShipPlacement
-            If gridId <> this.HumanGridId Then Exit Sub
             this.ViewEvents.PreviewShipPosition gridId, position
             this.ViewEvents.ConfirmShipPosition gridId, position
         Case PhaseAttack
-            If gridId = this.HumanGridId Then Exit Sub
             this.ViewEvents.AttackPosition gridId, position
     End Select
 End Sub
 
 Private Sub cellEvents_RightClicked(ByVal gridId As PlayGridId, ByVal position As IGridCoord)
-    If this.Phase <> PhaseShipPlacement Or gridId <> this.HumanGridId Then Exit Sub
+    If this.Locked(gridId) Or this.Phase <> PhaseShipPlacement Then Exit Sub
     this.ViewEvents.PreviewRotateShip gridId, position
 End Sub
 
 Private Sub cellEvents_Hovered(ByVal gridId As PlayGridId, ByVal position As IGridCoord)
-    If this.Phase <> PhaseShipPlacement Or gridId <> this.HumanGridId Then Exit Sub
+    If this.Locked(gridId) Or this.Phase <> PhaseShipPlacement Then Exit Sub
     If position.X = this.PreviewX And position.Y = this.PreviewY Then Exit Sub
 
     this.PreviewX = position.X

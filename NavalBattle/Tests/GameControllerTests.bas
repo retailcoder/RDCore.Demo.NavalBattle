@@ -7,6 +7,8 @@ Option Explicit
 Option Private Module
 
 Private Assert As TestAssert
+' the controller of a game a person plays: it outlives the test's first steps, since the person plays it a step at a time.
+Private personGame As IGameController
 
 '@ModuleInitialize
 Public Sub ModuleInitialize()
@@ -15,6 +17,7 @@ End Sub
 
 '@ModuleCleanup
 Public Sub ModuleCleanup()
+    Set personGame = Nothing
     Set Assert = Nothing
 End Sub
 
@@ -69,6 +72,62 @@ Public Sub ComputerVsComputer_EachSinkingIsReportedWithTheShotThatSankTheShip()
     Assert.IsTrue IsInFleet(view.LastShip, players.Player(PlayerGrid2).Grid), "the game over's " & view.LastShip.Name & " is not in grid 2's fleet"
     Assert.IsTrue IsOnShip(view.LastPosition, view.LastShip), "the game over's shot is not on the " & view.LastShip.Name
 End Sub
+
+'@TestMethod
+Public Sub ComputerVsComputer_BothGridsStayLocked()
+    Dim view As SinkRecorderView
+    Set view = New SinkRecorderView
+    Dim controller As IGameController
+    Set controller = StandardGameController.Create(GridViewAdapter.Create(view), New GameRandomizer, New ScriptedPlayerFactory)
+    controller.NewGame
+    view.ViewEvents.CreatePlayer PlayerGrid1, ComputerControlled, MercilessAI
+    view.ViewEvents.CreatePlayer PlayerGrid2, ComputerControlled, MercilessAI
+
+    Assert.IsTrue view.IsLocked(PlayerGrid1), "grid 1"
+    Assert.IsTrue view.IsLocked(PlayerGrid2), "grid 2"
+    Assert.AreEqual 0&, view.Unlocks, "the unlocks"
+End Sub
+
+'@TestMethod
+Public Sub PersonPlacingShips_OnlyTheirGridIsUnlocked()
+    Dim view As SinkRecorderView
+    Set view = StartPersonVsComputer
+
+    Assert.IsFalse view.IsLocked(PlayerGrid1), "the person's grid"
+    Assert.IsTrue view.IsLocked(PlayerGrid2), "the computer's grid"
+End Sub
+
+'@TestMethod
+Public Sub PersonFiring_OnlyTheOtherGridIsUnlocked()
+    Dim view As SinkRecorderView
+    Set view = StartPersonVsComputer
+
+    ' the person's five ships, across the grid, a row apart.
+    Dim index As Long
+    For index = 1 To PlayerGrid.ShipsPerGrid
+        view.ViewEvents.PreviewShipPosition PlayerGrid1, GridCoord.Create(1, 2 * index - 1)
+        view.ViewEvents.ConfirmShipPosition PlayerGrid1, GridCoord.Create(1, 2 * index - 1)
+    Next
+
+    Assert.IsTrue view.IsLocked(PlayerGrid1), "the person's grid"
+    Assert.IsFalse view.IsLocked(PlayerGrid2), "the computer's grid"
+End Sub
+
+' a game of a person on grid 1 against the computer, with no pause before the computer's shots; the person has placed nothing yet.
+Private Function StartPersonVsComputer() As SinkRecorderView
+    Dim randomizer As IRandomizer
+    Set randomizer = New GameRandomizer
+    Dim view As SinkRecorderView
+    Set view = New SinkRecorderView
+    Dim controller As IGameController
+    Set controller = StandardGameController.Create(GridViewAdapter.Create(view), randomizer, PlayerFactory.Create(randomizer, 0))
+    controller.NewGame
+    view.ViewEvents.CreatePlayer PlayerGrid1, HumanControlled, Unspecific
+    view.ViewEvents.CreatePlayer PlayerGrid2, ComputerControlled, RandomAI
+    ' nothing else holds the controller: it is kept here, so the game goes on once this returns.
+    Set personGame = controller
+    Set StartPersonVsComputer = view
+End Function
 
 Private Function IsOnShip(ByVal position As IGridCoord, ByVal item As IShip) As Boolean
     Dim offset As Long

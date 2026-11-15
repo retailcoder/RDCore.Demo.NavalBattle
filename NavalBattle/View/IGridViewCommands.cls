@@ -14,9 +14,9 @@ Attribute VB_Description = "Interface for commands sent from the controller to t
 '@Interface
 Option Explicit
 
-'@Description("Gets/sets a weak refererence to the view events.")
+'@Description("Gets/sets a weak reference to the view events.")
 Public Property Get Events() As IGridViewEvents
-Attribute Events.VB_Description = "Gets/sets a weak refererence to the view events."
+Attribute Events.VB_Description = "Gets/sets a weak reference to the view events."
 End Property
 
 Public Property Set Events(ByVal value As IGridViewEvents)
@@ -52,9 +52,9 @@ Public Sub OnNewGame()
 Attribute OnNewGame.VB_Description = "Instructs the view to begin a new game."
 End Sub
 
-'@Description("Instructs the view to report the end of the game: the given grid wins, with the shot at the given position of the other grid that sank its last ship, the given one.")
+'@Description("Instructs the view to report the end of the game: the given grid wins, by the shot at the given position of the other grid, which sank the given ship, its last.")
 Public Sub OnGameOver(ByVal winningGrid As PlayGridId, ByVal position As IGridCoord, ByVal sunkShip As IShip)
-Attribute OnGameOver.VB_Description = "Instructs the view to report the end of the game: the given grid wins, with the shot at the given position of the other grid that sank its last ship, the given one."
+Attribute OnGameOver.VB_Description = "Instructs the view to report the end of the game: the given grid wins, by the shot at the given position of the other grid, which sank the given ship, its last."
 End Sub
 
 '@Description("Instructs the view to begin positioning the specified ship.")

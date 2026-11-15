@@ -19,21 +19,28 @@ Attribute VB_Description = "The game's window. It has no designed controls: it m
 Option Explicit
 
 Private Const GridSize As Long = 10
-Private Const CellSize As Long = 18
+Private Const CellSize As Long = 26
 Private Const Margin As Long = 12
 Private Const GridGap As Long = 48
 ' the client area's width in points: the designer block's ClientWidth, in twips (20 to the point).
 Private Const FormWidth As Long = 16320 \ 20
-Private Const LineHeight As Long = 18
+Private Const LineHeight As Long = 22
+
+' the text of the form: the Windows UI font, at a size that reads at a glance; the status line is larger again, and bold.
+Private Const TextFontName As String = "Segoe UI"
+Private Const TextFontSize As Long = 11
+Private Const PanelFontSize As Long = 12
+' a text label's top, in a line or a cell taller than its text, so that the text sits in the middle.
+Private Const TextOffset As Long = (CellSize - 16) \ 2
 
 Private Const PickerTop As Long = Margin
 Private Const GridTop As Long = PickerTop + LineHeight + 10
-Private Const PanelFontSize As Long = 10
+' the status line and the Ready button share the line under the grids: the window is 392 points high.
 Private Const StatusTop As Long = GridTop + (GridSize + 1) * CellSize + 8
 Private Const StatusHeight As Long = 2 * LineHeight
-Private Const ReadyTop As Long = StatusTop + StatusHeight + 4
-Private Const ReadyWidth As Long = 72
-Private Const ReadyHeight As Long = 24
+Private Const ReadyTop As Long = StatusTop + 4
+Private Const ReadyWidth As Long = 80
+Private Const ReadyHeight As Long = 28
 
 Private Const WaterColour As Long = &HF5E1C8
 Private Const ShipColour As Long = &H707070
@@ -106,7 +113,7 @@ Private Sub UserForm_Initialize()
     Dim boardRight As Long
     boardRight = GridLeft(PlayerGrid2) + GridWidth
 
-    Set statusLine = AddPanel("Status", boardLeft, StatusTop, boardRight - boardLeft, StatusHeight, "Pick the players, then click Ready.")
+    Set statusLine = AddPanel("Status", boardLeft, StatusTop, boardRight - boardLeft - ReadyWidth - Margin, StatusHeight, "Pick the players, then click Ready.")
     statusLine.WordWrap = True
 
     Dim gridId As PlayGridId
@@ -124,6 +131,8 @@ Private Sub UserForm_Initialize()
         .Top = ReadyTop
         .Width = ReadyWidth
         .Height = ReadyHeight
+        .Font.Name = TextFontName
+        .Font.Size = TextFontSize
     End With
 End Sub
 
@@ -492,8 +501,8 @@ Private Sub AddGrid(ByVal gridId As PlayGridId)
 
     Dim index As Long
     For index = 1 To GridSize
-        AddLabel "Grid" & gridId & "Column" & index, leftEdge + index * CellSize, GridTop, CellSize, CellSize, Chr$(64 + index), fmTextAlignCenter
-        AddLabel "Grid" & gridId & "Row" & index, leftEdge, GridTop + index * CellSize, CellSize, CellSize, CStr(index), fmTextAlignCenter
+        AddLabel "Grid" & gridId & "Column" & index, leftEdge + index * CellSize, GridTop + TextOffset, CellSize, CellSize - TextOffset, Chr$(64 + index), fmTextAlignCenter
+        AddLabel "Grid" & gridId & "Row" & index, leftEdge, GridTop + index * CellSize + TextOffset, CellSize, CellSize - TextOffset, CStr(index), fmTextAlignCenter
     Next
 
     Dim X As Long
@@ -516,9 +525,9 @@ Private Sub AddGrid(ByVal gridId As PlayGridId)
 End Sub
 
 Private Function AddPlayerPicker(ByVal gridId As PlayGridId, ByVal initialPlayer As String) As MSForms.ComboBox
-    Const CaptionWidth As Long = 48
+    Const CaptionWidth As Long = 56
 
-    AddLabel "Grid" & gridId & "PlayerCaption", GridLeft(gridId), PickerTop + 3, CaptionWidth, LineHeight, "Grid " & gridId & ":"
+    AddLabel "Grid" & gridId & "PlayerCaption", GridLeft(gridId), PickerTop + 2, CaptionWidth, LineHeight, "Grid " & gridId & ":"
 
     Dim picker As MSForms.ComboBox
     Set picker = Me.Controls.Add("Forms.ComboBox.1", "Grid" & gridId & "Player", True)
@@ -527,6 +536,8 @@ Private Function AddPlayerPicker(ByVal gridId As PlayGridId, ByVal initialPlayer
         .Top = PickerTop
         .Width = GridWidth - CaptionWidth
         .Height = LineHeight
+        .Font.Name = TextFontName
+        .Font.Size = TextFontSize
         .Style = fmStyleDropDownList
         .AddItem "Human"
         .AddItem "Random AI"
@@ -548,6 +559,8 @@ Private Function AddLabel(ByVal controlName As String, ByVal leftEdge As Single,
         .Caption = text
         .TextAlign = alignment
         .BackStyle = fmBackStyleTransparent
+        .Font.Name = TextFontName
+        .Font.Size = TextFontSize
     End With
     Set AddLabel = result
 End Function

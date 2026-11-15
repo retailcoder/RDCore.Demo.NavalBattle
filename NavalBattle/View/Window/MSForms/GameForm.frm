@@ -168,7 +168,7 @@ End Sub
 Public Sub BeginWaitForReady()
 Attribute BeginWaitForReady.VB_Description = "The person's ships are placed: the next click of Ready starts the battle."
     this.Phase = PhaseWaitForReady
-    readyButton.Enabled = True
+    readyButton.Visible = True
 End Sub
 
 '@Description("The computer plays: the person's clicks are ignored until it is done. The cells that changed are drawn first, so the last shot shows while the computer thinks.")
@@ -186,12 +186,12 @@ Attribute EndComputerTurn.VB_Description = "The computer has played. When it pla
     If this.ComputerOnly Then DoEvents
 End Sub
 
-'@Description("The game is over: the grids and the Ready button do nothing more.")
+'@Description("The game is over: the grids do nothing more, and the Ready button is gone.")
 Public Sub EndGame()
-Attribute EndGame.VB_Description = "The game is over: the grids and the Ready button do nothing more."
+Attribute EndGame.VB_Description = "The game is over: the grids do nothing more, and the Ready button is gone."
     this.Phase = PhaseOver
     this.ComputerTurn = False
-    readyButton.Enabled = False
+    readyButton.Visible = False
 End Sub
 
 '@Description("Paints a grid as it stands: hits, misses, water, and the ships when they are to be shown. A sunk ship shows its anchor once its sinking is done, and the dizzy duck until then; the big duck of a ship that was just hit is dizzy too.")
@@ -421,7 +421,7 @@ Private Sub readyButton_Click()
             StartGame
         Case PhaseWaitForReady
             this.Phase = PhaseAttack
-            readyButton.Enabled = False
+            readyButton.Visible = False
             SetStatus "Fire at grid " & IIf(this.HumanGridId = PlayerGrid1, PlayerGrid2, PlayerGrid1) & ": click a cell."
             this.ViewEvents.HumanPlayerReady
     End Select
@@ -440,9 +440,10 @@ Private Sub StartGame()
         Exit Sub
     End If
 
-    firstPlayerPicker.Enabled = False
-    secondPlayerPicker.Enabled = False
-    readyButton.Enabled = False
+    ' the pickers and the Ready button are done with: the players' names stay, as plain text, and the water is clear.
+    ShowPlayer PlayerGrid1, firstPlayerPicker
+    ShowPlayer PlayerGrid2, secondPlayerPicker
+    readyButton.Visible = False
     this.ComputerOnly = PlayerTypeOf(firstDifficulty) = ComputerControlled And PlayerTypeOf(secondDifficulty) = ComputerControlled
     If this.ComputerOnly Then
         this.Phase = PhaseAttack
@@ -526,6 +527,16 @@ Private Function AddPlayerPicker(ByVal gridId As PlayGridId, ByVal initialPlayer
     End With
     Set AddPlayerPicker = picker
 End Function
+
+' the players are confirmed: a grid's picker goes, and its caption names the player, in bold so it reads over the ducks.
+Private Sub ShowPlayer(ByVal gridId As PlayGridId, ByVal picker As MSForms.ComboBox)
+    Dim caption As MSForms.Label
+    Set caption = Me.Controls("Grid" & gridId & "PlayerCaption")
+    caption.Caption = "Grid " & gridId & ": " & picker.Value
+    caption.Width = GridWidth
+    caption.Font.Bold = True
+    picker.Visible = False
+End Sub
 
 Private Function AddLabel(ByVal controlName As String, ByVal leftEdge As Single, ByVal topEdge As Single, ByVal labelWidth As Single, ByVal labelHeight As Single, ByVal text As String, Optional ByVal alignment As fmTextAlign = fmTextAlignLeft) As MSForms.Label
     Dim result As MSForms.Label

@@ -38,6 +38,9 @@
         "RelativeUri": "NavalBattle/Tests/BoardSpritesTests.bas"
       },
       {
+        "RelativeUri": "NavalBattle/Tests/BoardFormTests.bas"
+      },
+      {
         "RelativeUri": "NavalBattle/Tests/CommandLineSwitchesTests.bas"
       },
       {
@@ -144,6 +147,9 @@
       },
       {
         "RelativeUri": "NavalBattle/View/Window/MSForms/GameForm.frm"
+      },
+      {
+        "RelativeUri": "NavalBattle/View/Window/RDForms/BoardForm.frm"
       },
       {
         "RelativeUri": "NavalBattle/View/IGridViewCommands.cls"

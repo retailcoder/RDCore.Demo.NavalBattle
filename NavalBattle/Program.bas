@@ -9,9 +9,9 @@ Private Const WatchableAIPause As Long = 800
 
 Private controller As IGameController
 
-'@Description("Plays a game: in the game form on Windows, and in the console elsewhere, or when --console is on the command line. The command line can name the players, --player1 <player> --player2 <player> (Human, Random, Fair-play or Merciless), and fix the random seed so a game can be replayed: --seed <number>. The form opens with the players it names already picked; the console asks for a player it does not name. --test runs the tests instead of a game, in the console. Under --unattended, nobody watches: the computer plays without its pause before each shot.")
+'@Description("Plays a game: in the Microsoft Forms window on Windows, else in the RDForms window, else in the console; --rdforms skips the Microsoft Forms window, and --console plays in the console alone. The command line can name the players, --player1 <player> --player2 <player> (Human, Random, Fair-play or Merciless), and fix the random seed so a game can be replayed: --seed <number>. The form opens with the players it names already picked; the console asks for a player it does not name. --test runs the tests instead of a game, in the console. Under --unattended, nobody watches: the computer plays without its pause before each shot.")
 Public Sub Main()
-Attribute Main.VB_Description = "Plays a game: in the game form on Windows, and in the console elsewhere, or when --console is on the command line. The command line can name the players, --player1 <player> --player2 <player> (Human, Random, Fair-play or Merciless), and fix the random seed so a game can be replayed: --seed <number>. The form opens with the players it names already picked; the console asks for a player it does not name. --test runs the tests instead of a game, in the console. Under --unattended, nobody watches: the computer plays without its pause before each shot."
+Attribute Main.VB_Description = "Plays a game: in the Microsoft Forms window on Windows, else in the RDForms window, else in the console; --rdforms skips the Microsoft Forms window, and --console plays in the console alone. The command line can name the players, --player1 <player> --player2 <player> (Human, Random, Fair-play or Merciless), and fix the random seed so a game can be replayed: --seed <number>. The form opens with the players it names already picked; the console asks for a player it does not name. --test runs the tests instead of a game, in the console. Under --unattended, nobody watches: the computer plays without its pause before each shot."
     If HasSwitch(Command$, "--test") Then
         TestRunner.RunAll
         Exit Sub
@@ -30,34 +30,45 @@ Attribute Main.VB_Description = "Plays a game: in the game form on Windows, and 
     Dim secondPlayer As String
     TryGetArgument Command$, "--player2", secondPlayer
 
+    Dim onWindows As Boolean
 #If Win32 Or Win64 Then
-    If Not HasSwitch(Command$, "--console") Then
-        If TryPlayInForm(firstPlayer, secondPlayer) Then Exit Sub
-    End If
+    onWindows = True
 #End If
-    PlayInConsole firstPlayer, secondPlayer
+    Dim viewName As Variant
+    For Each viewName In GameViews(Command$, onWindows)
+        If viewName = ViewConsole Then
+            PlayInConsole firstPlayer, secondPlayer
+            Exit Sub
+        End If
+        If TryPlayInWindow(viewName, firstPlayer, secondPlayer) Then Exit Sub
+    Next
 End Sub
 
-'@Description("Plays a game in the game form, and returns True when the form is closed; returns False at once when Microsoft Forms is not installed.")
-Private Function TryPlayInForm(ByVal firstPlayer As String, ByVal secondPlayer As String) As Boolean
-Attribute TryPlayInForm.VB_Description = "Plays a game in the game form, and returns True when the form is closed; returns False at once when Microsoft Forms is not installed."
+'@Description("Plays a game in the given window, Microsoft Forms' or RDForms', and returns True when it is closed; returns False when the window cannot be opened here: Microsoft Forms is not installed, or the runtime has no forms host.")
+Private Function TryPlayInWindow(ByVal viewName As String, ByVal firstPlayer As String, ByVal secondPlayer As String) As Boolean
+Attribute TryPlayInWindow.VB_Description = "Plays a game in the given window, Microsoft Forms' or RDForms', and returns True when it is closed; returns False when the window cannot be opened here: Microsoft Forms is not installed, or the runtime has no forms host."
     Dim view As WindowView
-    Dim adapter As GridViewAdapter
+    ' Microsoft Forms is missing as soon as its form is made; a missing forms host shows when the RDForms window is first shown, or its player picked.
+    On Error GoTo NoWindow
+    If viewName = ViewMicrosoftForms Then
+        Set view = WindowView.Create(New GameForm)
+    Else
+        Set view = WindowView.Create(New BoardForm)
+    End If
 
-    On Error GoTo NoForms
-    Set view = WindowView.Create(New GameForm)
-    Set adapter = GridViewAdapter.Create(view)
-    On Error GoTo 0
-
-    StartGame adapter
+    StartGame GridViewAdapter.Create(view)
     view.Play firstPlayer, secondPlayer
-    TryPlayInForm = True
+    TryPlayInWindow = True
     Exit Function
 
-NoForms:
+NoWindow:
     If Err.Number <> ClassNotRegistered Then Err.Raise Err.Number, Err.Source, Err.Description
-    Debug.Print "The game form needs Microsoft Forms, which is not installed here: the game is played in the console."
-    TryPlayInForm = False
+    If viewName = ViewMicrosoftForms Then
+        Debug.Print "The game form needs Microsoft Forms, which is not installed here."
+    Else
+        Debug.Print "The RDForms window needs a forms host, which this runtime does not have."
+    End If
+    TryPlayInWindow = False
 End Function
 
 '@Description("Plays a game in the console.")

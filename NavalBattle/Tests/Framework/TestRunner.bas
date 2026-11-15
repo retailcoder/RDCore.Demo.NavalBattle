@@ -48,7 +48,7 @@ End Sub
 '@Description("The number of tests.")
 Private Property Get TestCount() As Long
 Attribute TestCount.VB_Description = "The number of tests."
-    TestCount = 72
+    TestCount = 75
 End Property
 
 '@Description("The name of a test, by its number, and runs it where run is True.")
@@ -127,6 +127,9 @@ Attribute Test.VB_Description = "The name of a test, by its number, and runs it 
         Case 70: Test = "BoardSpritesTests.SunkShip_ShowsDizzy_ThenTheAnchor_EvenHidden": If run Then BoardSpritesTests.SunkShip_ShowsDizzy_ThenTheAnchor_EvenHidden
         Case 71: Test = "BoardSpritesTests.FallbackColours_TellWaterShipsHitsAndMissesApart": If run Then BoardSpritesTests.FallbackColours_TellWaterShipsHitsAndMissesApart
         Case 72: Test = "BoardSpritesTests.EverySprite_IsAGifInTheWorkspaceAssets": If run Then BoardSpritesTests.EverySprite_IsAGifInTheWorkspaceAssets
+        Case 73: Test = "BoardFormTests.Cells_AreLoadedFromTheDesignedCell": If run Then BoardFormTests.Cells_AreLoadedFromTheDesignedCell
+        Case 74: Test = "BoardFormTests.PlayerPickers_OfferEveryPlayer": If run Then BoardFormTests.PlayerPickers_OfferEveryPlayer
+        Case 75: Test = "BoardFormTests.ConfirmedPlayers_ShowInBold": If run Then BoardFormTests.ConfirmedPlayers_ShowInBold
         Case Else: Test = vbNullString
     End Select
 End Function
@@ -172,6 +175,7 @@ Attribute EnterModule.VB_Description = "Cleans up the current module and initial
         Case "BoardLayoutTests": BoardLayoutTests.ModuleCleanup
         Case "BoardInputTests": BoardInputTests.ModuleCleanup
         Case "BoardSpritesTests": BoardSpritesTests.ModuleCleanup
+        Case "BoardFormTests": BoardFormTests.ModuleCleanup
     End Select
     this.CurrentModule = moduleName
     Select Case moduleName
@@ -183,5 +187,6 @@ Attribute EnterModule.VB_Description = "Cleans up the current module and initial
         Case "BoardLayoutTests": BoardLayoutTests.ModuleInitialize
         Case "BoardInputTests": BoardInputTests.ModuleInitialize
         Case "BoardSpritesTests": BoardSpritesTests.ModuleInitialize
+        Case "BoardFormTests": BoardFormTests.ModuleInitialize
     End Select
 End Sub

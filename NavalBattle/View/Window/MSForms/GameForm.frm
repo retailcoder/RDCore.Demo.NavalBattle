@@ -33,10 +33,10 @@ Private Const PanelFontSize As Long = 12
 ' a text label's top, in a line or a cell taller than its text, so that the text sits in the middle.
 Private Const TextOffset As Long = (CellSize - 16) \ 2
 
-Private Const PickerTop As Long = Margin
-Private Const GridTop As Long = PickerTop + LineHeight + 10
-' the status line and the Ready button share the line under the grids: the window is 392 points high.
-Private Const StatusTop As Long = GridTop + (GridSize + 1) * CellSize + 8
+' from the top: the grids, each grid's player under it, then the status line and the Ready button on one line: the window is 392 points high.
+Private Const GridTop As Long = Margin
+Private Const PickerTop As Long = GridTop + (GridSize + 1) * CellSize + 8
+Private Const StatusTop As Long = PickerTop + LineHeight + 8
 Private Const StatusHeight As Long = 2 * LineHeight
 Private Const ReadyTop As Long = StatusTop + 4
 Private Const ReadyWidth As Long = 80

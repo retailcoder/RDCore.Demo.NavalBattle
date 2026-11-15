@@ -46,7 +46,7 @@ End Sub
 '@Description("The number of tests.")
 Private Property Get TestCount() As Long
 Attribute TestCount.VB_Description = "The number of tests."
-    TestCount = 38
+    TestCount = 42
 End Property
 
 '@Description("The name of a test, by its number, and runs it where run is True.")
@@ -91,6 +91,10 @@ Attribute Test.VB_Description = "The name of a test, by its number, and runs it 
         Case 36: Test = "CommandLineSwitchesTests.ConsoleSwitch_PlaysInTheConsoleAlone_EvenWithRDForms": If run Then CommandLineSwitchesTests.ConsoleSwitch_PlaysInTheConsoleAlone_EvenWithRDForms
         Case 37: Test = "GameControllerTests.ComputerVsComputer_OnSinkNamesEachSunkShip": If run Then GameControllerTests.ComputerVsComputer_OnSinkNamesEachSunkShip
         Case 38: Test = "GameControllerTests.ComputerVsComputer_EachSinkingIsReportedWithTheShotThatSankTheShip": If run Then GameControllerTests.ComputerVsComputer_EachSinkingIsReportedWithTheShotThatSankTheShip
+        Case 39: Test = "PlayerChoicesTests.FirstLetter_IsEnough_InEitherCase": If run Then PlayerChoicesTests.FirstLetter_IsEnough_InEitherCase
+        Case 40: Test = "PlayerChoicesTests.NotAPlayer_IsNotRead": If run Then PlayerChoicesTests.NotAPlayer_IsNotRead
+        Case 41: Test = "PlayerChoicesTests.EveryName_ReadsBackAsItsPlayer": If run Then PlayerChoicesTests.EveryName_ReadsBackAsItsPlayer
+        Case 42: Test = "PlayerChoicesTests.TwoPeople_CannotPlayTogether": If run Then PlayerChoicesTests.TwoPeople_CannotPlayTogether
         Case Else: Test = vbNullString
     End Select
 End Function
@@ -129,6 +133,7 @@ Attribute EnterModule.VB_Description = "Cleans up the current module and initial
         Case "ShipTests": ShipTests.ModuleCleanup
         Case "CommandLineSwitchesTests": CommandLineSwitchesTests.ModuleCleanup
         Case "GameControllerTests": GameControllerTests.ModuleCleanup
+        Case "PlayerChoicesTests": PlayerChoicesTests.ModuleCleanup
     End Select
     this.CurrentModule = moduleName
     Select Case moduleName
@@ -136,5 +141,6 @@ Attribute EnterModule.VB_Description = "Cleans up the current module and initial
         Case "ShipTests": ShipTests.ModuleInitialize
         Case "CommandLineSwitchesTests": CommandLineSwitchesTests.ModuleInitialize
         Case "GameControllerTests": GameControllerTests.ModuleInitialize
+        Case "PlayerChoicesTests": PlayerChoicesTests.ModuleInitialize
     End Select
 End Sub

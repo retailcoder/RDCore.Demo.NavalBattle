@@ -121,8 +121,8 @@ Private Sub UserForm_Initialize()
         AddGrid gridId
     Next
 
-    Set firstPlayerPicker = AddPlayerPicker(PlayerGrid1, "Human")
-    Set secondPlayerPicker = AddPlayerPicker(PlayerGrid2, "Merciless AI")
+    Set firstPlayerPicker = AddPlayerPicker(PlayerGrid1, PlayerName(Unspecific))
+    Set secondPlayerPicker = AddPlayerPicker(PlayerGrid2, PlayerName(MercilessAI))
 
     Set readyButton = Me.Controls.Add("Forms.CommandButton.1", "Ready", True)
     With readyButton
@@ -145,20 +145,8 @@ End Property
 '@Description("Picks the player of a grid: Human, Random, Fair-play or Merciless; the first letter is enough. Anything else keeps the pick as it is.")
 Public Sub PickPlayer(ByVal gridId As PlayGridId, ByVal player As String)
 Attribute PickPlayer.VB_Description = "Picks the player of a grid: Human, Random, Fair-play or Merciless; the first letter is enough. Anything else keeps the pick as it is."
-    Dim picked As String
-    Select Case UCase$(Left$(Trim$(player), 1))
-        Case "H"
-            picked = "Human"
-        Case "R"
-            picked = "Random AI"
-        Case "F"
-            picked = "Fair-play AI"
-        Case "M"
-            picked = "Merciless AI"
-        Case Else
-            Exit Sub
-    End Select
-    PickerOf(gridId).Value = picked
+    Dim difficulty As AIDifficulty
+    If TryParsePlayer(player, difficulty) Then PickerOf(gridId).Value = PlayerName(difficulty)
 End Sub
 
 '@Description("Sets the text of the status line.")
@@ -441,12 +429,13 @@ End Sub
 
 ' the players picked are made, and the game starts: a person places their ships next, and when the computer plays both grids, the whole game is played now.
 Private Sub StartGame()
+    ' a picker only offers the players' names, so each one reads.
     Dim firstDifficulty As AIDifficulty
-    firstDifficulty = DifficultyOf(firstPlayerPicker.Value)
+    TryParsePlayer firstPlayerPicker.Value, firstDifficulty
     Dim secondDifficulty As AIDifficulty
-    secondDifficulty = DifficultyOf(secondPlayerPicker.Value)
+    TryParsePlayer secondPlayerPicker.Value, secondDifficulty
 
-    If firstDifficulty = Unspecific And secondDifficulty = Unspecific Then
+    If Not CanPlayTogether(firstDifficulty, secondDifficulty) Then
         SetStatus "Only one grid can be played by a person: pick an AI for the other one."
         Exit Sub
     End If
@@ -454,7 +443,7 @@ Private Sub StartGame()
     firstPlayerPicker.Enabled = False
     secondPlayerPicker.Enabled = False
     readyButton.Enabled = False
-    this.ComputerOnly = firstDifficulty <> Unspecific And secondDifficulty <> Unspecific
+    this.ComputerOnly = PlayerTypeOf(firstDifficulty) = ComputerControlled And PlayerTypeOf(secondDifficulty) = ComputerControlled
     If this.ComputerOnly Then
         this.Phase = PhaseAttack
         SetStatus "The computer plays both grids."
@@ -464,22 +453,6 @@ Private Sub StartGame()
     this.ViewEvents.CreatePlayer PlayerGrid2, PlayerTypeOf(secondDifficulty), secondDifficulty
 End Sub
 
-Private Function DifficultyOf(ByVal player As String) As AIDifficulty
-    Select Case player
-        Case "Random AI"
-            DifficultyOf = RandomAI
-        Case "Fair-play AI"
-            DifficultyOf = FairplayAI
-        Case "Merciless AI"
-            DifficultyOf = MercilessAI
-        Case Else
-            DifficultyOf = Unspecific
-    End Select
-End Function
-
-Private Function PlayerTypeOf(ByVal difficulty As AIDifficulty) As PlayerType
-    PlayerTypeOf = IIf(difficulty = Unspecific, HumanControlled, ComputerControlled)
-End Function
 
 Private Function PickerOf(ByVal gridId As PlayGridId) As MSForms.ComboBox
     If gridId = PlayerGrid1 Then
@@ -539,10 +512,10 @@ Private Function AddPlayerPicker(ByVal gridId As PlayGridId, ByVal initialPlayer
         .Font.Name = TextFontName
         .Font.Size = TextFontSize
         .Style = fmStyleDropDownList
-        .AddItem "Human"
-        .AddItem "Random AI"
-        .AddItem "Fair-play AI"
-        .AddItem "Merciless AI"
+        Dim offered As Variant
+        For Each offered In PlayerNames
+            .AddItem offered
+        Next
         .Value = initialPlayer
     End With
     Set AddPlayerPicker = picker

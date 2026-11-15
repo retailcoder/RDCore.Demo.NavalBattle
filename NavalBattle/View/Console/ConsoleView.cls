@@ -37,10 +37,10 @@ Private this As TView
 Public Sub Play(Optional ByVal firstPlayer As String, Optional ByVal secondPlayer As String)
 Attribute Play.VB_Description = "Plays a game: asks who plays each grid when the argument is empty, then asks the person, if one plays, for their ships and shots until the game is over. A player is Human, Random, Fair-play or Merciless (the first letter is enough). An empty answer ends the game."
     Dim firstDifficulty As AIDifficulty
-    If Not TryGetPlayer(PlayerGrid1, firstPlayer, False, firstDifficulty) Then Exit Sub
+    If Not TryGetPlayer(PlayerGrid1, firstPlayer, firstDifficulty) Then Exit Sub
 
     Dim secondDifficulty As AIDifficulty
-    If Not TryGetPlayer(PlayerGrid2, secondPlayer, firstDifficulty = Unspecific, secondDifficulty) Then Exit Sub
+    If Not TryGetPlayer(PlayerGrid2, secondPlayer, secondDifficulty, firstDifficulty) Then Exit Sub
 
     this.ViewEvents.CreatePlayer PlayerGrid1, PlayerTypeOf(firstDifficulty), firstDifficulty
     this.ViewEvents.CreatePlayer PlayerGrid2, PlayerTypeOf(secondDifficulty), secondDifficulty
@@ -127,9 +127,9 @@ Private Sub IGridViewCommands_OnGameOver(ByVal winningGrid As PlayGridId, ByVal 
     Debug.Print "Game over: grid " & winningGrid & " wins."
 End Sub
 
-'@Description("Gets the player for a grid from the argument, or asks for it when the argument is empty or not a player. Returns False when the answer is empty.")
-Private Function TryGetPlayer(ByVal gridId As PlayGridId, ByVal answer As String, ByVal humanIsTaken As Boolean, ByRef outDifficulty As AIDifficulty) As Boolean
-Attribute TryGetPlayer.VB_Description = "Gets the player for a grid from the argument, or asks for it when the argument is empty or not a player. Returns False when the answer is empty."
+'@Description("Gets the player for a grid from the argument, or asks for it when the argument is empty or not a player. The other grid's player, where it is already known, is one it must be able to play with. Returns False when the answer is empty.")
+Private Function TryGetPlayer(ByVal gridId As PlayGridId, ByVal answer As String, ByRef outDifficulty As AIDifficulty, Optional ByVal otherDifficulty As Variant) As Boolean
+Attribute TryGetPlayer.VB_Description = "Gets the player for a grid from the argument, or asks for it when the argument is empty or not a player. The other grid's player, where it is already known, is one it must be able to play with. Returns False when the answer is empty."
     Dim isPlayer As Boolean
     Do
         If answer = vbNullString Then
@@ -140,32 +140,18 @@ Attribute TryGetPlayer.VB_Description = "Gets the player for a grid from the arg
             End If
         End If
 
-        isPlayer = True
-        Select Case UCase$(Left$(answer, 1))
-            Case "H"
-                If humanIsTaken Then
-                    Debug.Print "Only one grid can be played by a person: pick an AI for grid " & gridId & "."
-                    isPlayer = False
-                Else
-                    outDifficulty = Unspecific
-                End If
-            Case "R"
-                outDifficulty = RandomAI
-            Case "F"
-                outDifficulty = FairplayAI
-            Case "M"
-                outDifficulty = MercilessAI
-            Case Else
-                Debug.Print "'" & answer & "' is not a player."
+        isPlayer = TryParsePlayer(answer, outDifficulty)
+        If Not isPlayer Then
+            Debug.Print "'" & answer & "' is not a player."
+        ElseIf Not IsMissing(otherDifficulty) Then
+            If Not CanPlayTogether(otherDifficulty, outDifficulty) Then
+                Debug.Print "Only one grid can be played by a person: pick an AI for grid " & gridId & "."
                 isPlayer = False
-        End Select
+            End If
+        End If
         answer = vbNullString
     Loop Until isPlayer
     TryGetPlayer = True
-End Function
-
-Private Function PlayerTypeOf(ByVal difficulty As AIDifficulty) As PlayerType
-    PlayerTypeOf = IIf(difficulty = Unspecific, HumanControlled, ComputerControlled)
 End Function
 
 '@Description("Asks the person where the next ship goes, and places it there. Returns False when the answer is empty.")

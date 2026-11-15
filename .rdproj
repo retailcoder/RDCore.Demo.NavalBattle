@@ -35,6 +35,9 @@
         "RelativeUri": "NavalBattle/Tests/GameControllerTests.bas"
       },
       {
+        "RelativeUri": "NavalBattle/Tests/PlayerChoicesTests.bas"
+      },
+      {
         "RelativeUri": "NavalBattle/Tests/Doubles/ScriptedPlayer.cls"
       },
       {
@@ -57,6 +60,9 @@
       },
       {
         "RelativeUri": "NavalBattle/Model/Players/PlayerFactory.cls"
+      },
+      {
+        "RelativeUri": "NavalBattle/Model/Players/PlayerChoices.bas"
       },
       {
         "RelativeUri": "NavalBattle/Model/Grid/PlayerGrid.cls"

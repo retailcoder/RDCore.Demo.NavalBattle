@@ -29,6 +29,7 @@ Private Const TextOffset As Long = (CellSize - 16) \ 2
 ' the parts go where BoardLayout says. The status bar is white, with a thin black border, of which only the bottom shows. The banner is a light
 ' grey band with the same border: an empty label, behind the columns' captions and the player pickers.
 Private Const BackgroundFile As String = "assets\game-form-background.jpg"
+Private Const SpriteCheckName As String = "SpriteCheck"
 Private Const StatusColour As Long = &HFFFFFF
 Private Const StatusBorderColour As Long = &H0
 Private Const BannerColour As Long = &HE6E6E6
@@ -265,20 +266,30 @@ Private Sub IGameWindow_Pause(ByVal seconds As Single)
     Loop While elapsed < seconds
 End Sub
 
+' each sprite is also given to a hidden label once: a picture that Microsoft Forms cannot show is as good as one that cannot be read, and the
+' form paints colours instead of stopping at its first cell.
 Private Sub LoadSprites()
     Dim path As String
+    Dim check As MSForms.Label
     Set sprites = New Collection
     On Error GoTo NoSprites
+    Set check = Me.Controls.Add("Forms.Label.1", SpriteCheckName, False)
     Dim spriteName As Variant
     For Each spriteName In board.Names
         path = board.Path(spriteName)
         sprites.Add LoadPicture(path), spriteName
+        Set check.Picture = sprites(spriteName)
     Next
-    Exit Sub
+    GoTo RemoveCheck
 
 NoSprites:
-    Debug.Print "The game form paints colours: " & path & " cannot be read (" & Err.Description & ")."
+    Debug.Print "The game form paints colours: " & path & " cannot be read or shown (" & Err.Description & ")."
     Set sprites = Nothing
+    Resume RemoveCheck
+
+RemoveCheck:
+    On Error Resume Next
+    Me.Controls.Remove SpriteCheckName
 End Sub
 
 ' the background picture, in an image at its own size under the banner, sent to the back so that the board shows over it.

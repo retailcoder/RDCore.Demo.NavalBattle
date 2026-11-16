@@ -211,6 +211,8 @@ Private Const IconFile As String = "assets\ducky.ico"
 Private Const HoverColour As Long = &HFCF3EA
 ' a shot's flash fades back to the water in this many ticks of tmrFlash.
 Private Const FlashTicksPerShot As Long = 8
+' a miss's ripple is drawn a little see-through, with RDForms' Opacity; every other sprite is solid.
+Private Const MissOpacity As Double = 0.8
 
 ' who is told when the person closes the window.
 Private listener As IGameWindowEvents
@@ -699,6 +701,7 @@ Private Sub ShowCellSprite(ByVal cellNumber As Long, ByVal sprite As String)
     Set cell = lblCell(cellNumber)
     With imgCellSprite(cellNumber)
         Set .Picture = sprites(sprite)
+        .Opacity = IIf(board.IsMiss(sprite), MissOpacity, 1)
         .Move cell.Left + (cell.Width - .Width) / 2, cell.Top + (cell.Height - .Height) / 2
         .Visible = True
     End With

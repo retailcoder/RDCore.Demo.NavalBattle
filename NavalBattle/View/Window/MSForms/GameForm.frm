@@ -174,7 +174,7 @@ Private Sub IGameWindow_PaintGrid(ByVal grid As PlayerGrid, ByVal showShips As B
     If board.IsFleetGrid(grid.gridId, showShips) Then PaintFleet grid
 End Sub
 
-' the fleet status: each ship placed so far, by its name, lying across, with its ducks greyed out where they are hit. A sunk ship's name is
+' the fleet status: each ship placed so far, by its name, lying across, with its ducks red where they are hit. A sunk ship's name is
 ' struck out.
 Private Sub PaintFleet(ByVal grid As PlayerGrid)
     fleetCaption.Caption = "Grid " & grid.gridId & " fleet"
@@ -244,6 +244,14 @@ End Sub
 
 Private Sub IGameWindow_DizzyShipRecovers()
     board.DizzyShipRecovers
+End Sub
+
+Private Sub IGameWindow_Squeak(ByVal gridId As PlayGridId, ByVal position As IGridCoord)
+    board.Squeak gridId, position
+End Sub
+
+Private Sub IGameWindow_SqueakStops()
+    board.SqueakStops
 End Sub
 
 Private Sub IGameWindow_Pause(ByVal seconds As Single)

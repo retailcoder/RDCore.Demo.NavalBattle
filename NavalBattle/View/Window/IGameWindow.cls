@@ -88,6 +88,16 @@ Public Sub DizzyShipRecovers()
 Attribute DizzyShipRecovers.VB_Description = "The dizzy big duck is itself again."
 End Sub
 
+'@Description("A cell of a grid was just hit: it squeaks, until SqueakStops, whether the ships are shown or not.")
+Public Sub Squeak(ByVal gridId As PlayGridId, ByVal position As IGridCoord)
+Attribute Squeak.VB_Description = "A cell of a grid was just hit: it squeaks, until SqueakStops, whether the ships are shown or not."
+End Sub
+
+'@Description("The cell that was just hit shows its hit again.")
+Public Sub SqueakStops()
+Attribute SqueakStops.VB_Description = "The cell that was just hit shows its hit again."
+End Sub
+
 '@Description("Waits the given number of seconds, while the window keeps drawing and answering.")
 Public Sub Pause(ByVal seconds As Single)
 Attribute Pause.VB_Description = "Waits the given number of seconds, while the window keeps drawing and answering."

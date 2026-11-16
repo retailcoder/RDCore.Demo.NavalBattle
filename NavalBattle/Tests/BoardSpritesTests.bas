@@ -48,7 +48,7 @@ Public Sub HitsAndMisses_ShowWhereTheyWerePlayed()
     Dim sprites As Variant
     sprites = ShownSprites(grid, True)
 
-    Assert.AreEqual "hit-squeak", sprites(2, 3), "the hit"
+    Assert.AreEqual "duck-small-right-red", sprites(2, 3), "the hit, its duck red"
     Assert.AreEqual "miss-ripple", sprites(5, 5), "the miss"
     Assert.AreEqual "duck-big-right", sprites(3, 3), "the bow"
 End Sub
@@ -63,7 +63,7 @@ Public Sub Ships_ShowTheirDucks_TheBigOneAtTheBow()
 End Sub
 
 '@TestMethod
-Public Sub HiddenShips_ShowOnlyTheirHits()
+Public Sub HiddenShips_ShowOnlyTheirHits_AsTheDevilDuck()
     Dim grid As PlayerGrid
     Set grid = DestroyerGrid(Horizontal)
     grid.TryHit GridCoord.Create(2, 3)
@@ -71,7 +71,7 @@ Public Sub HiddenShips_ShowOnlyTheirHits()
     Dim sprites As Variant
     sprites = ShownSprites(grid, False)
 
-    Assert.AreEqual "hit-squeak", sprites(2, 3), "the hit"
+    Assert.AreEqual "duck-devil", sprites(2, 3), "the hit, facing front"
     Assert.AreEqual vbNullString, sprites(3, 3), "the bow"
 End Sub
 
@@ -99,7 +99,7 @@ Public Sub SunkShip_ShowsDizzy_ThenTheAnchor_EvenHidden()
     Set SUT = New BoardSprites
 
     Assert.AreEqual "sunk-dizzy", ShownSprite(SUT, grid, False, 3, 3), "while it sinks"
-    Assert.AreEqual "hit-squeak", ShownSprite(SUT, grid, False, 2, 3), "the stern"
+    Assert.AreEqual "duck-small-right-red", ShownSprite(SUT, grid, False, 2, 3), "the stern, shown once sunk"
 
     SUT.FinishSinking PlayerGrid1, grid.Fleet(1)
     SUT.FinishSinking PlayerGrid1, grid.Fleet(1)
@@ -116,16 +116,19 @@ Public Sub FallbackColours_TellWaterShipsHitsAndMissesApart()
     Assert.AreEqual SUT.FallbackColour("hit-squeak"), SUT.FallbackColour("anchor-cracked"), "an anchor is a hit"
     Assert.IsTrue SUT.FallbackColour("duck-big-right") <> SUT.Water, "a ship is not water"
     Assert.IsTrue SUT.FallbackColour("miss-ripple") <> SUT.FallbackColour("hit-squeak"), "a miss is not a hit"
-    Assert.IsTrue SUT.IsHit("hit-squeak") And Not SUT.IsHit("sunk-dizzy"), "only the hit writes an X"
+    Assert.AreEqual SUT.FallbackColour("hit-squeak"), SUT.FallbackColour("duck-big-down-red"), "a red duck is a hit"
+    Assert.AreEqual SUT.FallbackColour("hit-squeak"), SUT.FallbackColour("duck-devil"), "the devil duck is a hit"
+    Assert.IsTrue SUT.IsHit("hit-squeak") And SUT.IsHit("duck-small-right-red") And SUT.IsHit("duck-devil"), "the hits write an X"
+    Assert.IsFalse SUT.IsHit("sunk-dizzy") Or SUT.IsHit("duck-big-right"), "a dizzy duck and a duck do not"
 End Sub
 
 '@TestMethod
-Public Sub EverySprite_IsAGifInTheWorkspaceAssets()
+Public Sub EverySprite_IsAPngInTheWorkspaceAssets()
     Dim SUT As BoardSprites
     Set SUT = New BoardSprites
 
-    Assert.AreEqual 10, UBound(SUT.Names) - LBound(SUT.Names) + 1, "the sprites: the grid's eight, and the fleet status's two greyed-out ducks"
-    Assert.AreEqual CurDir$ & "\assets\sprites\hit-squeak.gif", SUT.Path("hit-squeak")
+    Assert.AreEqual 13, UBound(SUT.Names) - LBound(SUT.Names) + 1, "the sprites: four ducks and their four red ones, the devil duck, the squeak, the miss, the dizzy duck and the anchor"
+    Assert.AreEqual CurDir$ & "\assets\sprites\hit-squeak.png", SUT.Path("hit-squeak")
 End Sub
 
 '@TestMethod
@@ -162,7 +165,7 @@ Public Sub FleetSprites_ShowEachShipAcross_InTheOrderTheyWerePlaced()
 End Sub
 
 '@TestMethod
-Public Sub FleetSprites_GreyOutTheHitDucks_AndNoOtherSprite()
+Public Sub FleetSprites_ShowTheHitDucksRed_AndNoOtherSprite()
     Dim grid As PlayerGrid
     Set grid = DestroyerGrid(Vertical)
     Dim SUT As BoardSprites
@@ -172,14 +175,33 @@ Public Sub FleetSprites_GreyOutTheHitDucks_AndNoOtherSprite()
     grid.TryHit GridCoord.Create(2, 3)
     SUT.DizzyShip PlayerGrid1, grid.Fleet(1)
     destroyer = FleetShipSprites(SUT, grid, 1)
-    Assert.AreEqual "duck-small-right-grey", destroyer(1), "the hit stern"
+    Assert.AreEqual "duck-small-right-red", destroyer(1), "the hit stern"
     Assert.AreEqual "duck-big-right", destroyer(2), "the bow, dizzy on the grid"
 
     grid.TryHit GridCoord.Create(2, 4)
     SUT.FinishSinking PlayerGrid1, grid.Fleet(1)
     destroyer = FleetShipSprites(SUT, grid, 1)
-    Assert.AreEqual "duck-small-right-grey", destroyer(1), "the sunk ship's stern"
-    Assert.AreEqual "duck-big-right-grey", destroyer(2), "its bow, an anchor on the grid"
+    Assert.AreEqual "duck-small-right-red", destroyer(1), "the sunk ship's stern"
+    Assert.AreEqual "duck-big-right-red", destroyer(2), "its bow, an anchor on the grid"
+End Sub
+
+'@TestMethod
+Public Sub Squeak_ShowsOnTheHitCell_OfItsGridOnly_UntilItStops()
+    Dim grid As PlayerGrid
+    Set grid = DestroyerGrid(Horizontal)
+    grid.TryHit GridCoord.Create(2, 3)
+    Dim otherGrid As PlayerGrid
+    Set otherGrid = PlayerGrid.Create(PlayerGrid2)
+    Dim SUT As BoardSprites
+    Set SUT = New BoardSprites
+
+    SUT.Squeak PlayerGrid1, GridCoord.Create(2, 3)
+    Assert.AreEqual "hit-squeak", ShownSprite(SUT, grid, False, 2, 3), "hidden"
+    Assert.AreEqual "hit-squeak", ShownSprite(SUT, grid, True, 2, 3), "shown"
+    Assert.AreEqual vbNullString, ShownSprite(SUT, otherGrid, True, 2, 3), "the other grid"
+
+    SUT.SqueakStops
+    Assert.AreEqual "duck-devil", ShownSprite(SUT, grid, False, 2, 3), "after"
 End Sub
 
 ' what the given BoardSprites shows of a ship in the fleet status, by its place in the fleet.

@@ -309,6 +309,14 @@ Private Sub IGameWindow_DizzyShipRecovers()
     board.DizzyShipRecovers
 End Sub
 
+Private Sub IGameWindow_Squeak(ByVal gridId As PlayGridId, ByVal position As IGridCoord)
+    board.Squeak gridId, position
+End Sub
+
+Private Sub IGameWindow_SqueakStops()
+    board.SqueakStops
+End Sub
+
 Private Sub IGameWindow_Pause(ByVal seconds As Single)
     Dim startTime As Single
     startTime = Timer
@@ -408,7 +416,7 @@ Private Sub AddPlayerPicker(ByVal gridId As PlayGridId)
     End With
 End Sub
 
-' the fleet status: each ship placed so far, by its name, lying across, with its ducks greyed out where they are hit. A sunk ship's name is
+' the fleet status: each ship placed so far, by its name, lying across, with its ducks red where they are hit. A sunk ship's name is
 ' struck out.
 Private Sub PaintFleet(ByVal grid As PlayerGrid)
     lblFleet.Caption = "Grid " & grid.gridId & " fleet"

@@ -48,7 +48,7 @@ End Sub
 '@Description("The number of tests.")
 Private Property Get TestCount() As Long
 Attribute TestCount.VB_Description = "The number of tests."
-    TestCount = 85
+    TestCount = 86
 End Property
 
 '@Description("The name of a test, by its number, and runs it where run is True.")
@@ -122,11 +122,11 @@ Attribute Test.VB_Description = "The name of a test, by its number, and runs it 
         Case 65: Test = "BoardSpritesTests.OpenWater_ShowsNoSprite": If run Then BoardSpritesTests.OpenWater_ShowsNoSprite
         Case 66: Test = "BoardSpritesTests.HitsAndMisses_ShowWhereTheyWerePlayed": If run Then BoardSpritesTests.HitsAndMisses_ShowWhereTheyWerePlayed
         Case 67: Test = "BoardSpritesTests.Ships_ShowTheirDucks_TheBigOneAtTheBow": If run Then BoardSpritesTests.Ships_ShowTheirDucks_TheBigOneAtTheBow
-        Case 68: Test = "BoardSpritesTests.HiddenShips_ShowOnlyTheirHits": If run Then BoardSpritesTests.HiddenShips_ShowOnlyTheirHits
+        Case 68: Test = "BoardSpritesTests.HiddenShips_ShowOnlyTheirHits_AsTheDevilDuck": If run Then BoardSpritesTests.HiddenShips_ShowOnlyTheirHits_AsTheDevilDuck
         Case 69: Test = "BoardSpritesTests.DizzyShip_ShowsItsBowDizzy_UntilItRecovers": If run Then BoardSpritesTests.DizzyShip_ShowsItsBowDizzy_UntilItRecovers
         Case 70: Test = "BoardSpritesTests.SunkShip_ShowsDizzy_ThenTheAnchor_EvenHidden": If run Then BoardSpritesTests.SunkShip_ShowsDizzy_ThenTheAnchor_EvenHidden
         Case 71: Test = "BoardSpritesTests.FallbackColours_TellWaterShipsHitsAndMissesApart": If run Then BoardSpritesTests.FallbackColours_TellWaterShipsHitsAndMissesApart
-        Case 72: Test = "BoardSpritesTests.EverySprite_IsAGifInTheWorkspaceAssets": If run Then BoardSpritesTests.EverySprite_IsAGifInTheWorkspaceAssets
+        Case 72: Test = "BoardSpritesTests.EverySprite_IsAPngInTheWorkspaceAssets": If run Then BoardSpritesTests.EverySprite_IsAPngInTheWorkspaceAssets
         Case 73: Test = "BoardFormTests.Cells_AreLoadedFromTheDesignedCell": If run Then BoardFormTests.Cells_AreLoadedFromTheDesignedCell
         Case 74: Test = "BoardFormTests.PlayerPickers_OfferEveryPlayer": If run Then BoardFormTests.PlayerPickers_OfferEveryPlayer
         Case 75: Test = "BoardFormTests.ConfirmedPlayers_ShowInBold": If run Then BoardFormTests.ConfirmedPlayers_ShowInBold
@@ -134,12 +134,13 @@ Attribute Test.VB_Description = "The name of a test, by its number, and runs it 
         Case 77: Test = "BoardLayoutTests.Buttons_AreARow_AtTheBottomLeft_UnderTheGrids": If run Then BoardLayoutTests.Buttons_AreARow_AtTheBottomLeft_UnderTheGrids
         Case 78: Test = "BoardSpritesTests.FleetGrid_IsTheFirstGridPaintedWithItsShips": If run Then BoardSpritesTests.FleetGrid_IsTheFirstGridPaintedWithItsShips
         Case 79: Test = "BoardSpritesTests.FleetSprites_ShowEachShipAcross_InTheOrderTheyWerePlaced": If run Then BoardSpritesTests.FleetSprites_ShowEachShipAcross_InTheOrderTheyWerePlaced
-        Case 80: Test = "BoardSpritesTests.FleetSprites_GreyOutTheHitDucks_AndNoOtherSprite": If run Then BoardSpritesTests.FleetSprites_GreyOutTheHitDucks_AndNoOtherSprite
+        Case 80: Test = "BoardSpritesTests.FleetSprites_ShowTheHitDucksRed_AndNoOtherSprite": If run Then BoardSpritesTests.FleetSprites_ShowTheHitDucksRed_AndNoOtherSprite
         Case 81: Test = "BoardFormTests.FleetStatus_ShowsEveryShipPlaced": If run Then BoardFormTests.FleetStatus_ShowsEveryShipPlaced
         Case 82: Test = "BoardLayoutTests.Banner_IsAcrossTheWindow_OnTheStatusBarsBottomBorder": If run Then BoardLayoutTests.Banner_IsAcrossTheWindow_OnTheStatusBarsBottomBorder
         Case 83: Test = "BoardLayoutTests.Background_IsUnderTheBanner_AndTheWindowEndsWithIt": If run Then BoardLayoutTests.Background_IsUnderTheBanner_AndTheWindowEndsWithIt
         Case 84: Test = "ShipTests.NameChoices_AreFiveAKind_NoNameTwice": If run Then ShipTests.NameChoices_AreFiveAKind_NoNameTwice
         Case 85: Test = "ShipTests.PickNames_NamesTheShipsCreatedAfterIt_AmongTheirKindsChoices": If run Then ShipTests.PickNames_NamesTheShipsCreatedAfterIt_AmongTheirKindsChoices
+        Case 86: Test = "BoardSpritesTests.Squeak_ShowsOnTheHitCell_OfItsGridOnly_UntilItStops": If run Then BoardSpritesTests.Squeak_ShowsOnTheHitCell_OfItsGridOnly_UntilItStops
         Case Else: Test = vbNullString
     End Select
 End Function

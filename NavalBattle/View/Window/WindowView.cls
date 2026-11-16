@@ -27,6 +27,8 @@ End Type
 Private Const SinkingSeconds As Single = 0.8
 ' how long a hit ship's big duck stays dizzy.
 Private Const DizzySeconds As Single = 0.6
+' how long a hit cell squeaks.
+Private Const SqueakSeconds As Single = 0.35
 
 Private this As TView
 
@@ -122,7 +124,19 @@ End Sub
 
 Private Sub IGridViewCommands_OnHit(ByVal gridId As PlayGridId, ByVal position As IGridCoord, ByVal hitShip As IShip)
     Report gridId, position, "hit, the " & hitShip.Name & "."
+    ShowSqueak gridId, position
     ShowDizzyShip gridId, hitShip
+End Sub
+
+' a cell was hit: it squeaks for a moment, on either grid, since a hit is shown even where the ships are not.
+Private Sub ShowSqueak(ByVal gridId As PlayGridId, ByVal position As IGridCoord)
+    If Not IsOpen Or this.Grids(gridId) Is Nothing Then Exit Sub
+    window.Squeak gridId, position
+    window.PaintGrid this.Grids(gridId), ShowsShips(gridId)
+    window.Pause SqueakSeconds
+    If Not IsOpen Then Exit Sub
+    window.SqueakStops
+    window.PaintGrid this.Grids(gridId), ShowsShips(gridId)
 End Sub
 
 ' a ship was hit: its big duck is dizzy for a moment, where the ships are shown. A hidden ship shows nothing, so it is not given away.
@@ -138,6 +152,7 @@ End Sub
 
 Private Sub IGridViewCommands_OnSink(ByVal gridId As PlayGridId, ByVal position As IGridCoord, ByVal sunkShip As IShip)
     Report gridId, position, "the " & sunkShip.Name & " is sunk."
+    ShowSqueak gridId, position
     FinishSinking gridId, sunkShip
 End Sub
 
@@ -178,6 +193,7 @@ Private Sub IGridViewCommands_OnGameOver(ByVal winningGrid As PlayGridId, ByVal 
     If IsOpen Then window.SetStatus text & " Close the window to leave."
     Debug.Print text
     ' the shot that ends the game sinks the last ship, and the controller reports the game over instead of the sinking.
+    ShowSqueak OtherGrid(winningGrid), position
     FinishSinking OtherGrid(winningGrid), sunkShip
 End Sub
 

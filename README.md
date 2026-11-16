@@ -9,7 +9,7 @@ This repository holds the game's port to the [RDCore](https://github.com/rubberd
 
 ## Project status
 
-RD-VBA Naval Battle is in **pre-alpha** development. It plays in a window on Windows, and in the console elsewhere: a person against the computer, or the computer against itself.
+RD-VBA Naval Battle is in **pre-alpha** development. It plays in a window on Windows, and in the console elsewhere or where the window cannot open: a person against the computer, or the computer against itself.
 
 ## Running the game
 
@@ -29,7 +29,7 @@ After the path, `--player1 <player>` and `--player2 <player>` name the players (
 rdc run . --player1 merciless --player2 fairplay --seed 42
 ```
 
-`--test` runs the tests in `tests/` instead of a game. It prints each test's outcome and a count, and exits 1 when a test fails:
+`--test` runs the tests in `NavalBattle/Tests/` instead of a game. It prints each test's outcome and a count, and exits 1 when a test fails:
 
 ```
 rdc run . --test

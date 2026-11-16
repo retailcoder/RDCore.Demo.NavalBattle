@@ -14,13 +14,8 @@ Attribute VB_Description = "Default instance factory; avoid altering default ins
 Option Explicit
 
 Private ShipSizes As Dictionary
+' each kind's name in the game being played: its first name choice, until a game picks one.
 Private shipNames As Dictionary
-
-Private Const ShipNameCarrier As String = "Quackraft Carrier"
-Private Const ShipNameDreadnought As String = "Battlequacker"
-Private Const ShipNameSubmarine As String = "Rubber Diver"
-Private Const ShipNameCruiser As String = "Duck Cruiser"
-Private Const ShipNameDestroyer As String = "Duckstroyer"
 
 Private Type TShip
     ShipKind As ShipType
@@ -63,6 +58,34 @@ Public Function Names() As Variant
 Attribute Names.VB_Description = "Gets an array of all ship names."
     Names = shipNames.Items
 End Function
+
+'@Description("The names a ship of the given kind can go by: each names its formation of ducks, a big one and its ducklings, one duck to a cell.")
+Public Function NameChoices(ByVal kind As ShipType) As Variant
+Attribute NameChoices.VB_Description = "The names a ship of the given kind can go by: each names its formation of ducks, a big one and its ducklings, one duck to a cell."
+    Select Case kind
+        Case ShipType.Carrier
+            NameChoices = Array("Ducks in a Row", "Full-Hands Mama", "Tidal Tub-Wave", "The Minivan", "Mega-Bubble Brood")
+        Case ShipType.Dreadnought
+            NameChoices = Array("Busy Brood", "Foam Brigade", "Sudsy Squad", "Waddle Parade", "Splash Patrol")
+        Case ShipType.Submarine
+            NameChoices = Array("Double Trouble", "Bubble Buddies", "Ripple Rascals", "Bathtub Trio", "Mini-Quack Pack")
+        Case ShipType.Cruiser
+            NameChoices = Array("Sidekick Squad", "Soap Suds Trio", "Squeaky Three", "Puddle Posse", "Tub-Time Trio")
+        Case ShipType.Destroyer
+            NameChoices = Array("Only Child", "Squeak & Mini-Squeak", "Mama's Favorite", "Dynamic Duo", "Lil' Splasher")
+    End Select
+End Function
+
+'@Description("Use from the class' default instance, once a game, before its ships are created: picks each kind's name for the game among its NameChoices, with the game's randomizer, so that the same seed picks the same names.")
+Public Sub PickNames(ByVal randomizer As IRandomizer)
+Attribute PickNames.VB_Description = "Use from the class' default instance, once a game, before its ships are created: picks each kind's name for the game among its NameChoices, with the game's randomizer, so that the same seed picks the same names."
+    Dim kind As Variant
+    For Each kind In shipNames.Keys
+        Dim choices As Variant
+        choices = NameChoices(kind)
+        shipNames(kind) = choices(randomizer.Between(LBound(choices), UBound(choices)))
+    Next
+End Sub
 
 '@Description("Use from the class' default instance to create a new ship at the given position or, where it would cross the grid's right or bottom edge, as close to it as the ship fits: its anchor moves back along its direction.")
 Public Function CreateInside(ByVal kind As ShipType, ByVal direction As ShipOrientation, ByVal position As IGridCoord) As Ship
@@ -180,13 +203,12 @@ Private Sub Class_Initialize()
             .Add ShipType.Destroyer, 2
         End With
         Set shipNames = New Dictionary
-        With shipNames
-            .Add ShipType.Carrier, ShipNameCarrier
-            .Add ShipType.Dreadnought, ShipNameDreadnought
-            .Add ShipType.Submarine, ShipNameSubmarine
-            .Add ShipType.Cruiser, ShipNameCruiser
-            .Add ShipType.Destroyer, ShipNameDestroyer
-        End With
+        Dim kind As Variant
+        For Each kind In ShipSizes.Keys
+            Dim choices As Variant
+            choices = NameChoices(kind)
+            shipNames.Add kind, choices(LBound(choices))
+        Next
     Else
         Set this.State = New Dictionary
     End If

@@ -62,6 +62,9 @@
         "RelativeUri": "NavalBattle/Tests/Doubles/BoardInputRecorder.cls"
       },
       {
+        "RelativeUri": "NavalBattle/Tests/Doubles/EdgeRandomizer.cls"
+      },
+      {
         "RelativeUri": "NavalBattle/Model/Players/AIPlayer.cls"
       },
       {

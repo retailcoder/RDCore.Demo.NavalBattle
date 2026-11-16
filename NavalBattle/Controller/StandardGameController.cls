@@ -97,7 +97,8 @@ Private Sub viewAdapter_OnCreatePlayer(ByVal gridId As PlayGridId, ByVal pt As P
 End Sub
 
 Private Sub OnShipPositionStart()
-    
+    Ship.PickNames this.Random
+
     Dim kinds As Variant
     kinds = Ship.ShipKinds
     Set this.CurrentShip = Ship.Create(kinds(0), Horizontal, GridCoord.Create(1, 1))

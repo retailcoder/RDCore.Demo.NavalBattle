@@ -189,3 +189,39 @@ Public Sub CreateInside_WhereTheShipFits_KeepsThePosition()
     Assert.AreEqual 10&, SUT.GridPosition.Y, "Y"
 End Sub
 
+
+'@TestMethod
+Public Sub NameChoices_AreFiveAKind_NoNameTwice()
+    Dim seen As Collection
+    Set seen = New Collection
+    Dim kind As Variant
+    For Each kind In Ship.ShipKinds
+        Dim choices As Variant
+        choices = Ship.NameChoices(kind)
+        Assert.AreEqual 5, UBound(choices) - LBound(choices) + 1, "kind " & kind
+        Dim choice As Variant
+        For Each choice In choices
+            On Error Resume Next
+            seen.Add choice, choice
+            Assert.AreEqual 0, Err.Number, "named twice: " & choice
+            On Error GoTo 0
+        Next
+    Next
+End Sub
+
+'@TestMethod
+Public Sub PickNames_NamesTheShipsCreatedAfterIt_AmongTheirKindsChoices()
+    Dim randomizer As EdgeRandomizer
+    Set randomizer = New EdgeRandomizer
+    Dim choices As Variant
+    choices = Ship.NameChoices(ShipType.Destroyer)
+
+    randomizer.PicksHighest = True
+    Ship.PickNames randomizer
+    Assert.AreEqual choices(UBound(choices)), Ship.Create(ShipType.Destroyer, Horizontal, GridCoord.Default).Name, "the highest pick"
+
+    ' the first choices again, as the other tests expect.
+    randomizer.PicksHighest = False
+    Ship.PickNames randomizer
+    Assert.AreEqual choices(LBound(choices)), Ship.Create(ShipType.Destroyer, Horizontal, GridCoord.Default).Name, "the lowest pick"
+End Sub

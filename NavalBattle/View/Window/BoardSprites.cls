@@ -7,9 +7,9 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-Attribute VB_Description = "What each cell of a game window's grids shows: a duck, a hit duck in red, a miss, a dizzy duck or an anchor, by its sprite's name, and the colour it shows instead where the sprites cannot be read. It knows which hit ship is dizzy, which cell squeaks, which sunk ships are done sinking, and which grid's fleet the fleet status shows."
+Attribute VB_Description = "What each cell of a game window's grids shows: a duck, a hit duck in red, a miss or a dizzy duck, by its sprite's name, and the colour it shows instead where the sprites cannot be read. It knows which hit ship is dizzy, which cell squeaks, which sunk ships are done sinking, and which grid's fleet the fleet status shows."
 '@Folder("NavalBattle.View.Window")
-'@ModuleDescription("What each cell of a game window's grids shows: a duck, a hit duck in red, a miss, a dizzy duck or an anchor, by its sprite's name, and the colour it shows instead where the sprites cannot be read. It knows which hit ship is dizzy, which cell squeaks, which sunk ships are done sinking, and which grid's fleet the fleet status shows.")
+'@ModuleDescription("What each cell of a game window's grids shows: a duck, a hit duck in red, a miss or a dizzy duck, by its sprite's name, and the colour it shows instead where the sprites cannot be read. It knows which hit ship is dizzy, which cell squeaks, which sunk ships are done sinking, and which grid's fleet the fleet status shows.")
 Option Explicit
 
 ' the sprites, PNG files in assets/sprites, see-through around the picture; the ducks are named by DuckSprite and RedDuckSprite.
@@ -20,7 +20,6 @@ Private Const SpriteHiddenHit As String = "duck-devil"
 Private Const RedSuffix As String = "-red"
 Private Const SpriteMiss As String = "miss-ripple"
 Private Const SpriteDizzy As String = "sunk-dizzy"
-Private Const SpriteAnchor As String = "anchor-cracked"
 
 Private Const WaterColour As Long = &HF5E1C8
 Private Const ShipColour As Long = &H707070
@@ -49,7 +48,7 @@ Public Function Names() As Variant
 Attribute Names.VB_Description = "The names of every sprite a cell can show, on a grid or in the fleet status."
     Names = Array(DuckSprite(Horizontal, True), DuckSprite(Horizontal, False), DuckSprite(Vertical, True), DuckSprite(Vertical, False), _
         RedDuckSprite(Horizontal, True), RedDuckSprite(Horizontal, False), RedDuckSprite(Vertical, True), RedDuckSprite(Vertical, False), _
-        SpriteHiddenHit, SpriteSqueak, SpriteMiss, SpriteDizzy, SpriteAnchor)
+        SpriteHiddenHit, SpriteSqueak, SpriteMiss, SpriteDizzy)
 End Function
 
 '@Description("The file of a sprite, by its name: a PNG in the workspace's assets/sprites folder.")
@@ -58,9 +57,9 @@ Attribute Path.VB_Description = "The file of a sprite, by its name: a PNG in the
     Path = CurDir$ & "\" & SpriteFolder & spriteName & ".png"
 End Function
 
-'@Description("The sprite each cell of a grid shows, by its name, in an array indexed by column and row from 1: empty for open water. A miss shows where it was played. A hit shows its duck in red where the ships are shown, or where its ship is sunk, and the devil duck facing front where its ship is hidden. The ships show a duck on each cell that is not hit, when they are shown, and a sunk ship's bow shows either way: a dizzy duck while it sinks, then an anchor. The big duck of the ship that was just hit is dizzy too, and the cell that was just hit squeaks.")
+'@Description("The sprite each cell of a grid shows, by its name, in an array indexed by column and row from 1: empty for open water. A miss shows where it was played. A hit shows its duck in red where the ships are shown, or where its ship is sunk, and the devil duck facing front where its ship is hidden. The ships show a duck on each cell that is not hit, when they are shown, and a sunk ship's bow shows either way: a dizzy duck while it sinks, then its big duck in red. The big duck of the ship that was just hit is dizzy too, and the cell that was just hit squeaks.")
 Public Function CellSprites(ByVal grid As PlayerGrid, ByVal showShips As Boolean) As Variant
-Attribute CellSprites.VB_Description = "The sprite each cell of a grid shows, by its name, in an array indexed by column and row from 1: empty for open water. A miss shows where it was played. A hit shows its duck in red where the ships are shown, or where its ship is sunk, and the devil duck facing front where its ship is hidden. The ships show a duck on each cell that is not hit, when they are shown, and a sunk ship's bow shows either way: a dizzy duck while it sinks, then an anchor. The big duck of the ship that was just hit is dizzy too, and the cell that was just hit squeaks."
+Attribute CellSprites.VB_Description = "The sprite each cell of a grid shows, by its name, in an array indexed by column and row from 1: empty for open water. A miss shows where it was played. A hit shows its duck in red where the ships are shown, or where its ship is sunk, and the devil duck facing front where its ship is hidden. The ships show a duck on each cell that is not hit, when they are shown, and a sunk ship's bow shows either way: a dizzy duck while it sinks, then its big duck in red. The big duck of the ship that was just hit is dizzy too, and the cell that was just hit squeaks."
     Dim result() As String
     ReDim result(1 To PlayerGrid.Size, 1 To PlayerGrid.Size)
     Dim X As Long
@@ -80,7 +79,7 @@ Attribute CellSprites.VB_Description = "The sprite each cell of a grid shows, by
             Dim isBow As Boolean
             isBow = index = item.Size - 1
             If item.IsSunken And isBow Then
-                result(X, Y) = IIf(IsSinkingDone(grid.gridId, item), SpriteAnchor, SpriteDizzy)
+                result(X, Y) = IIf(IsSinkingDone(grid.gridId, item), RedDuckSprite(item.Orientation, True), SpriteDizzy)
             ElseIf grid.State(GridCoord.Create(X, Y)) = GridState.PreviousHit Then
                 result(X, Y) = IIf(showShips Or item.IsSunken, RedDuckSprite(item.Orientation, isBow), SpriteHiddenHit)
             ElseIf showShips Then
@@ -138,14 +137,14 @@ Attribute FleetSprites.VB_Description = "What the fleet status shows of a grid's
     Set FleetSprites = result
 End Function
 
-'@Description("The colour a cell shows in place of its sprite, where the sprites cannot be read: open water, a miss, a hit (a dizzy duck and an anchor are hits too), or a ship.")
+'@Description("The colour a cell shows in place of its sprite, where the sprites cannot be read: open water, a miss, a hit (a dizzy duck is a hit too), or a ship.")
 Public Function FallbackColour(ByVal spriteName As String) As Long
-Attribute FallbackColour.VB_Description = "The colour a cell shows in place of its sprite, where the sprites cannot be read: open water, a miss, a hit (a dizzy duck and an anchor are hits too), or a ship."
+Attribute FallbackColour.VB_Description = "The colour a cell shows in place of its sprite, where the sprites cannot be read: open water, a miss, a hit (a dizzy duck is a hit too), or a ship."
     If spriteName = vbNullString Then
         FallbackColour = WaterColour
     ElseIf spriteName = SpriteMiss Then
         FallbackColour = MissColour
-    ElseIf IsHit(spriteName) Or spriteName = SpriteDizzy Or spriteName = SpriteAnchor Then
+    ElseIf IsHit(spriteName) Or spriteName = SpriteDizzy Then
         FallbackColour = HitColour
     Else
         FallbackColour = ShipColour
@@ -196,9 +195,9 @@ Attribute DizzyShipRecovers.VB_Description = "The dizzy big duck is itself again
     this.DizzyShipKey = vbNullString
 End Sub
 
-'@Description("A ship's sinking is done: from now on, its bow shows the anchor.")
+'@Description("A ship's sinking is done: from now on, its bow shows its big duck in red.")
 Public Sub FinishSinking(ByVal gridId As PlayGridId, ByVal sunkShip As IShip)
-Attribute FinishSinking.VB_Description = "A ship's sinking is done: from now on, its bow shows the anchor."
+Attribute FinishSinking.VB_Description = "A ship's sinking is done: from now on, its bow shows its big duck in red."
     If IsSinkingDone(gridId, sunkShip) Then Exit Sub
     this.SunkShipKeys.Add ShipKey(gridId, sunkShip)
 End Sub

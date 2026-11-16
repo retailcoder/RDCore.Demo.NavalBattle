@@ -63,9 +63,9 @@ Public Sub EndGame()
 Attribute EndGame.VB_Description = "The game is over: the grids do nothing more, and the Ready button is gone."
 End Sub
 
-'@Description("Paints a grid as it stands: hits, misses, water, and the ships when they are to be shown. A sunk ship shows its anchor once its sinking is done, and the dizzy duck until then; the big duck of a ship that was just hit is dizzy too.")
+'@Description("Paints a grid as it stands: hits, misses, water, and the ships when they are to be shown. A sunk ship's bow shows its big duck in red once its sinking is done, and the dizzy duck until then; the big duck of a ship that was just hit is dizzy too.")
 Public Sub PaintGrid(ByVal grid As PlayerGrid, ByVal showShips As Boolean)
-Attribute PaintGrid.VB_Description = "Paints a grid as it stands: hits, misses, water, and the ships when they are to be shown. A sunk ship shows its anchor once its sinking is done, and the dizzy duck until then; the big duck of a ship that was just hit is dizzy too."
+Attribute PaintGrid.VB_Description = "Paints a grid as it stands: hits, misses, water, and the ships when they are to be shown. A sunk ship's bow shows its big duck in red once its sinking is done, and the dizzy duck until then; the big duck of a ship that was just hit is dizzy too."
 End Sub
 
 '@Description("Paints where a ship would go, over the grid: green where it can go, red where it cannot.")
@@ -73,9 +73,9 @@ Public Sub PaintShipPreview(ByVal grid As PlayerGrid, ByVal previewShip As IShip
 Attribute PaintShipPreview.VB_Description = "Paints where a ship would go, over the grid: green where it can go, red where it cannot."
 End Sub
 
-'@Description("A ship's sinking is done: from now on, its bow shows the anchor.")
+'@Description("A ship's sinking is done: from now on, its bow shows its big duck in red.")
 Public Sub FinishSinking(ByVal gridId As PlayGridId, ByVal sunkShip As IShip)
-Attribute FinishSinking.VB_Description = "A ship's sinking is done: from now on, its bow shows the anchor."
+Attribute FinishSinking.VB_Description = "A ship's sinking is done: from now on, its bow shows its big duck in red."
 End Sub
 
 '@Description("A ship was hit: its big duck is dizzy, until DizzyShipRecovers. Nothing shows where the ships are not shown.")

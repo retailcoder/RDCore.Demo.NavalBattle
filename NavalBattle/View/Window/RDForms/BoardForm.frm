@@ -458,19 +458,26 @@ Private Sub PaintFleet(ByVal grid As PlayerGrid)
     Next
 End Sub
 
-' a ship's name and cells, loaded from the designed ones.
+' a ship's name and cells, loaded from the designed ones. A label or an image loaded at run time goes under every label and image already
+' there, the background included, as in VB6: each one is brought to the front. A loaded cell starts with the Tag of the first cell, as in VB6,
+' and the Tag says which sprite a cell shows: it is cleared, so the cell is painted.
 Private Sub AddFleetShip(ByVal shipNumber As Long, ByVal item As IShip)
     If shipNumber > 1 Then Load lblShip(shipNumber - 1)
     Place lblShip(shipNumber - 1), BoardLayout.ShipCellLeft(1), BoardLayout.ShipNameTop(shipNumber), BoardLayout.CaptionWidth, LineHeight
     lblShip(shipNumber - 1).Caption = item.Name
     lblShip(shipNumber - 1).Visible = True
+    lblShip(shipNumber - 1).ZOrder vbBringToFront
 
     Dim column As Long
     For column = 1 To item.Size
         Dim cellNumber As Long
         cellNumber = FleetCellIndex(shipNumber, column)
-        If cellNumber > 0 Then Load imgShipCell(cellNumber)
+        If cellNumber > 0 Then
+            Load imgShipCell(cellNumber)
+            imgShipCell(cellNumber).Tag = vbNullString
+        End If
         imgShipCell(cellNumber).Visible = True
+        imgShipCell(cellNumber).ZOrder vbBringToFront
     Next
     fleetShipCount = shipNumber
 End Sub
@@ -488,6 +495,7 @@ Private Sub PaintFleetCell(ByVal shipNumber As Long, ByVal column As Long, ByVal
     cell.Tag = sprite
 End Sub
 
+' a row number or a column letter: a label added at run time goes under the background, as in VB6, so it is brought to the front.
 Private Sub AddCaption(ByVal controlName As String, ByVal leftEdge As Long, ByVal topEdge As Long, ByVal text As String)
     Dim result As VB.Label
     Set result = Me.Controls.Add("VB.Label", controlName)
@@ -497,6 +505,7 @@ Private Sub AddCaption(ByVal controlName As String, ByVal leftEdge As Long, ByVa
         .Alignment = vbCenter
         .BackStyle = 0 ' transparent
         .Visible = True
+        .ZOrder vbBringToFront
     End With
 End Sub
 

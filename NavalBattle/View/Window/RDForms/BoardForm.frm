@@ -28,7 +28,6 @@ Begin VB.Form BoardForm
       BorderStyle     =   1  'Fixed Single
       Height          =   600
       Left            =   0
-      Opacity         =   0.9
       ScaleHeight     =   570
       ScaleWidth      =   16330
       TabIndex        =   8
@@ -186,7 +185,6 @@ Begin VB.Form BoardForm
       BorderStyle     =   1  'Fixed Single
       Height          =   780
       Left            =   0
-      Opacity         =   0.9
       TabIndex        =   7
       Top             =   0
       Width           =   16360

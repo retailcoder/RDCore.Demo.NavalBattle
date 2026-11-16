@@ -48,7 +48,7 @@ End Sub
 '@Description("The number of tests.")
 Private Property Get TestCount() As Long
 Attribute TestCount.VB_Description = "The number of tests."
-    TestCount = 86
+    TestCount = 81
 End Property
 
 '@Description("The name of a test, by its number, and runs it where run is True.")
@@ -87,60 +87,55 @@ Attribute Test.VB_Description = "The name of a test, by its number, and runs it 
         Case 30: Test = "CommandLineSwitchesTests.RuntimeSwitchAfter_TheSeedIsRead": If run Then CommandLineSwitchesTests.RuntimeSwitchAfter_TheSeedIsRead
         Case 31: Test = "CommandLineSwitchesTests.RuntimeSwitchInTheValuesPlace_IsNoValue": If run Then CommandLineSwitchesTests.RuntimeSwitchInTheValuesPlace_IsNoValue
         Case 32: Test = "CommandLineSwitchesTests.SwitchesItIsNotAskedAbout_AreIgnored": If run Then CommandLineSwitchesTests.SwitchesItIsNotAskedAbout_AreIgnored
-        Case 33: Test = "CommandLineSwitchesTests.NoViewSwitchOnWindows_TriesMicrosoftFormsThenRDFormsThenTheConsole": If run Then CommandLineSwitchesTests.NoViewSwitchOnWindows_TriesMicrosoftFormsThenRDFormsThenTheConsole
-        Case 34: Test = "CommandLineSwitchesTests.NoViewSwitchElsewhere_TriesRDFormsThenTheConsole": If run Then CommandLineSwitchesTests.NoViewSwitchElsewhere_TriesRDFormsThenTheConsole
-        Case 35: Test = "CommandLineSwitchesTests.RDFormsSwitch_TriesRDFormsThenTheConsole": If run Then CommandLineSwitchesTests.RDFormsSwitch_TriesRDFormsThenTheConsole
-        Case 36: Test = "CommandLineSwitchesTests.ConsoleSwitch_PlaysInTheConsoleAlone_EvenWithRDForms": If run Then CommandLineSwitchesTests.ConsoleSwitch_PlaysInTheConsoleAlone_EvenWithRDForms
-        Case 37: Test = "GameControllerTests.ComputerVsComputer_OnSinkNamesEachSunkShip": If run Then GameControllerTests.ComputerVsComputer_OnSinkNamesEachSunkShip
-        Case 38: Test = "GameControllerTests.ComputerVsComputer_EachSinkingIsReportedWithTheShotThatSankTheShip": If run Then GameControllerTests.ComputerVsComputer_EachSinkingIsReportedWithTheShotThatSankTheShip
-        Case 39: Test = "PlayerChoicesTests.FirstLetter_IsEnough_InEitherCase": If run Then PlayerChoicesTests.FirstLetter_IsEnough_InEitherCase
-        Case 40: Test = "PlayerChoicesTests.NotAPlayer_IsNotRead": If run Then PlayerChoicesTests.NotAPlayer_IsNotRead
-        Case 41: Test = "PlayerChoicesTests.EveryName_ReadsBackAsItsPlayer": If run Then PlayerChoicesTests.EveryName_ReadsBackAsItsPlayer
-        Case 42: Test = "PlayerChoicesTests.TwoPeople_CannotPlayTogether": If run Then PlayerChoicesTests.TwoPeople_CannotPlayTogether
-        Case 43: Test = "GameControllerTests.ComputerVsComputer_BothGridsStayLocked": If run Then GameControllerTests.ComputerVsComputer_BothGridsStayLocked
-        Case 44: Test = "GameControllerTests.PersonPlacingShips_OnlyTheirGridIsUnlocked": If run Then GameControllerTests.PersonPlacingShips_OnlyTheirGridIsUnlocked
-        Case 45: Test = "GameControllerTests.PersonFiring_OnlyTheOtherGridIsUnlocked": If run Then GameControllerTests.PersonFiring_OnlyTheOtherGridIsUnlocked
-        Case 46: Test = "ShipTests.CreateInside_PastTheRightEdge_AnchorsWhereTheShipFits": If run Then ShipTests.CreateInside_PastTheRightEdge_AnchorsWhereTheShipFits
-        Case 47: Test = "ShipTests.CreateInside_PastTheBottomEdge_AnchorsWhereTheShipFits": If run Then ShipTests.CreateInside_PastTheBottomEdge_AnchorsWhereTheShipFits
-        Case 48: Test = "ShipTests.CreateInside_WhereTheShipFits_KeepsThePosition": If run Then ShipTests.CreateInside_WhereTheShipFits_KeepsThePosition
-        Case 49: Test = "BoardLayoutTests.StatusBar_ShowsOnlyItsBottomBorder": If run Then BoardLayoutTests.StatusBar_ShowsOnlyItsBottomBorder
-        Case 50: Test = "BoardLayoutTests.StatusText_IsInsideTheBar": If run Then BoardLayoutTests.StatusText_IsInsideTheBar
-        Case 51: Test = "BoardLayoutTests.Columns_AreSideBySide_CentredUnderTheBanner": If run Then BoardLayoutTests.Columns_AreSideBySide_CentredUnderTheBanner
-        Case 52: Test = "BoardLayoutTests.Cells_FollowTheRowNumbers_AndTheLettersFollowTheLastRow": If run Then BoardLayoutTests.Cells_FollowTheRowNumbers_AndTheLettersFollowTheLastRow
-        Case 53: Test = "BoardLayoutTests.Captions_AreOverTheirCells_OnTheBanner_AndHoldThePickers": If run Then BoardLayoutTests.Captions_AreOverTheirCells_OnTheBanner_AndHoldThePickers
-        Case 54: Test = "BoardInputTests.LockedGrid_TakesNoClicks": If run Then BoardInputTests.LockedGrid_TakesNoClicks
-        Case 55: Test = "BoardInputTests.ShipPlacementClick_PreviewsThenConfirms": If run Then BoardInputTests.ShipPlacementClick_PreviewsThenConfirms
-        Case 56: Test = "BoardInputTests.ShipPlacementHover_PreviewsOncePerCell": If run Then BoardInputTests.ShipPlacementHover_PreviewsOncePerCell
-        Case 57: Test = "BoardInputTests.ShipPlacementRightClick_TurnsTheShip": If run Then BoardInputTests.ShipPlacementRightClick_TurnsTheShip
-        Case 58: Test = "BoardInputTests.Ready_ConfirmsThePlayers_AndMakesThem": If run Then BoardInputTests.Ready_ConfirmsThePlayers_AndMakesThem
-        Case 59: Test = "BoardInputTests.Ready_TwoPeople_AreRefused": If run Then BoardInputTests.Ready_TwoPeople_AreRefused
-        Case 60: Test = "BoardInputTests.Ready_TwoComputers_PlayTheWholeGame": If run Then BoardInputTests.Ready_TwoComputers_PlayTheWholeGame
-        Case 61: Test = "BoardInputTests.PlayerPicked_SaysWhoPlays_UntilTheGameStarts": If run Then BoardInputTests.PlayerPicked_SaysWhoPlays_UntilTheGameStarts
-        Case 62: Test = "BoardInputTests.ReadyOnceShipsArePlaced_StartsTheBattle": If run Then BoardInputTests.ReadyOnceShipsArePlaced_StartsTheBattle
-        Case 63: Test = "BoardInputTests.ComputerTurn_TakesNoClicks": If run Then BoardInputTests.ComputerTurn_TakesNoClicks
-        Case 64: Test = "BoardInputTests.EndGame_HidesReady_AndTakesNoClicks": If run Then BoardInputTests.EndGame_HidesReady_AndTakesNoClicks
-        Case 65: Test = "BoardSpritesTests.OpenWater_ShowsNoSprite": If run Then BoardSpritesTests.OpenWater_ShowsNoSprite
-        Case 66: Test = "BoardSpritesTests.HitsAndMisses_ShowWhereTheyWerePlayed": If run Then BoardSpritesTests.HitsAndMisses_ShowWhereTheyWerePlayed
-        Case 67: Test = "BoardSpritesTests.Ships_ShowTheirDucks_TheBigOneAtTheBow": If run Then BoardSpritesTests.Ships_ShowTheirDucks_TheBigOneAtTheBow
-        Case 68: Test = "BoardSpritesTests.HiddenShips_ShowOnlyTheirHits_AsTheDevilDuck": If run Then BoardSpritesTests.HiddenShips_ShowOnlyTheirHits_AsTheDevilDuck
-        Case 69: Test = "BoardSpritesTests.DizzyShip_ShowsItsBowDizzy_UntilItRecovers": If run Then BoardSpritesTests.DizzyShip_ShowsItsBowDizzy_UntilItRecovers
-        Case 70: Test = "BoardSpritesTests.SunkShip_ShowsDizzy_ThenTheAnchor_EvenHidden": If run Then BoardSpritesTests.SunkShip_ShowsDizzy_ThenTheAnchor_EvenHidden
-        Case 71: Test = "BoardSpritesTests.FallbackColours_TellWaterShipsHitsAndMissesApart": If run Then BoardSpritesTests.FallbackColours_TellWaterShipsHitsAndMissesApart
-        Case 72: Test = "BoardSpritesTests.EverySprite_IsAPngInTheWorkspaceAssets": If run Then BoardSpritesTests.EverySprite_IsAPngInTheWorkspaceAssets
-        Case 73: Test = "BoardFormTests.Cells_AreLoadedFromTheDesignedCell": If run Then BoardFormTests.Cells_AreLoadedFromTheDesignedCell
-        Case 74: Test = "BoardFormTests.PlayerPickers_OfferEveryPlayer": If run Then BoardFormTests.PlayerPickers_OfferEveryPlayer
-        Case 75: Test = "BoardFormTests.ConfirmedPlayers_ShowInBold": If run Then BoardFormTests.ConfirmedPlayers_ShowInBold
-        Case 76: Test = "BoardLayoutTests.FleetShips_AreUnderTheirBanner_OneUnderTheOther_InsideTheWindow": If run Then BoardLayoutTests.FleetShips_AreUnderTheirBanner_OneUnderTheOther_InsideTheWindow
-        Case 77: Test = "BoardLayoutTests.Buttons_AreARow_AtTheBottomLeft_UnderTheGrids": If run Then BoardLayoutTests.Buttons_AreARow_AtTheBottomLeft_UnderTheGrids
-        Case 78: Test = "BoardSpritesTests.FleetGrid_IsTheFirstGridPaintedWithItsShips": If run Then BoardSpritesTests.FleetGrid_IsTheFirstGridPaintedWithItsShips
-        Case 79: Test = "BoardSpritesTests.FleetSprites_ShowEachShipAcross_InTheOrderTheyWerePlaced": If run Then BoardSpritesTests.FleetSprites_ShowEachShipAcross_InTheOrderTheyWerePlaced
-        Case 80: Test = "BoardSpritesTests.FleetSprites_ShowTheHitDucksRed_AndNoOtherSprite": If run Then BoardSpritesTests.FleetSprites_ShowTheHitDucksRed_AndNoOtherSprite
-        Case 81: Test = "BoardFormTests.FleetStatus_ShowsEveryShipPlaced": If run Then BoardFormTests.FleetStatus_ShowsEveryShipPlaced
-        Case 82: Test = "BoardLayoutTests.Banner_IsAcrossTheWindow_OnTheStatusBarsBottomBorder": If run Then BoardLayoutTests.Banner_IsAcrossTheWindow_OnTheStatusBarsBottomBorder
-        Case 83: Test = "BoardLayoutTests.Background_IsUnderTheBanner_AndTheWindowEndsWithIt": If run Then BoardLayoutTests.Background_IsUnderTheBanner_AndTheWindowEndsWithIt
-        Case 84: Test = "ShipTests.NameChoices_AreFiveAKind_NoNameTwice": If run Then ShipTests.NameChoices_AreFiveAKind_NoNameTwice
-        Case 85: Test = "ShipTests.PickNames_NamesTheShipsCreatedAfterIt_AmongTheirKindsChoices": If run Then ShipTests.PickNames_NamesTheShipsCreatedAfterIt_AmongTheirKindsChoices
-        Case 86: Test = "BoardSpritesTests.Squeak_ShowsOnTheHitCell_OfItsGridOnly_UntilItStops": If run Then BoardSpritesTests.Squeak_ShowsOnTheHitCell_OfItsGridOnly_UntilItStops
+        Case 33: Test = "CommandLineSwitchesTests.NoViewSwitchOnWindows_TriesMicrosoftFormsThenTheConsole": If run Then CommandLineSwitchesTests.NoViewSwitchOnWindows_TriesMicrosoftFormsThenTheConsole
+        Case 34: Test = "CommandLineSwitchesTests.NoViewSwitchElsewhere_PlaysInTheConsole": If run Then CommandLineSwitchesTests.NoViewSwitchElsewhere_PlaysInTheConsole
+        Case 35: Test = "CommandLineSwitchesTests.ConsoleSwitch_PlaysInTheConsoleAlone": If run Then CommandLineSwitchesTests.ConsoleSwitch_PlaysInTheConsoleAlone
+        Case 36: Test = "GameControllerTests.ComputerVsComputer_OnSinkNamesEachSunkShip": If run Then GameControllerTests.ComputerVsComputer_OnSinkNamesEachSunkShip
+        Case 37: Test = "GameControllerTests.ComputerVsComputer_EachSinkingIsReportedWithTheShotThatSankTheShip": If run Then GameControllerTests.ComputerVsComputer_EachSinkingIsReportedWithTheShotThatSankTheShip
+        Case 38: Test = "PlayerChoicesTests.FirstLetter_IsEnough_InEitherCase": If run Then PlayerChoicesTests.FirstLetter_IsEnough_InEitherCase
+        Case 39: Test = "PlayerChoicesTests.NotAPlayer_IsNotRead": If run Then PlayerChoicesTests.NotAPlayer_IsNotRead
+        Case 40: Test = "PlayerChoicesTests.EveryName_ReadsBackAsItsPlayer": If run Then PlayerChoicesTests.EveryName_ReadsBackAsItsPlayer
+        Case 41: Test = "PlayerChoicesTests.TwoPeople_CannotPlayTogether": If run Then PlayerChoicesTests.TwoPeople_CannotPlayTogether
+        Case 42: Test = "GameControllerTests.ComputerVsComputer_BothGridsStayLocked": If run Then GameControllerTests.ComputerVsComputer_BothGridsStayLocked
+        Case 43: Test = "GameControllerTests.PersonPlacingShips_OnlyTheirGridIsUnlocked": If run Then GameControllerTests.PersonPlacingShips_OnlyTheirGridIsUnlocked
+        Case 44: Test = "GameControllerTests.PersonFiring_OnlyTheOtherGridIsUnlocked": If run Then GameControllerTests.PersonFiring_OnlyTheOtherGridIsUnlocked
+        Case 45: Test = "ShipTests.CreateInside_PastTheRightEdge_AnchorsWhereTheShipFits": If run Then ShipTests.CreateInside_PastTheRightEdge_AnchorsWhereTheShipFits
+        Case 46: Test = "ShipTests.CreateInside_PastTheBottomEdge_AnchorsWhereTheShipFits": If run Then ShipTests.CreateInside_PastTheBottomEdge_AnchorsWhereTheShipFits
+        Case 47: Test = "ShipTests.CreateInside_WhereTheShipFits_KeepsThePosition": If run Then ShipTests.CreateInside_WhereTheShipFits_KeepsThePosition
+        Case 48: Test = "BoardLayoutTests.StatusBar_ShowsOnlyItsBottomBorder": If run Then BoardLayoutTests.StatusBar_ShowsOnlyItsBottomBorder
+        Case 49: Test = "BoardLayoutTests.StatusText_IsInsideTheBar": If run Then BoardLayoutTests.StatusText_IsInsideTheBar
+        Case 50: Test = "BoardLayoutTests.Columns_AreSideBySide_CentredUnderTheBanner": If run Then BoardLayoutTests.Columns_AreSideBySide_CentredUnderTheBanner
+        Case 51: Test = "BoardLayoutTests.Cells_FollowTheRowNumbers_AndTheLettersFollowTheLastRow": If run Then BoardLayoutTests.Cells_FollowTheRowNumbers_AndTheLettersFollowTheLastRow
+        Case 52: Test = "BoardLayoutTests.Captions_AreOverTheirCells_OnTheBanner_AndHoldThePickers": If run Then BoardLayoutTests.Captions_AreOverTheirCells_OnTheBanner_AndHoldThePickers
+        Case 53: Test = "BoardInputTests.LockedGrid_TakesNoClicks": If run Then BoardInputTests.LockedGrid_TakesNoClicks
+        Case 54: Test = "BoardInputTests.ShipPlacementClick_PreviewsThenConfirms": If run Then BoardInputTests.ShipPlacementClick_PreviewsThenConfirms
+        Case 55: Test = "BoardInputTests.ShipPlacementHover_PreviewsOncePerCell": If run Then BoardInputTests.ShipPlacementHover_PreviewsOncePerCell
+        Case 56: Test = "BoardInputTests.ShipPlacementRightClick_TurnsTheShip": If run Then BoardInputTests.ShipPlacementRightClick_TurnsTheShip
+        Case 57: Test = "BoardInputTests.Ready_ConfirmsThePlayers_AndMakesThem": If run Then BoardInputTests.Ready_ConfirmsThePlayers_AndMakesThem
+        Case 58: Test = "BoardInputTests.Ready_TwoPeople_AreRefused": If run Then BoardInputTests.Ready_TwoPeople_AreRefused
+        Case 59: Test = "BoardInputTests.Ready_TwoComputers_PlayTheWholeGame": If run Then BoardInputTests.Ready_TwoComputers_PlayTheWholeGame
+        Case 60: Test = "BoardInputTests.PlayerPicked_SaysWhoPlays_UntilTheGameStarts": If run Then BoardInputTests.PlayerPicked_SaysWhoPlays_UntilTheGameStarts
+        Case 61: Test = "BoardInputTests.ReadyOnceShipsArePlaced_StartsTheBattle": If run Then BoardInputTests.ReadyOnceShipsArePlaced_StartsTheBattle
+        Case 62: Test = "BoardInputTests.ComputerTurn_TakesNoClicks": If run Then BoardInputTests.ComputerTurn_TakesNoClicks
+        Case 63: Test = "BoardInputTests.EndGame_HidesReady_AndTakesNoClicks": If run Then BoardInputTests.EndGame_HidesReady_AndTakesNoClicks
+        Case 64: Test = "BoardSpritesTests.OpenWater_ShowsNoSprite": If run Then BoardSpritesTests.OpenWater_ShowsNoSprite
+        Case 65: Test = "BoardSpritesTests.HitsAndMisses_ShowWhereTheyWerePlayed": If run Then BoardSpritesTests.HitsAndMisses_ShowWhereTheyWerePlayed
+        Case 66: Test = "BoardSpritesTests.Ships_ShowTheirDucks_TheBigOneAtTheBow": If run Then BoardSpritesTests.Ships_ShowTheirDucks_TheBigOneAtTheBow
+        Case 67: Test = "BoardSpritesTests.HiddenShips_ShowOnlyTheirHits_AsTheDevilDuck": If run Then BoardSpritesTests.HiddenShips_ShowOnlyTheirHits_AsTheDevilDuck
+        Case 68: Test = "BoardSpritesTests.DizzyShip_ShowsItsBowDizzy_UntilItRecovers": If run Then BoardSpritesTests.DizzyShip_ShowsItsBowDizzy_UntilItRecovers
+        Case 69: Test = "BoardSpritesTests.SunkShip_ShowsDizzy_ThenTheAnchor_EvenHidden": If run Then BoardSpritesTests.SunkShip_ShowsDizzy_ThenTheAnchor_EvenHidden
+        Case 70: Test = "BoardSpritesTests.FallbackColours_TellWaterShipsHitsAndMissesApart": If run Then BoardSpritesTests.FallbackColours_TellWaterShipsHitsAndMissesApart
+        Case 71: Test = "BoardSpritesTests.EverySprite_IsAPngInTheWorkspaceAssets": If run Then BoardSpritesTests.EverySprite_IsAPngInTheWorkspaceAssets
+        Case 72: Test = "BoardLayoutTests.FleetShips_AreUnderTheirBanner_OneUnderTheOther_InsideTheWindow": If run Then BoardLayoutTests.FleetShips_AreUnderTheirBanner_OneUnderTheOther_InsideTheWindow
+        Case 73: Test = "BoardLayoutTests.Buttons_AreARow_AtTheBottomLeft_UnderTheGrids": If run Then BoardLayoutTests.Buttons_AreARow_AtTheBottomLeft_UnderTheGrids
+        Case 74: Test = "BoardSpritesTests.FleetGrid_IsTheFirstGridPaintedWithItsShips": If run Then BoardSpritesTests.FleetGrid_IsTheFirstGridPaintedWithItsShips
+        Case 75: Test = "BoardSpritesTests.FleetSprites_ShowEachShipAcross_InTheOrderTheyWerePlaced": If run Then BoardSpritesTests.FleetSprites_ShowEachShipAcross_InTheOrderTheyWerePlaced
+        Case 76: Test = "BoardSpritesTests.FleetSprites_ShowTheHitDucksRed_AndNoOtherSprite": If run Then BoardSpritesTests.FleetSprites_ShowTheHitDucksRed_AndNoOtherSprite
+        Case 77: Test = "BoardLayoutTests.Banner_IsAcrossTheWindow_OnTheStatusBarsBottomBorder": If run Then BoardLayoutTests.Banner_IsAcrossTheWindow_OnTheStatusBarsBottomBorder
+        Case 78: Test = "BoardLayoutTests.Background_IsUnderTheBanner_AndTheWindowEndsWithIt": If run Then BoardLayoutTests.Background_IsUnderTheBanner_AndTheWindowEndsWithIt
+        Case 79: Test = "ShipTests.NameChoices_AreFiveAKind_NoNameTwice": If run Then ShipTests.NameChoices_AreFiveAKind_NoNameTwice
+        Case 80: Test = "ShipTests.PickNames_NamesTheShipsCreatedAfterIt_AmongTheirKindsChoices": If run Then ShipTests.PickNames_NamesTheShipsCreatedAfterIt_AmongTheirKindsChoices
+        Case 81: Test = "BoardSpritesTests.Squeak_ShowsOnTheHitCell_OfItsGridOnly_UntilItStops": If run Then BoardSpritesTests.Squeak_ShowsOnTheHitCell_OfItsGridOnly_UntilItStops
         Case Else: Test = vbNullString
     End Select
 End Function
@@ -186,7 +181,6 @@ Attribute EnterModule.VB_Description = "Cleans up the current module and initial
         Case "BoardLayoutTests": BoardLayoutTests.ModuleCleanup
         Case "BoardInputTests": BoardInputTests.ModuleCleanup
         Case "BoardSpritesTests": BoardSpritesTests.ModuleCleanup
-        Case "BoardFormTests": BoardFormTests.ModuleCleanup
     End Select
     this.CurrentModule = moduleName
     Select Case moduleName
@@ -198,6 +192,5 @@ Attribute EnterModule.VB_Description = "Cleans up the current module and initial
         Case "BoardLayoutTests": BoardLayoutTests.ModuleInitialize
         Case "BoardInputTests": BoardInputTests.ModuleInitialize
         Case "BoardSpritesTests": BoardSpritesTests.ModuleInitialize
-        Case "BoardFormTests": BoardFormTests.ModuleInitialize
     End Select
 End Sub

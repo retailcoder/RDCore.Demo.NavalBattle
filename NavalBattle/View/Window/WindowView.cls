@@ -23,7 +23,7 @@ Private Type TView
     Grids(PlayerGrid1 To PlayerGrid2) As PlayerGrid
 End Type
 
-' how long a sinking ship's dizzy duck shows, before its anchor.
+' how long a sinking ship's dizzy duck shows, before its big duck in red.
 Private Const SinkingSeconds As Single = 0.8
 ' how long a hit ship's big duck stays dizzy.
 Private Const DizzySeconds As Single = 0.6
@@ -156,7 +156,7 @@ Private Sub IGridViewCommands_OnSink(ByVal gridId As PlayGridId, ByVal position 
     FinishSinking gridId, sunkShip
 End Sub
 
-' the grid was painted with the sunk ship's dizzy duck at its bow: after a moment, the duck is an anchor.
+' the grid was painted with the sunk ship's dizzy duck at its bow: after a moment, the duck is red like the rest of the ship.
 Private Sub FinishSinking(ByVal gridId As PlayGridId, ByVal sunkShip As IShip)
     If Not IsOpen Then Exit Sub
     window.Pause SinkingSeconds

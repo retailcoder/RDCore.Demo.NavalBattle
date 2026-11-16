@@ -169,6 +169,18 @@ Attribute IsHit.VB_Description = "Whether a sprite marks a hit cell: a red duck,
     IsHit = spriteName = SpriteSqueak Or spriteName = SpriteHiddenHit Or Right$(spriteName, Len(RedSuffix)) = RedSuffix
 End Function
 
+'@Description("Whether a sprite marks a missed shot: the ripple.")
+Public Function IsMiss(ByVal spriteName As String) As Boolean
+Attribute IsMiss.VB_Description = "Whether a sprite marks a missed shot: the ripple."
+    IsMiss = spriteName = SpriteMiss
+End Function
+
+'@Description("Whether a sprite is the squeak of a cell just hit.")
+Public Function IsSqueak(ByVal spriteName As String) As Boolean
+Attribute IsSqueak.VB_Description = "Whether a sprite is the squeak of a cell just hit."
+    IsSqueak = spriteName = SpriteSqueak
+End Function
+
 '@Description("A cell of a grid was just hit: it squeaks, until SqueakStops.")
 Public Sub Squeak(ByVal gridId As PlayGridId, ByVal position As IGridCoord)
 Attribute Squeak.VB_Description = "A cell of a grid was just hit: it squeaks, until SqueakStops."

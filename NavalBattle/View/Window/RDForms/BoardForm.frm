@@ -16,6 +16,12 @@ Begin VB.Form BoardForm
       Top             =   0
       Width           =   1600
    End
+   Begin VB.Timer tmrFlash
+      Enabled         =   0   'False
+      Interval        =   50
+      Left            =   0
+      Top             =   0
+   End
    Begin VB.PictureBox picBanner
       Appearance      =   0  'Flat
       BackColor       =   &H00E6E6E6&
@@ -201,6 +207,10 @@ Private Const TwipsPerPoint As Long = 20
 Private Const CellsPerGrid As Long = GridSize * GridSize
 Private Const BackgroundFile As String = "assets\game-form-background.jpg"
 Private Const IconFile As String = "assets\ducky.ico"
+' the pale fill of the cell under the pointer.
+Private Const HoverColour As Long = &HFCF3EA
+' a shot's flash fades back to the water in this many ticks of tmrFlash.
+Private Const FlashTicksPerShot As Long = 8
 
 ' who is told when the person closes the window.
 Private listener As IGameWindowEvents
@@ -209,6 +219,15 @@ Private paintedCaptions(PlayerGrid1 To PlayerGrid2, 1 To GridSize, 1 To GridSize
 Private paintedSprites(PlayerGrid1 To PlayerGrid2, 1 To GridSize, 1 To GridSize) As String
 ' the cells whose sprite image is loaded: a cell's is loaded the first time it shows a sprite.
 Private spriteImageLoaded(0 To 2 * CellsPerGrid - 1) As Boolean
+' the sprite each cell was last painted with, sprites or not: a new hit or miss flashes the cell.
+Private shownSprites(PlayerGrid1 To PlayerGrid2, 1 To GridSize, 1 To GridSize) As String
+' a shot's flash: its colour, and the ticks left before the cell is see-through again.
+Private flashColours(PlayerGrid1 To PlayerGrid2, 1 To GridSize, 1 To GridSize) As Long
+Private flashTicks(PlayerGrid1 To PlayerGrid2, 1 To GridSize, 1 To GridSize) As Long
+' the cell under the pointer, on a grid that takes the person's clicks; 0 for none.
+Private hoverGridId As Long
+Private hoverX As Long
+Private hoverY As Long
 ' the ships the fleet status shows so far.
 Private fleetShipCount As Long
 Private sprites As Collection
@@ -299,6 +318,10 @@ Private Sub IGameWindow_PaintGrid(ByVal grid As PlayerGrid, ByVal showShips As B
     Dim Y As Long
     For X = 1 To GridSize
         For Y = 1 To GridSize
+            If names(X, Y) <> shownSprites(grid.gridId, X, Y) Then
+                FlashShot grid.gridId, X, Y, shownSprites(grid.gridId, X, Y), names(X, Y)
+                shownSprites(grid.gridId, X, Y) = names(X, Y)
+            End If
             If sprites Is Nothing Then
                 PaintCell grid.gridId, X, Y, board.FallbackColour(names(X, Y)), IIf(board.IsHit(names(X, Y)), "X", vbNullString)
             Else
@@ -356,6 +379,7 @@ End Sub
 
 Private Sub IGameWindow_LockGrid(ByVal gridId As PlayGridId, ByVal locked As Boolean)
     personInput.LockGrid gridId, locked
+    If locked And hoverGridId = gridId Then HoverCell 0, 0, 0
 End Sub
 
 Private Sub lblCell_Click(Index As Integer)
@@ -363,7 +387,23 @@ Private Sub lblCell_Click(Index As Integer)
 End Sub
 
 Private Sub lblCell_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
-    personInput.Hover GridOf(Index), PositionOf(Index)
+    Dim position As IGridCoord
+    Set position = PositionOf(Index)
+    personInput.Hover GridOf(Index), position
+    If personInput.TakesClicks(GridOf(Index)) Then
+        HoverCell GridOf(Index), position.X, position.Y
+    Else
+        HoverCell 0, 0, 0
+    End If
+End Sub
+
+' pointing off the grids puts out the lit cell.
+Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
+    HoverCell 0, 0, 0
+End Sub
+
+Private Sub imgBackground_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
+    HoverCell 0, 0, 0
 End Sub
 
 Private Sub lblCell_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
@@ -543,8 +583,7 @@ Private Sub PlaceInBanner(ByVal target As Object, ByVal leftEdge As Long, ByVal 
 End Sub
 
 ' a cell is painted only when it changes, as in the Microsoft Forms window. A cell is a transparent label with a border, so the background
-' picture shows through open water and around a sprite; it is filled only with a colour other than the water's: a ship being placed, or a
-' colour in place of a sprite where the sprites cannot be read.
+' picture shows through open water and around a sprite; FillCell says when it is filled.
 Private Sub PaintCell(ByVal gridId As PlayGridId, ByVal X As Long, ByVal Y As Long, ByVal colour As Long, Optional ByVal text As String = vbNullString, Optional ByVal sprite As String = vbNullString)
     Dim cell As VB.Label
     Set cell = lblCell(CellIndex(gridId, X, Y))
@@ -553,14 +592,95 @@ Private Sub PaintCell(ByVal gridId As PlayGridId, ByVal X As Long, ByVal Y As Lo
         paintedSprites(gridId, X, Y) = sprite
     End If
     If paintedColours(gridId, X, Y) <> colour Then
-        cell.BackColor = colour
-        cell.BackStyle = IIf(colour = board.Water, 0, 1) ' transparent over the water, opaque otherwise
         paintedColours(gridId, X, Y) = colour
+        FillCell gridId, X, Y
     End If
     If paintedCaptions(gridId, X, Y) <> text Then
         cell.Caption = text
         paintedCaptions(gridId, X, Y) = text
     End If
+End Sub
+
+' how a cell is filled: by a shot's flash while it fades, then by a colour of its own other than the water's (a ship being placed, or a
+' colour in place of a sprite where the sprites cannot be read), then by the pale hover fill. Otherwise the cell is see-through.
+Private Sub FillCell(ByVal gridId As PlayGridId, ByVal X As Long, ByVal Y As Long)
+    Dim colour As Long
+    colour = board.Water
+    If flashTicks(gridId, X, Y) > 0 Then
+        colour = Blend(flashColours(gridId, X, Y), board.Water, flashTicks(gridId, X, Y) / FlashTicksPerShot)
+    ElseIf paintedColours(gridId, X, Y) <> board.Water Then
+        colour = paintedColours(gridId, X, Y)
+    ElseIf gridId = hoverGridId And X = hoverX And Y = hoverY Then
+        colour = HoverColour
+    End If
+    With lblCell(CellIndex(gridId, X, Y))
+        If colour = board.Water Then
+            .BackStyle = 0 ' transparent
+        Else
+            .BackColor = colour
+            .BackStyle = 1 ' opaque
+        End If
+    End With
+End Sub
+
+' a new hit flashes its cell red as it squeaks, and a new miss white; the flash fades back to the water, one step each tick of tmrFlash.
+Private Sub FlashShot(ByVal gridId As PlayGridId, ByVal X As Long, ByVal Y As Long, ByVal before As String, ByVal after As String)
+    If Not ((board.IsMiss(after) And Not board.IsMiss(before)) Or (board.IsSqueak(after) And Not board.IsSqueak(before))) Then Exit Sub
+    flashColours(gridId, X, Y) = board.FallbackColour(after)
+    flashTicks(gridId, X, Y) = FlashTicksPerShot
+    FillCell gridId, X, Y
+    tmrFlash.Enabled = True
+End Sub
+
+Private Sub tmrFlash_Timer()
+    Dim fading As Boolean
+    Dim gridId As Long
+    Dim X As Long
+    Dim Y As Long
+    For gridId = PlayerGrid1 To PlayerGrid2
+        For X = 1 To GridSize
+            For Y = 1 To GridSize
+                If flashTicks(gridId, X, Y) > 0 Then
+                    flashTicks(gridId, X, Y) = flashTicks(gridId, X, Y) - 1
+                    FillCell gridId, X, Y
+                    If flashTicks(gridId, X, Y) > 0 Then fading = True
+                End If
+            Next
+        Next
+    Next
+    tmrFlash.Enabled = fading
+End Sub
+
+' a colour between two others, channel by channel: share 1 is the first colour, 0 the second.
+Private Function Blend(ByVal firstColour As Long, ByVal secondColour As Long, ByVal share As Double) As Long
+    Dim result As Long
+    Dim channel As Long
+    For channel = 0 To 2
+        Dim unit As Long
+        unit = 256 ^ channel
+        Dim firstValue As Long
+        firstValue = (firstColour \ unit) And &HFF
+        Dim secondValue As Long
+        secondValue = (secondColour \ unit) And &HFF
+        result = result + CLng(secondValue + (firstValue - secondValue) * share) * unit
+    Next
+    Blend = result
+End Function
+
+' the cell under the pointer is lit with a pale fill, on a grid that takes the person's clicks; HoverCell 0, 0, 0 puts it out.
+Private Sub HoverCell(ByVal gridId As Long, ByVal X As Long, ByVal Y As Long)
+    If gridId = hoverGridId And X = hoverX And Y = hoverY Then Exit Sub
+    Dim litGridId As Long
+    litGridId = hoverGridId
+    Dim litX As Long
+    litX = hoverX
+    Dim litY As Long
+    litY = hoverY
+    hoverGridId = gridId
+    hoverX = X
+    hoverY = Y
+    If litGridId <> 0 Then FillCell litGridId, litX, litY
+    If gridId <> 0 Then FillCell gridId, X, Y
 End Sub
 
 ' a cell's sprite is an image over the cell, centred on it: an image takes its picture's size. A cell's image is loaded the first time the

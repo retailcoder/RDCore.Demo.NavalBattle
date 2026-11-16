@@ -143,6 +143,13 @@ Attribute LockGrid.VB_Description = "Locks or unlocks a grid: a locked grid's ce
     this.Locked(gridId) = locked
 End Sub
 
+'@Description("Whether a grid's cells take the person's clicks now: while they place their ships on it, or fire at it, on their turn.")
+Public Function TakesClicks(ByVal gridId As PlayGridId) As Boolean
+Attribute TakesClicks.VB_Description = "Whether a grid's cells take the person's clicks now: while they place their ships on it, or fire at it, on their turn."
+    If this.Locked(gridId) Or this.ComputerTurn Or this.ViewEvents Is Nothing Then Exit Function
+    TakesClicks = this.Phase = PhaseShipPlacement Or this.Phase = PhaseAttack
+End Function
+
 '@Description("The person clicked a cell: while they place their ships, the ship goes there; in the battle, it is their shot.")
 Public Sub Click(ByVal gridId As PlayGridId, ByVal position As IGridCoord)
 Attribute Click.VB_Description = "The person clicked a cell: while they place their ships, the ship goes there; in the battle, it is their shot."

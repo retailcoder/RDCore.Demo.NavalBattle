@@ -119,6 +119,9 @@ Public Sub FallbackColours_TellWaterShipsHitsAndMissesApart()
     Assert.AreEqual SUT.FallbackColour("hit-squeak"), SUT.FallbackColour("duck-devil"), "the devil duck is a hit"
     Assert.IsTrue SUT.IsHit("hit-squeak") And SUT.IsHit("duck-small-right-red") And SUT.IsHit("duck-devil"), "the hits write an X"
     Assert.IsFalse SUT.IsHit("sunk-dizzy") Or SUT.IsHit("duck-big-right"), "a dizzy duck and a duck do not"
+    Assert.IsTrue SUT.IsMiss("miss-ripple"), "the ripple is a miss"
+    Assert.IsFalse SUT.IsMiss("hit-squeak") Or SUT.IsMiss(vbNullString), "a hit and open water are not"
+    Assert.IsTrue SUT.IsSqueak("hit-squeak") And Not SUT.IsSqueak("duck-devil"), "only the squeak squeaks"
 End Sub
 
 '@TestMethod

@@ -48,7 +48,7 @@ End Sub
 '@Description("The number of tests.")
 Private Property Get TestCount() As Long
 Attribute TestCount.VB_Description = "The number of tests."
-    TestCount = 82
+    TestCount = 83
 End Property
 
 '@Description("The name of a test, by its number, and runs it where run is True.")
@@ -134,9 +134,10 @@ Attribute Test.VB_Description = "The name of a test, by its number, and runs it 
         Case 77: Test = "BoardLayoutTests.Buttons_AreARow_AtTheBottomLeft_UnderTheGrids": If run Then BoardLayoutTests.Buttons_AreARow_AtTheBottomLeft_UnderTheGrids
         Case 78: Test = "BoardSpritesTests.FleetGrid_IsTheFirstGridPaintedWithItsShips": If run Then BoardSpritesTests.FleetGrid_IsTheFirstGridPaintedWithItsShips
         Case 79: Test = "BoardSpritesTests.FleetSprites_ShowEachShipAcross_InTheOrderTheyWerePlaced": If run Then BoardSpritesTests.FleetSprites_ShowEachShipAcross_InTheOrderTheyWerePlaced
-        Case 80: Test = "BoardSpritesTests.FleetSprites_ShowTheHits_ThenTheSunkShipsBow": If run Then BoardSpritesTests.FleetSprites_ShowTheHits_ThenTheSunkShipsBow
+        Case 80: Test = "BoardSpritesTests.FleetSprites_GreyOutTheHitDucks_AndNoOtherSprite": If run Then BoardSpritesTests.FleetSprites_GreyOutTheHitDucks_AndNoOtherSprite
         Case 81: Test = "BoardFormTests.FleetStatus_ShowsEveryShipPlaced": If run Then BoardFormTests.FleetStatus_ShowsEveryShipPlaced
         Case 82: Test = "BoardLayoutTests.Banner_IsAcrossTheWindow_OnTheStatusBarsBottomBorder": If run Then BoardLayoutTests.Banner_IsAcrossTheWindow_OnTheStatusBarsBottomBorder
+        Case 83: Test = "BoardLayoutTests.Background_IsUnderTheBanner_AndTheWindowEndsWithIt": If run Then BoardLayoutTests.Background_IsUnderTheBanner_AndTheWindowEndsWithIt
         Case Else: Test = vbNullString
     End Select
 End Function

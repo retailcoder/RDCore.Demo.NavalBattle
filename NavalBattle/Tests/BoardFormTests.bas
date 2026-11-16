@@ -39,5 +39,5 @@ End Sub
 ' once the ships are placed, the fleet status names each one, in the order they were placed, over a cell for each of its parts.
 '@TestMethod
 Public Sub FleetStatus_ShowsEveryShipPlaced()
-    Assert.Ignore "control arrays: Load lblShip(n) and Load picShipCell(n), like every control array member, raise 438"
+    Assert.Ignore "control arrays: Load lblShip(n) and Load imgShipCell(n), like every control array member, raise 438"
 End Sub

@@ -1,7 +1,7 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} GameForm
    Caption         =   "Naval battle"
-   ClientHeight    =   7845
+   ClientHeight    =   9180
    ClientLeft      =   120
    ClientTop       =   465
    ClientWidth     =   16320
@@ -26,8 +26,9 @@ Private Const PanelFontSize As Long = 12
 ' a text label's top, in a line or a cell taller than its text, so that the text sits in the middle.
 Private Const TextOffset As Long = (CellSize - 16) \ 2
 
-' the parts go where BoardLayout says. The status bar is white, with a thin black border, of which only the bottom shows. Each column's banner
-' is a light grey band, with a thin grey border: an empty label, behind its text and its player picker.
+' the parts go where BoardLayout says. The status bar is white, with a thin black border, of which only the bottom shows. The banner is a light
+' grey band with the same border: an empty label, behind the columns' captions and the player pickers.
+Private Const BackgroundFile As String = "assets\game-form-background.jpg"
 Private Const StatusColour As Long = &HFFFFFF
 Private Const StatusBorderColour As Long = &H0
 Private Const BannerColour As Long = &HE6E6E6
@@ -65,14 +66,14 @@ Private Sub UserForm_Initialize()
     Set board = New BoardSprites
     Set personInput = New BoardInput
 
-    ' the designer block sizes the window: 16320 x 7845 twips, 816 x 392.25 points, 1088 x 523 pixels at 96 dpi. The board is centred on it. The
-    ' form's picture (GameForm.frx, from assets/game-form-background.jpg) is stretched over the whole of it, behind the board: the labels are
-    ' transparent, and so are the cells of open water. The status line is bold, larger text on a white bar across the top of the window. A grey
-    ' banner runs across the window under it, with each column's caption over it: the grids' player pickers, then the players' names, and the
-    ' fleet status's. The Ready button starts the row of buttons at the bottom left, on open water.
-    ' Without a picture, the water colour shows.
+    ' the designer block sizes the window: 16320 x 9180 twips, 816 x 459 points. The status line is bold, larger text on a white bar across the
+    ' top of the window, and a grey banner runs across the window under it, with each column's caption on it: the grids' player pickers, then
+    ' the players' names, and the fleet status's. The background picture is under the banner, whole, at its own size, behind the board: the
+    ' labels are transparent, and so are the cells of open water. The Ready button starts the row of buttons at the bottom left, on open water.
+    ' Without the picture, the water colour shows.
     Me.BackColor = board.Water
     LoadSprites
+    LoadBackground
 
     With AddLabel("StatusBar", BoardLayout.StatusBarLeft, BoardLayout.StatusBarTop, BoardLayout.StatusBarWidth, BoardLayout.StatusBarHeight, vbNullString)
         .BackStyle = fmBackStyleOpaque
@@ -91,8 +92,8 @@ Private Sub UserForm_Initialize()
     Set firstPlayerPicker = AddPlayerPicker(PlayerGrid1, PlayerName(Unspecific))
     Set secondPlayerPicker = AddPlayerPicker(PlayerGrid2, PlayerName(MercilessAI))
 
-    Set fleetCaption = AddPanel("FleetCaption", BoardLayout.FleetCaptionLeft, BoardLayout.BannerTextTop + 2, BoardLayout.CaptionWidth, LineHeight, "Fleet status")
-    fleetCaption.TextAlign = fmTextAlignCenter
+    Set fleetCaption = AddLabel("FleetCaption", BoardLayout.FleetCaptionLeft, BoardLayout.BannerTextTop + 2, BoardLayout.CaptionWidth, LineHeight, "Fleet status")
+    fleetCaption.Font.Size = PanelFontSize
     Set fleetCells = New Collection
     Set fleetNames = New Collection
 
@@ -173,7 +174,8 @@ Private Sub IGameWindow_PaintGrid(ByVal grid As PlayerGrid, ByVal showShips As B
     If board.IsFleetGrid(grid.gridId, showShips) Then PaintFleet grid
 End Sub
 
-' the fleet status: each ship placed so far, by its name, lying across, with what its cells show on the grid. A sunk ship's name is struck out.
+' the fleet status: each ship placed so far, by its name, lying across, with its ducks greyed out where they are hit. A sunk ship's name is
+' struck out.
 Private Sub PaintFleet(ByVal grid As PlayerGrid)
     fleetCaption.Caption = "Grid " & grid.gridId & " fleet"
     Dim ships As Collection
@@ -217,8 +219,7 @@ End Sub
 
 Private Sub AddFleetShip(ByVal shipNumber As Long, ByVal item As IShip)
     Dim shipName As MSForms.Label
-    Set shipName = AddPanel("Ship" & shipNumber & "Name", BoardLayout.ShipCellLeft(1), BoardLayout.ShipNameTop(shipNumber) + TextOffset, BoardLayout.CaptionWidth, LineHeight - TextOffset, item.Name)
-    shipName.Font.Size = TextFontSize
+    Set shipName = AddLabel("Ship" & shipNumber & "Name", BoardLayout.ShipCellLeft(1), BoardLayout.ShipNameTop(shipNumber) + TextOffset, BoardLayout.CaptionWidth, LineHeight - TextOffset, item.Name)
     fleetNames.Add shipName
 
     Dim cells As Collection
@@ -227,8 +228,6 @@ Private Sub AddFleetShip(ByVal shipNumber As Long, ByVal item As IShip)
     For column = 1 To item.Size
         Dim cell As MSForms.Label
         Set cell = AddLabel("Ship" & shipNumber & "Cell" & column, BoardLayout.ShipCellLeft(column), BoardLayout.ShipCellTop(shipNumber), CellSize, CellSize, vbNullString, fmTextAlignCenter)
-        cell.BorderStyle = fmBorderStyleSingle
-        cell.BorderColor = LineColour
         cell.PicturePosition = fmPicturePositionCenter
         cells.Add cell
     Next
@@ -274,8 +273,32 @@ NoSprites:
     Set sprites = Nothing
 End Sub
 
+' the background picture, in an image at its own size under the banner, sent to the back so that the board shows over it.
+Private Sub LoadBackground()
+    Dim background As Object
+    On Error GoTo NoBackground
+    Set background = LoadPicture(CurDir$ & "\" & BackgroundFile)
+    On Error GoTo 0
+
+    With Me.Controls.Add("Forms.Image.1", "Background", True)
+        .Left = 0
+        .Top = BoardLayout.BackgroundTop
+        .Width = WindowWidth
+        .Height = BackgroundHeight
+        .BorderStyle = fmBorderStyleNone
+        .PictureSizeMode = fmPictureSizeModeClip
+        .PictureAlignment = fmPictureAlignmentTopLeft
+        Set .Picture = background
+        .ZOrder fmZOrderBack
+    End With
+    Exit Sub
+
+NoBackground:
+    Debug.Print "The game form shows the water colour: " & BackgroundFile & " cannot be read (" & Err.Description & ")."
+End Sub
+
 ' a cell is painted only when it changes: each change is a call to Microsoft Forms, and a grid is painted after every shot. A cell of open water is
-' transparent, so the form's picture shows through it; a cell with a sprite is transparent too, and shows the sprite; any other cell is filled
+' transparent, so the background picture shows through it; a cell with a sprite is transparent too, and shows the sprite; any other cell is filled
 ' with its colour.
 Private Sub PaintCell(ByVal gridId As PlayGridId, ByVal X As Long, ByVal Y As Long, ByVal colour As Long, Optional ByVal text As String = vbNullString, Optional ByVal sprite As String = vbNullString)
     If paintedSprites(gridId, X, Y) <> sprite Then
@@ -427,7 +450,7 @@ Private Function AddPlayerPicker(ByVal gridId As PlayGridId, ByVal initialPlayer
     Set AddPlayerPicker = picker
 End Function
 
-' the players are confirmed: a grid's picker goes, and its caption names the player, centred over the grid's cells and in bold.
+' the players are confirmed: a grid's picker goes, and its caption names the player, centred over the grid's cells.
 Private Sub ShowPlayer(ByVal gridId As PlayGridId, ByVal picker As MSForms.ComboBox)
     Dim caption As MSForms.Label
     Set caption = Me.Controls("Grid" & gridId & "PlayerCaption")
@@ -435,7 +458,6 @@ Private Sub ShowPlayer(ByVal gridId As PlayGridId, ByVal picker As MSForms.Combo
     caption.Left = BoardLayout.GridCaptionLeft(gridId)
     caption.Width = BoardLayout.CaptionWidth
     caption.TextAlign = fmTextAlignCenter
-    caption.Font.Bold = True
     caption.Font.Size = PanelFontSize
     picker.Visible = False
 End Sub

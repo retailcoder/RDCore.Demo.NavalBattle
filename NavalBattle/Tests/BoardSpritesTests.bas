@@ -124,7 +124,7 @@ Public Sub EverySprite_IsAGifInTheWorkspaceAssets()
     Dim SUT As BoardSprites
     Set SUT = New BoardSprites
 
-    Assert.AreEqual 8, UBound(SUT.Names) - LBound(SUT.Names) + 1, "the sprites"
+    Assert.AreEqual 10, UBound(SUT.Names) - LBound(SUT.Names) + 1, "the sprites: the grid's eight, and the fleet status's two greyed-out ducks"
     Assert.AreEqual CurDir$ & "\assets\sprites\hit-squeak.gif", SUT.Path("hit-squeak")
 End Sub
 
@@ -162,7 +162,7 @@ Public Sub FleetSprites_ShowEachShipAcross_InTheOrderTheyWerePlaced()
 End Sub
 
 '@TestMethod
-Public Sub FleetSprites_ShowTheHits_ThenTheSunkShipsBow()
+Public Sub FleetSprites_GreyOutTheHitDucks_AndNoOtherSprite()
     Dim grid As PlayerGrid
     Set grid = DestroyerGrid(Vertical)
     Dim SUT As BoardSprites
@@ -170,17 +170,16 @@ Public Sub FleetSprites_ShowTheHits_ThenTheSunkShipsBow()
     Dim destroyer As Variant
 
     grid.TryHit GridCoord.Create(2, 3)
+    SUT.DizzyShip PlayerGrid1, grid.Fleet(1)
     destroyer = FleetShipSprites(SUT, grid, 1)
-    Assert.AreEqual "hit-squeak", destroyer(1), "the hit stern"
-    Assert.AreEqual "duck-big-right", destroyer(2), "the bow"
+    Assert.AreEqual "duck-small-right-grey", destroyer(1), "the hit stern"
+    Assert.AreEqual "duck-big-right", destroyer(2), "the bow, dizzy on the grid"
 
     grid.TryHit GridCoord.Create(2, 4)
-    destroyer = FleetShipSprites(SUT, grid, 1)
-    Assert.AreEqual "sunk-dizzy", destroyer(2), "the bow, while it sinks"
-
     SUT.FinishSinking PlayerGrid1, grid.Fleet(1)
     destroyer = FleetShipSprites(SUT, grid, 1)
-    Assert.AreEqual "anchor-cracked", destroyer(2), "the bow, once it sank"
+    Assert.AreEqual "duck-small-right-grey", destroyer(1), "the sunk ship's stern"
+    Assert.AreEqual "duck-big-right-grey", destroyer(2), "its bow, an anchor on the grid"
 End Sub
 
 ' what the given BoardSprites shows of a ship in the fleet status, by its place in the fleet.

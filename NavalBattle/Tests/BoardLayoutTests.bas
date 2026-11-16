@@ -56,6 +56,13 @@ Public Sub Banner_IsAcrossTheWindow_OnTheStatusBarsBottomBorder()
 End Sub
 
 '@TestMethod
+Public Sub Background_IsUnderTheBanner_AndTheWindowEndsWithIt()
+    Assert.AreEqual BoardLayout.BannerTop + BoardLayout.BannerHeight, BoardLayout.BackgroundTop, "under the banner"
+    Assert.AreEqual BoardLayout.BackgroundTop + BoardLayout.BackgroundHeight, BoardLayout.WindowHeight, "the window's bottom"
+    Assert.IsTrue BoardLayout.GridTop > BoardLayout.BackgroundTop, "the grids, on the picture"
+End Sub
+
+'@TestMethod
 Public Sub Cells_FollowTheRowNumbers_AndTheLettersFollowTheLastRow()
     Assert.AreEqual BoardLayout.GridLeft(PlayerGrid2), BoardLayout.CellLeft(PlayerGrid2, 0), "the row numbers"
     Assert.AreEqual BoardLayout.CellLeft(PlayerGrid2, 0) + BoardLayout.CellSize, BoardLayout.CellLeft(PlayerGrid2, 1), "column A"

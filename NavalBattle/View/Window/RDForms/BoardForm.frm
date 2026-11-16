@@ -1,11 +1,11 @@
 VERSION 5.00
 Begin VB.Form BoardForm
    Caption         =   "Naval battle"
-   ClientHeight    =   7840
+   ClientHeight    =   9180
    ClientLeft      =   60
    ClientTop       =   345
    ClientWidth     =   16320
-   ScaleHeight     =   7840
+   ScaleHeight     =   9180
    ScaleWidth      =   16320
    StartUpPosition =   2  'CenterScreen
    Begin VB.CommandButton cmdReady
@@ -29,13 +29,12 @@ Begin VB.Form BoardForm
       Top             =   0
       Width           =   16360
       Begin VB.Label lblFleet
-         Alignment       =   2  'Center
          BackStyle       =   0  'Transparent
          BeginProperty Font
             Name            =   "Segoe UI"
             Size            =   12
             Charset         =   0
-            Weight          =   700
+            Weight          =   400
             Underline       =   0   'False
             Italic          =   0   'False
             Strikethrough   =   0   'False
@@ -86,20 +85,19 @@ Begin VB.Form BoardForm
          Width           =   1040
       End
    End
-   Begin VB.PictureBox picShipCell
-      Appearance      =   0  'Flat
-      BackColor       =   &H00F5E1C8&
-      BorderStyle     =   1  'Fixed Single
+   Begin VB.Image imgShipCell
       Height          =   360
       Index           =   0
       Left            =   0
-      ScaleHeight     =   330
-      ScaleWidth      =   330
-      TabIndex        =   12
-      TabStop         =   0   'False
       Top             =   0
       Visible         =   0   'False
       Width           =   360
+   End
+   Begin VB.Image imgBackground
+      Height          =   7845
+      Left            =   0
+      Top             =   0
+      Width           =   16320
    End
    Begin VB.PictureBox picCell
       Appearance      =   0  'Flat
@@ -121,7 +119,7 @@ Begin VB.Form BoardForm
          Name            =   "Segoe UI"
          Size            =   11
          Charset         =   0
-         Weight          =   700
+         Weight          =   400
          Underline       =   0   'False
          Italic          =   0   'False
          Strikethrough   =   0   'False
@@ -199,9 +197,9 @@ Private Sub Form_Initialize()
     Set personInput = New BoardInput
 End Sub
 
-' the background picture is the window's own size, 1088 x 523 pixels at 96 dpi, so it is drawn as it is. Without it, the water colour shows.
-' The banner is a grey PictureBox across the window that holds the columns' captions and the player pickers: a label shows over a PictureBox
-' only from inside it. The Ready button starts the row of buttons at the bottom left, on open water.
+' the banner is a grey PictureBox across the window that holds the columns' captions and the player pickers: a label shows over a PictureBox
+' only from inside it. The background picture is under the banner, whole, at its own size, in an image sent to the back, so the labels show
+' over it; without it, the water colour shows. The Ready button starts the row of buttons at the bottom left, on open water.
 Private Sub Form_Load()
     Me.BackColor = board.Water
     LoadWindowIcon
@@ -355,7 +353,7 @@ Private Sub personInput_ReadyShown(ByVal visible As Boolean)
     cmdReady.Visible = visible
 End Sub
 
-' the pickers are done with: each grid's caption names its player, centred over the grid's cells and in bold.
+' the pickers are done with: each grid's caption names its player, centred over the grid's cells.
 Private Sub personInput_PlayersConfirmed()
     Dim gridId As PlayGridId
     For gridId = PlayerGrid1 To PlayerGrid2
@@ -363,7 +361,6 @@ Private Sub personInput_PlayersConfirmed()
         With lblPlayer(PickerIndex(gridId))
             .Caption = "Grid " & gridId & ": " & cboPlayer(PickerIndex(gridId)).Text
             .Alignment = vbCenter
-            .FontBold = True
         End With
         cboPlayer(PickerIndex(gridId)).Visible = False
     Next
@@ -411,7 +408,8 @@ Private Sub AddPlayerPicker(ByVal gridId As PlayGridId)
     End With
 End Sub
 
-' the fleet status: each ship placed so far, by its name, lying across, with what its cells show on the grid. A sunk ship's name is struck out.
+' the fleet status: each ship placed so far, by its name, lying across, with its ducks greyed out where they are hit. A sunk ship's name is
+' struck out.
 Private Sub PaintFleet(ByVal grid As PlayerGrid)
     lblFleet.Caption = "Grid " & grid.gridId & " fleet"
     Dim ships As Collection
@@ -429,7 +427,7 @@ Private Sub PaintFleet(ByVal grid As PlayerGrid)
         cellSprites = shipSprites(shipNumber)
         Dim column As Long
         For column = 1 To item.Size
-            PaintFleetCell picShipCell(FleetCellIndex(shipNumber, column)), cellSprites(column)
+            PaintFleetCell shipNumber, column, cellSprites(column)
         Next
     Next
 End Sub
@@ -445,25 +443,22 @@ Private Sub AddFleetShip(ByVal shipNumber As Long, ByVal item As IShip)
     For column = 1 To item.Size
         Dim cellNumber As Long
         cellNumber = FleetCellIndex(shipNumber, column)
-        If cellNumber > 0 Then Load picShipCell(cellNumber)
-        Place picShipCell(cellNumber), BoardLayout.ShipCellLeft(column), BoardLayout.ShipCellTop(shipNumber), CellSize, CellSize
-        picShipCell(cellNumber).Visible = True
+        If cellNumber > 0 Then Load imgShipCell(cellNumber)
+        imgShipCell(cellNumber).Visible = True
     Next
     fleetShipCount = shipNumber
 End Sub
 
-' a fleet cell is painted only when it changes, as a grid's is: its Tag holds the sprite it shows.
-Private Sub PaintFleetCell(ByVal cell As VB.PictureBox, ByVal sprite As String)
-    If cell.Tag = sprite Then Exit Sub
-    If sprites Is Nothing Then
-        cell.BackColor = board.FallbackColour(sprite)
-        cell.Cls
-        If board.IsHit(sprite) Then cell.Print "X"
-    ElseIf sprite = vbNullString Then
-        Set cell.Picture = Nothing
-    Else
-        Set cell.Picture = sprites(sprite)
-    End If
+' a fleet cell is an image, with no border, so the sky shows around its duck. It is painted only when it changes, as a grid's cell is: its Tag
+' holds the sprite it shows. An image takes its picture's size, so it is centred on the cell's place again. Without the sprites, the fleet
+' status shows the ships' names only: an image cannot be filled with a colour.
+Private Sub PaintFleetCell(ByVal shipNumber As Long, ByVal column As Long, ByVal sprite As String)
+    Dim cell As VB.Image
+    Set cell = imgShipCell(FleetCellIndex(shipNumber, column))
+    If cell.Tag = sprite Or sprites Is Nothing Then Exit Sub
+    Set cell.Picture = sprites(sprite)
+    cell.Move BoardLayout.ShipCellLeft(column) * TwipsPerPoint + (CellSize * TwipsPerPoint - cell.Width) \ 2, _
+        BoardLayout.ShipCellTop(shipNumber) * TwipsPerPoint + (CellSize * TwipsPerPoint - cell.Height) \ 2
     cell.Tag = sprite
 End Sub
 
@@ -524,8 +519,10 @@ NoIcon:
 End Sub
 
 Private Sub LoadBackground()
+    Place imgBackground, 0, BoardLayout.BackgroundTop, WindowWidth, BackgroundHeight
+    imgBackground.ZOrder vbSendToBack
     On Error GoTo NoBackground
-    Set Me.Picture = LoadPicture(CurDir$ & "\" & BackgroundFile)
+    Set imgBackground.Picture = LoadPicture(CurDir$ & "\" & BackgroundFile)
     Exit Sub
 
 NoBackground:
@@ -553,7 +550,7 @@ Private Function CellIndex(ByVal gridId As PlayGridId, ByVal X As Long, ByVal Y 
     CellIndex = (gridId - PlayerGrid1) * CellsPerGrid + (Y - 1) * GridSize + (X - 1)
 End Function
 
-' the cells of the fleet status, in picShipCell: each ship's take a row of GridSize, longer than any ship, and the first ship's start at 0.
+' the cells of the fleet status, in imgShipCell: each ship's take a row of GridSize, longer than any ship, and the first ship's start at 0.
 Private Function FleetCellIndex(ByVal shipNumber As Long, ByVal column As Long) As Long
     FleetCellIndex = (shipNumber - 1) * GridSize + (column - 1)
 End Function

@@ -1,16 +1,17 @@
 Attribute VB_Name = "BoardLayout"
-Attribute VB_Description = "Where the parts of a game window go, in points, from the top: the status bar, then a banner across the window with a caption over each column, then the three columns side by side: the two grids, and the fleet status. A row of buttons starts at the bottom left. Every game window lays itself out by it; a window that measures in twips multiplies by 20."
+Attribute VB_Description = "Where the parts of a game window go, in points, from the top: the status bar, then a banner across the window with a caption over each column, then the background picture, whole, with the three columns side by side on it: the two grids, and the fleet status. A row of buttons starts at the bottom left. Every game window lays itself out by it; a window that measures in twips multiplies by 20."
 '@Folder("NavalBattle.View.Window")
-'@ModuleDescription("Where the parts of a game window go, in points, from the top: the status bar, then a banner across the window with a caption over each column, then the three columns side by side: the two grids, and the fleet status. A row of buttons starts at the bottom left. Every game window lays itself out by it; a window that measures in twips multiplies by 20.")
+'@ModuleDescription("Where the parts of a game window go, in points, from the top: the status bar, then a banner across the window with a caption over each column, then the background picture, whole, with the three columns side by side on it: the two grids, and the fleet status. A row of buttons starts at the bottom left. Every game window lays itself out by it; a window that measures in twips multiplies by 20.")
 Option Explicit
 
 ' the number of rows and of columns of a grid.
 Public Const GridSize As Long = 10
 ' the side of a grid's cell.
 Public Const CellSize As Long = 18
-' the window's client area: 16320 x 7845 twips, 1088 x 523 pixels at 96 dpi.
+' the window's client area is as wide as the background picture: 16320 twips, 1088 pixels at 96 dpi.
 Public Const WindowWidth As Long = 816
-Public Const WindowHeight As Long = 392
+' the background picture's height: 523 pixels at 96 dpi, 392.25 points.
+Public Const BackgroundHeight As Long = 392
 ' the height of a line of text: a player's line, a ship's name, and the status text.
 Public Const LineHeight As Long = 22
 ' the space between the window's edges and what it shows.
@@ -29,8 +30,8 @@ Public Const ButtonHeight As Long = 28
 
 ' the space between two columns.
 Private Const ColumnGap As Long = 48
-' the space between the banner and the columns under it.
-Private Const LineGap As Long = 8
+' how far down the background picture the grids start: their column letters end over the water, just above the big ducks.
+Private Const GridDepth As Long = 40
 ' the space between two buttons in the row.
 Private Const ButtonGap As Long = 10
 ' the columns: the two grids, then the fleet status.
@@ -160,10 +161,22 @@ Attribute PickerWidth.VB_Description = "A player picker's width: the rest of its
     PickerWidth = CaptionWidth - PlayerCaptionWidth - BannerPadding
 End Function
 
-'@Description("The grids' top edge, under the banner.")
+'@Description("The background picture's top edge, under the banner, so that the status bar and the banner hide none of it.")
+Public Function BackgroundTop() As Long
+Attribute BackgroundTop.VB_Description = "The background picture's top edge, under the banner, so that the status bar and the banner hide none of it."
+    BackgroundTop = BannerTop + BannerHeight
+End Function
+
+'@Description("The window's client area's height: the status bar and the banner, then the background picture.")
+Public Function WindowHeight() As Long
+Attribute WindowHeight.VB_Description = "The window's client area's height: the status bar and the banner, then the background picture."
+    WindowHeight = BackgroundTop + BackgroundHeight
+End Function
+
+'@Description("The grids' top edge, on the background picture: always at the same place on it.")
 Public Function GridTop() As Long
-Attribute GridTop.VB_Description = "The grids' top edge, under the banner."
-    GridTop = BannerTop + BannerHeight + LineGap
+Attribute GridTop.VB_Description = "The grids' top edge, on the background picture: always at the same place on it."
+    GridTop = BackgroundTop + GridDepth
 End Function
 
 '@Description("A column's left edge in a grid: column 0 holds the row numbers, columns 1 to GridSize the cells.")
@@ -208,8 +221,8 @@ Attribute ButtonLeft.VB_Description = "A button's left edge in the row at the bo
     ButtonLeft = Margin + (buttonNumber - 1) * (ButtonWidth + ButtonGap)
 End Function
 
-'@Description("The top edge of the row of buttons, at the bottom of the window.")
+'@Description("The top edge of the row of buttons: as far from the window's bottom edge as the first button is from its left edge.")
 Public Function ButtonTop() As Long
-Attribute ButtonTop.VB_Description = "The top edge of the row of buttons, at the bottom of the window."
+Attribute ButtonTop.VB_Description = "The top edge of the row of buttons: as far from the window's bottom edge as the first button is from its left edge."
     ButtonTop = WindowHeight - Margin - ButtonHeight
 End Function

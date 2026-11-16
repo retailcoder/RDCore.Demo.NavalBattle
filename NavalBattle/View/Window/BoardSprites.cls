@@ -38,11 +38,11 @@ Private Sub Class_Initialize()
     Set this.SunkShipKeys = New Collection
 End Sub
 
-'@Description("The names of every sprite a cell can show.")
+'@Description("The names of every sprite a cell can show, on a grid or in the fleet status.")
 Public Function Names() As Variant
-Attribute Names.VB_Description = "The names of every sprite a cell can show."
+Attribute Names.VB_Description = "The names of every sprite a cell can show, on a grid or in the fleet status."
     Names = Array(DuckSprite(Horizontal, True), DuckSprite(Horizontal, False), DuckSprite(Vertical, True), DuckSprite(Vertical, False), _
-        SpriteHit, SpriteMiss, SpriteDizzy, SpriteAnchor)
+        SpriteHit, SpriteMiss, SpriteDizzy, SpriteAnchor, GreyDuckSprite(True), GreyDuckSprite(False))
 End Function
 
 '@Description("The file of a sprite, by its name: a GIF in the workspace's assets/sprites folder.")
@@ -104,11 +104,9 @@ Attribute IsFleetGrid.VB_Description = "Whether a grid painted with its ships sh
     IsFleetGrid = gridId = this.FleetGridId
 End Function
 
-'@Description("What the fleet status shows of a grid's ships, in the order they were placed: for each ship, an array of its cells' sprites from its stern, at 1, to its bow. Each ship lies across, and shows what its cells show on the grid: a duck where it is not hit, the hit where it is, and its bow dizzy, then the anchor.")
+'@Description("What the fleet status shows of a grid's ships, in the order they were placed: for each ship, an array of its cells' sprites from its stern, at 1, to its bow. Each ship lies across, and each of its cells shows its duck: in colour where it is not hit, greyed out where it is, so a sunk ship is grey all over.")
 Public Function FleetSprites(ByVal grid As PlayerGrid) As Collection
-Attribute FleetSprites.VB_Description = "What the fleet status shows of a grid's ships, in the order they were placed: for each ship, an array of its cells' sprites from its stern, at 1, to its bow. Each ship lies across, and shows what its cells show on the grid: a duck where it is not hit, the hit where it is, and its bow dizzy, then the anchor."
-    Dim onGrid As Variant
-    onGrid = CellSprites(grid, True)
+Attribute FleetSprites.VB_Description = "What the fleet status shows of a grid's ships, in the order they were placed: for each ship, an array of its cells' sprites from its stern, at 1, to its bow. Each ship lies across, and each of its cells shows its duck: in colour where it is not hit, greyed out where it is, so a sunk ship is grey all over."
     Dim result As Collection
     Set result = New Collection
     Dim item As IShip
@@ -121,33 +119,28 @@ Attribute FleetSprites.VB_Description = "What the fleet status shows of a grid's
             X = item.GridPosition.X + IIf(item.Orientation = Horizontal, index - 1, 0)
             Dim Y As Long
             Y = item.GridPosition.Y + IIf(item.Orientation = Vertical, index - 1, 0)
-            cells(index) = AcrossSprite(onGrid(X, Y))
+            Dim isBow As Boolean
+            isBow = index = item.Size
+            If grid.State(GridCoord.Create(X, Y)) = GridState.PreviousHit Then
+                cells(index) = GreyDuckSprite(isBow)
+            Else
+                cells(index) = DuckSprite(Horizontal, isBow)
+            End If
         Next
         result.Add cells
     Next
     Set FleetSprites = result
 End Function
 
-' a standing ship's duck lies across in the fleet status; every other sprite is the same either way.
-Private Function AcrossSprite(ByVal spriteName As String) As String
-    If spriteName = DuckSprite(Vertical, True) Then
-        AcrossSprite = DuckSprite(Horizontal, True)
-    ElseIf spriteName = DuckSprite(Vertical, False) Then
-        AcrossSprite = DuckSprite(Horizontal, False)
-    Else
-        AcrossSprite = spriteName
-    End If
-End Function
-
-'@Description("The colour a cell shows in place of its sprite, where the sprites cannot be read: open water, a miss, a hit (a dizzy duck and an anchor are hits too), or a ship.")
+'@Description("The colour a cell shows in place of its sprite, where the sprites cannot be read: open water, a miss, a hit (a dizzy duck, an anchor and a greyed-out duck are hits too), or a ship.")
 Public Function FallbackColour(ByVal spriteName As String) As Long
-Attribute FallbackColour.VB_Description = "The colour a cell shows in place of its sprite, where the sprites cannot be read: open water, a miss, a hit (a dizzy duck and an anchor are hits too), or a ship."
+Attribute FallbackColour.VB_Description = "The colour a cell shows in place of its sprite, where the sprites cannot be read: open water, a miss, a hit (a dizzy duck, an anchor and a greyed-out duck are hits too), or a ship."
     Select Case spriteName
         Case vbNullString
             FallbackColour = WaterColour
         Case SpriteMiss
             FallbackColour = MissColour
-        Case SpriteHit, SpriteDizzy, SpriteAnchor
+        Case SpriteHit, SpriteDizzy, SpriteAnchor, GreyDuckSprite(True), GreyDuckSprite(False)
             FallbackColour = HitColour
         Case Else
             FallbackColour = ShipColour
@@ -166,10 +159,10 @@ Attribute Water.VB_Description = "The colour of open water."
     Water = WaterColour
 End Property
 
-'@Description("Whether a sprite is the hit's: a window without its sprites writes an X on a hit cell.")
+'@Description("Whether a sprite marks a hit cell: the hit's, or a greyed-out duck's in the fleet status. A window without its sprites writes an X on a hit cell.")
 Public Function IsHit(ByVal spriteName As String) As Boolean
-Attribute IsHit.VB_Description = "Whether a sprite is the hit's: a window without its sprites writes an X on a hit cell."
-    IsHit = spriteName = SpriteHit
+Attribute IsHit.VB_Description = "Whether a sprite marks a hit cell: the hit's, or a greyed-out duck's in the fleet status. A window without its sprites writes an X on a hit cell."
+    IsHit = spriteName = SpriteHit Or spriteName = GreyDuckSprite(True) Or spriteName = GreyDuckSprite(False)
 End Function
 
 '@Description("A ship was hit: its big duck is dizzy, until DizzyShipRecovers.")
@@ -211,4 +204,9 @@ End Function
 ' a ship's ducks face where it goes: right when it lies across, down when it stands; the big duck leads, at its bow, and the small ones follow.
 Private Function DuckSprite(ByVal direction As ShipOrientation, ByVal isBow As Boolean) As String
     DuckSprite = "duck-" & IIf(isBow, "big", "small") & "-" & IIf(direction = Horizontal, "right", "down")
+End Function
+
+' a hit ship's duck in the fleet status: the duck lying across, greyed out.
+Private Function GreyDuckSprite(ByVal isBow As Boolean) As String
+    GreyDuckSprite = DuckSprite(Horizontal, isBow) & "-grey"
 End Function

@@ -18,10 +18,10 @@ Public Sub ModuleCleanup()
     Set Assert = Nothing
 End Sub
 
-' once loaded, the form has 200 cells, picCell(0) to picCell(199), each where BoardLayout places it.
+' once loaded, the form has 200 cells, lblCell(0) to lblCell(199), each where BoardLayout places it.
 '@TestMethod
 Public Sub Cells_AreLoadedFromTheDesignedCell()
-    Assert.Ignore "control arrays: Load picCell(n), and every member of an element, raise 438; For Each over the array raises 92"
+    Assert.Ignore "control arrays: Load lblCell(n), and every member of an element, raise 438; For Each over the array raises 92"
 End Sub
 
 ' once loaded, each picker offers PlayerNames in order: grid 1 picks Human, and grid 2 Merciless AI.

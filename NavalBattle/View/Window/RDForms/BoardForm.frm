@@ -117,17 +117,23 @@ Begin VB.Form BoardForm
       Top             =   0
       Width           =   16320
    End
-   Begin VB.PictureBox picCell
-      Appearance      =   0  'Flat
+   Begin VB.Image imgCellSprite
+      Height          =   330
+      Index           =   0
+      Left            =   0
+      Top             =   0
+      Visible         =   0   'False
+      Width           =   330
+   End
+   Begin VB.Label lblCell
+      Alignment       =   2  'Center
       BackColor       =   &H00F5E1C8&
+      BackStyle       =   0  'Transparent
       BorderStyle     =   1  'Fixed Single
       Height          =   360
       Index           =   0
       Left            =   0
-      ScaleHeight     =   330
-      ScaleWidth      =   330
       TabIndex        =   3
-      TabStop         =   0   'False
       Top             =   0
       Width           =   360
    End
@@ -183,15 +189,15 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-Attribute VB_Description = "The game's RDForms window, a VB6 form: its status bar, banner, player pickers, Ready button, first cell, first ship name and first fleet cell are designed, and the other cells and names are loaded from the first ones. BoardLayout places them, BoardSprites says what each cell shows, and BoardInput sends what the person does to the view's events."
+Attribute VB_Description = "The game's RDForms window, a VB6 form: its status bar, banner, player pickers, Ready button, first cell and its sprite's image, first ship name and first fleet cell are designed, and the other cells and names are loaded from the first ones. BoardLayout places them, BoardSprites says what each cell shows, and BoardInput sends what the person does to the view's events."
 '@Folder("NavalBattle.View.Window.RDForms")
-'@ModuleDescription("The game's RDForms window, a VB6 form: its status bar, banner, player pickers, Ready button, first cell, first ship name and first fleet cell are designed, and the other cells and names are loaded from the first ones. BoardLayout places them, BoardSprites says what each cell shows, and BoardInput sends what the person does to the view's events.")
+'@ModuleDescription("The game's RDForms window, a VB6 form: its status bar, banner, player pickers, Ready button, first cell and its sprite's image, first ship name and first fleet cell are designed, and the other cells and names are loaded from the first ones. BoardLayout places them, BoardSprites says what each cell shows, and BoardInput sends what the person does to the view's events.")
 Option Explicit
 Implements IGameWindow
 
 ' BoardLayout measures in points, and a VB6 form in twips.
 Private Const TwipsPerPoint As Long = 20
-' the cells of a grid, in picCell: grid 1's are 0 to 99, and grid 2's follow.
+' the cells of a grid, in lblCell: grid 1's are 0 to 99, and grid 2's follow.
 Private Const CellsPerGrid As Long = GridSize * GridSize
 Private Const BackgroundFile As String = "assets\game-form-background.jpg"
 Private Const IconFile As String = "assets\ducky.ico"
@@ -201,6 +207,8 @@ Private listener As IGameWindowEvents
 Private paintedColours(PlayerGrid1 To PlayerGrid2, 1 To GridSize, 1 To GridSize) As Long
 Private paintedCaptions(PlayerGrid1 To PlayerGrid2, 1 To GridSize, 1 To GridSize) As String
 Private paintedSprites(PlayerGrid1 To PlayerGrid2, 1 To GridSize, 1 To GridSize) As String
+' the cells whose sprite image is loaded: a cell's is loaded the first time it shows a sprite.
+Private spriteImageLoaded(0 To 2 * CellsPerGrid - 1) As Boolean
 ' the ships the fleet status shows so far.
 Private fleetShipCount As Long
 Private sprites As Collection
@@ -350,16 +358,29 @@ Private Sub IGameWindow_LockGrid(ByVal gridId As PlayGridId, ByVal locked As Boo
     personInput.LockGrid gridId, locked
 End Sub
 
-Private Sub picCell_Click(Index As Integer)
+Private Sub lblCell_Click(Index As Integer)
     personInput.Click GridOf(Index), PositionOf(Index)
 End Sub
 
-Private Sub picCell_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub lblCell_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
     personInput.Hover GridOf(Index), PositionOf(Index)
 End Sub
 
-Private Sub picCell_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub lblCell_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
     If Button = vbRightButton Then personInput.RightClick GridOf(Index), PositionOf(Index)
+End Sub
+
+' a cell's sprite covers the middle of the cell: what the person does on it is done on the cell.
+Private Sub imgCellSprite_Click(Index As Integer)
+    lblCell_Click Index
+End Sub
+
+Private Sub imgCellSprite_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+    lblCell_MouseMove Index, Button, Shift, X, Y
+End Sub
+
+Private Sub imgCellSprite_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+    lblCell_MouseUp Index, Button, Shift, X, Y
 End Sub
 
 ' a Style 2 list raises Click when a player is picked, by the person or by PickPlayer.
@@ -398,7 +419,8 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
     Set listener = Nothing
 End Sub
 
-' the row numbers on the left, and the column letters under the last row; then the cells, loaded from the designed one.
+' the row numbers on the left, and the column letters under the last row; then the cells, loaded from the designed one. A label loaded at
+' run time goes under the background, as in VB6, so each cell is brought to the front.
 Private Sub AddGrid(ByVal gridId As PlayGridId)
     Dim index As Long
     For index = 1 To GridSize
@@ -412,9 +434,10 @@ Private Sub AddGrid(ByVal gridId As PlayGridId)
         For Y = 1 To GridSize
             Dim cellNumber As Long
             cellNumber = CellIndex(gridId, X, Y)
-            If cellNumber > 0 Then Load picCell(cellNumber)
-            Place picCell(cellNumber), BoardLayout.CellLeft(gridId, X), BoardLayout.CellTop(Y), CellSize, CellSize
-            picCell(cellNumber).Visible = True
+            If cellNumber > 0 Then Load lblCell(cellNumber)
+            Place lblCell(cellNumber), BoardLayout.CellLeft(gridId, X), BoardLayout.CellTop(Y), CellSize, CellSize
+            lblCell(cellNumber).Visible = True
+            lblCell(cellNumber).ZOrder vbBringToFront
             paintedColours(gridId, X, Y) = board.Water
         Next
     Next
@@ -519,28 +542,46 @@ Private Sub PlaceInBanner(ByVal target As Object, ByVal leftEdge As Long, ByVal 
     Place target, leftEdge - BoardLayout.BannerLeft, topEdge - BoardLayout.BannerTop, controlWidth, controlHeight
 End Sub
 
-' a cell is painted only when it changes, as in the Microsoft Forms window. A PictureBox cannot be transparent, so a cell of open water shows
-' the water colour, not the background picture under it.
+' a cell is painted only when it changes, as in the Microsoft Forms window. A cell is a transparent label with a border, so the background
+' picture shows through open water and around a sprite; it is filled only with a colour other than the water's: a ship being placed, or a
+' colour in place of a sprite where the sprites cannot be read.
 Private Sub PaintCell(ByVal gridId As PlayGridId, ByVal X As Long, ByVal Y As Long, ByVal colour As Long, Optional ByVal text As String = vbNullString, Optional ByVal sprite As String = vbNullString)
-    Dim cell As VB.PictureBox
-    Set cell = picCell(CellIndex(gridId, X, Y))
+    Dim cell As VB.Label
+    Set cell = lblCell(CellIndex(gridId, X, Y))
     If paintedSprites(gridId, X, Y) <> sprite Then
-        If sprite = vbNullString Then
-            Set cell.Picture = Nothing
-        Else
-            Set cell.Picture = sprites(sprite)
-        End If
+        ShowCellSprite CellIndex(gridId, X, Y), sprite
         paintedSprites(gridId, X, Y) = sprite
     End If
     If paintedColours(gridId, X, Y) <> colour Then
         cell.BackColor = colour
+        cell.BackStyle = IIf(colour = board.Water, 0, 1) ' transparent over the water, opaque otherwise
         paintedColours(gridId, X, Y) = colour
     End If
     If paintedCaptions(gridId, X, Y) <> text Then
-        cell.Cls
-        If text <> vbNullString Then cell.Print text
+        cell.Caption = text
         paintedCaptions(gridId, X, Y) = text
     End If
+End Sub
+
+' a cell's sprite is an image over the cell, centred on it: an image takes its picture's size. A cell's image is loaded the first time the
+' cell shows a sprite, and brought to the front, over the cells; it is hidden while the cell shows none.
+Private Sub ShowCellSprite(ByVal cellNumber As Long, ByVal sprite As String)
+    If sprite = vbNullString Then
+        If spriteImageLoaded(cellNumber) Then imgCellSprite(cellNumber).Visible = False
+        Exit Sub
+    End If
+    If Not spriteImageLoaded(cellNumber) Then
+        If cellNumber > 0 Then Load imgCellSprite(cellNumber)
+        imgCellSprite(cellNumber).ZOrder vbBringToFront
+        spriteImageLoaded(cellNumber) = True
+    End If
+    Dim cell As VB.Label
+    Set cell = lblCell(cellNumber)
+    With imgCellSprite(cellNumber)
+        Set .Picture = sprites(sprite)
+        .Move cell.Left + (cell.Width - .Width) / 2, cell.Top + (cell.Height - .Height) / 2
+        .Visible = True
+    End With
 End Sub
 
 ' the ducky on the window's title bar. Without it, the window keeps the icon it has.

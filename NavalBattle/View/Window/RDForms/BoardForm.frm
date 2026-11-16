@@ -57,6 +57,15 @@ Begin VB.Form BoardForm
       End
       Begin VB.Label lblPlayer
          BackStyle       =   0  'Transparent
+         BeginProperty Font
+            Name            =   "Segoe UI"
+            Size            =   12
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
          Caption         =   "Grid 2:"
          Height          =   440
          Index           =   1
@@ -76,6 +85,15 @@ Begin VB.Form BoardForm
       End
       Begin VB.Label lblPlayer
          BackStyle       =   0  'Transparent
+         BeginProperty Font
+            Name            =   "Segoe UI"
+            Size            =   12
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
          Caption         =   "Grid 1:"
          Height          =   440
          Index           =   0

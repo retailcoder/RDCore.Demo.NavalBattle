@@ -222,7 +222,7 @@ Private Sub Form_Load()
     lblSignature.Caption = "V I V A T  " & ChrW$(&H2764) & ChrW$(&HFE0F) & "  C U C U M I S " & ChrW$(&H2122)
 End Sub
 
-' a component's version as people read it: the platform's version of it, without the build metadata after a "+".
+' a component's version as people read it: what App.ComponentVersion gives, without the build metadata after a "+".
 Private Function ShownVersion(ByVal component As String) As String
     Dim version As String
     version = App.ComponentVersion(component)

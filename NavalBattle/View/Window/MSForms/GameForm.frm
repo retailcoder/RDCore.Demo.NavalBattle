@@ -122,6 +122,11 @@ Private Sub IGameWindow_Show()
     Me.Show
 End Sub
 
+' a Microsoft Forms window has no menu bar: it is closed only to leave.
+Private Property Get IGameWindow_WantsNewGame() As Boolean
+    IGameWindow_WantsNewGame = False
+End Property
+
 Private Sub IGameWindow_PickPlayer(ByVal gridId As PlayGridId, ByVal player As String)
     Dim difficulty As AIDifficulty
     If TryParsePlayer(player, difficulty) Then PickerOf(gridId).Value = PlayerName(difficulty)
@@ -220,7 +225,7 @@ End Sub
 
 Private Sub AddFleetShip(ByVal shipNumber As Long, ByVal item As IShip)
     Dim shipName As MSForms.Label
-    Set shipName = AddLabel("Ship" & shipNumber & "Name", BoardLayout.ShipCellLeft(1), BoardLayout.ShipNameTop(shipNumber) + TextOffset, BoardLayout.CaptionWidth, LineHeight - TextOffset, item.Name)
+    Set shipName = AddLabel("Ship" & shipNumber & "Name", BoardLayout.ShipCellLeft(1), BoardLayout.ShipNameTop(shipNumber), BoardLayout.CaptionWidth, BoardLayout.ShipNameHeight, item.Name)
     fleetNames.Add shipName
 
     Dim cells As Collection

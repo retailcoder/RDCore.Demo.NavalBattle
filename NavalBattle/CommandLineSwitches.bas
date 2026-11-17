@@ -6,17 +6,18 @@ Option Explicit
 
 ' the views a game can be played in, as GameViews names them.
 Public Const ViewMicrosoftForms As String = "MSForms"
+Public Const ViewRDForms As String = "RDForms"
 Public Const ViewConsole As String = "Console"
 
-'@Description("The views to try a game in, in order, until one opens: --console plays in the console alone; without it, the Microsoft Forms window on Windows, then the console.")
-Public Function GameViews(ByVal commandLine As String, ByVal onWindows As Boolean) As Variant
-Attribute GameViews.VB_Description = "The views to try a game in, in order, until one opens: --console plays in the console alone; without it, the Microsoft Forms window on Windows, then the console."
+'@Description("The views to try a game in, in order, until one opens: the RDForms window, then the console, on every platform. --msforms plays in the Microsoft Forms window, then the console, to compare the two windows; --console plays in the console alone, and wins over --msforms.")
+Public Function GameViews(ByVal commandLine As String) As Variant
+Attribute GameViews.VB_Description = "The views to try a game in, in order, until one opens: the RDForms window, then the console, on every platform. --msforms plays in the Microsoft Forms window, then the console, to compare the two windows; --console plays in the console alone, and wins over --msforms."
     If HasSwitch(commandLine, "--console") Then
         GameViews = Array(ViewConsole)
-    ElseIf onWindows Then
+    ElseIf HasSwitch(commandLine, "--msforms") Then
         GameViews = Array(ViewMicrosoftForms, ViewConsole)
     Else
-        GameViews = Array(ViewConsole)
+        GameViews = Array(ViewRDForms, ViewConsole)
     End If
 End Function
 

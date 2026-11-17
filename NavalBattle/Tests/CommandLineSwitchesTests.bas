@@ -46,17 +46,22 @@ Public Sub SwitchesItIsNotAskedAbout_AreIgnored()
 End Sub
 
 '@TestMethod
-Public Sub NoViewSwitchOnWindows_TriesMicrosoftFormsThenTheConsole()
-    Assert.AreEqual "MSForms,Console", Join(GameViews("--seed 42", True), ",")
+Public Sub NoViewSwitch_TriesRDFormsThenTheConsole()
+    Assert.AreEqual "RDForms,Console", Join(GameViews("--seed 42"), ",")
 End Sub
 
 '@TestMethod
-Public Sub NoViewSwitchElsewhere_PlaysInTheConsole()
-    Assert.AreEqual "Console", Join(GameViews("--seed 42", False), ",")
+Public Sub RDFormsSwitch_TriesRDFormsThenTheConsole()
+    Assert.AreEqual "RDForms,Console", Join(GameViews("--unattended --rdforms"), ",")
 End Sub
 
 '@TestMethod
-Public Sub ConsoleSwitch_PlaysInTheConsoleAlone()
-    Assert.AreEqual "Console", Join(GameViews("--unattended --console", True), ",")
-    Assert.AreEqual "Console", Join(GameViews("--console", False), ",")
+Public Sub MSFormsSwitch_TriesMicrosoftFormsThenTheConsole()
+    Assert.AreEqual "MSForms,Console", Join(GameViews("--unattended --msforms"), ",")
+End Sub
+
+'@TestMethod
+Public Sub ConsoleSwitch_PlaysInTheConsoleAlone_EvenWithAWindowSwitch()
+    Assert.AreEqual "Console", Join(GameViews("--msforms --console"), ",")
+    Assert.AreEqual "Console", Join(GameViews("--rdforms --console"), ",")
 End Sub

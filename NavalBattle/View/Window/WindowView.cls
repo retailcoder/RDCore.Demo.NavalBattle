@@ -65,6 +65,12 @@ Private Function IsOpen() As Boolean
     IsOpen = Not this.Closed
 End Function
 
+'@Description("Whether the window was closed for a new game, from its File menu, rather than to leave.")
+Public Property Get WantsNewGame() As Boolean
+Attribute WantsNewGame.VB_Description = "Whether the window was closed for a new game, from its File menu, rather than to leave."
+    WantsNewGame = this.Window.WantsNewGame
+End Property
+
 '@Description("Shows the game window, with the given players picked (Human, Random, Fair-play or Merciless; the first letter is enough), and returns when it is closed. A player that is not given keeps the window's own pick.")
 Public Sub Play(Optional ByVal firstPlayer As String, Optional ByVal secondPlayer As String)
 Attribute Play.VB_Description = "Shows the game window, with the given players picked (Human, Random, Fair-play or Merciless; the first letter is enough), and returns when it is closed. A player that is not given keeps the window's own pick."

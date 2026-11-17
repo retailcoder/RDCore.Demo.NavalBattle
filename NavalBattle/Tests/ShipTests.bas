@@ -191,13 +191,13 @@ End Sub
 
 
 '@TestMethod
-Public Sub NameChoices_AreFiveAKind_NoNameTwice()
+Public Sub DefaultNameChoices_AreFiveAKind_NoNameTwice()
     Dim seen As Collection
     Set seen = New Collection
     Dim kind As Variant
     For Each kind In Ship.ShipKinds
         Dim choices As Variant
-        choices = Ship.NameChoices(kind)
+        choices = Ship.DefaultNameChoices(kind)
         Assert.AreEqual 5, UBound(choices) - LBound(choices) + 1, "kind " & kind
         Dim choice As Variant
         For Each choice In choices
@@ -224,4 +224,10 @@ Public Sub PickNames_NamesTheShipsCreatedAfterIt_AmongTheirKindsChoices()
     randomizer.PicksHighest = False
     Ship.PickNames randomizer
     Assert.AreEqual choices(LBound(choices)), Ship.Create(ShipType.Destroyer, Horizontal, GridCoord.Default).Name, "the lowest pick"
+End Sub
+
+'@TestMethod
+Public Sub KindCaption_NamesTheKind_AndItsDucks()
+    Assert.AreEqual "Carrier (5 ducks)", Ship.KindCaption(ShipType.Carrier)
+    Assert.AreEqual "Destroyer (2 ducks)", Ship.KindCaption(ShipType.Destroyer)
 End Sub

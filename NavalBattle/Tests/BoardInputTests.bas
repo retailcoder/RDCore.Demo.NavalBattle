@@ -189,6 +189,26 @@ Public Sub EndGame_HidesReady_AndTakesNoClicks()
 End Sub
 
 ' a new input, and the window that records it.
+'@TestMethod
+Public Sub TakesClicks_WhereAClickDoesSomething()
+    Dim SUT As BoardInput
+    Dim window As BoardInputRecorder
+    Set window = Watched(SUT)
+    Assert.IsFalse SUT.TakesClicks(PlayerGrid1), "before the game"
+
+    SUT.BeginShipPlacement PlayerGrid1
+    Assert.IsTrue SUT.TakesClicks(PlayerGrid1), "placing ships"
+    SUT.LockGrid PlayerGrid1, True
+    Assert.IsFalse SUT.TakesClicks(PlayerGrid1), "locked"
+    SUT.LockGrid PlayerGrid1, False
+    SUT.BeginComputerTurn
+    Assert.IsFalse SUT.TakesClicks(PlayerGrid1), "the computer's turn"
+    SUT.EndComputerTurn
+    Assert.IsTrue SUT.TakesClicks(PlayerGrid1), "after it"
+    SUT.EndGame
+    Assert.IsFalse SUT.TakesClicks(PlayerGrid1), "the game is over"
+End Sub
+
 Private Function Watched(ByRef outInput As BoardInput) As BoardInputRecorder
     Set outInput = New BoardInput
     Dim result As BoardInputRecorder

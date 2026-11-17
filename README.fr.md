@@ -9,7 +9,7 @@ Ce référentiel contient le portage du jeu vers la plateforme [RDCore](https://
 
 ## État du projet
 
-Bataille navale RD-VBA est en développement **pré-alpha**. Le jeu se joue dans une fenêtre sous Windows, dans la fenêtre RDForms ailleurs, et dans la console là où aucune des deux fenêtres ne peut s'ouvrir : une personne contre l'ordinateur, ou l'ordinateur contre lui-même.
+Bataille navale RD-VBA est en développement **pré-alpha**. Le jeu se joue dans la fenêtre RDForms, et dans la console là où la fenêtre ne peut pas s'ouvrir : une personne contre l'ordinateur, ou l'ordinateur contre lui-même.
 
 ## Lancer le jeu
 
@@ -19,11 +19,11 @@ Le jeu s'exécute avec `rdc`, la ligne de commande de RDCore, compilée à parti
 rdc run .
 ```
 
-Sous Windows, le jeu ouvre une fenêtre avec les deux grilles. Choisissez qui joue chaque grille, Human ou l'un des joueurs de l'ordinateur, puis cliquez sur **Ready**. Une personne place ses cinq navires sur sa propre grille : pointez une case pour y déplacer le navire, cliquez avec le bouton droit pour le tourner, et cliquez pour le placer. Cliquez de nouveau sur **Ready**, puis tirez sur l'autre grille en cliquant sur ses cases. Quand l'ordinateur joue les deux grilles, toute la partie se déroule dans la fenêtre. Fermer la fenêtre termine la partie. Avec `--console` (voir plus bas), le jeu se joue plutôt dans la console.
+Le jeu ouvre une fenêtre avec les deux grilles. Choisissez qui joue chaque grille, Human ou l'un des joueurs de l'ordinateur, puis cliquez sur **Ready**. Une personne place ses cinq navires sur sa propre grille : pointez une case pour y déplacer le navire, cliquez avec le bouton droit pour le tourner, et cliquez pour le placer. Cliquez de nouveau sur **Ready**, puis tirez sur l'autre grille en cliquant sur ses cases. Quand l'ordinateur joue les deux grilles, toute la partie se déroule dans la fenêtre. Fermer la fenêtre termine la partie. Avec `--console` (voir plus bas), le jeu se joue plutôt dans la console.
 
 Dans la console, le jeu demande qui joue chaque grille : Human, Random, Fair-play ou Merciless (la première lettre suffit). Une personne place ses cinq navires, puis joue à tour de rôle avec l'ordinateur, un tir chacun, jusqu'à ce qu'une flotte soit coulée. Une case est une lettre de colonne et un numéro de ligne, comme `B3`; un navire part de sa première case vers la droite, ou vers le bas avec un `V` : `B3 V`. Une réponse vide termine la partie. Sous Windows, les questions sont des boîtes de dialogue. Le jeu lui-même est en anglais.
 
-Après le chemin, `--player1 <joueur>` et `--player2 <joueur>` nomment les joueurs (la fenêtre s'ouvre avec ces joueurs déjà choisis), `--rdforms` fait jouer dans la fenêtre RDForms sous Windows aussi, `--console` fait jouer dans la console, et `--seed <nombre>` fixe la graine aléatoire, pour qu'une partie puisse être rejouée coup pour coup :
+Après le chemin, `--player1 <joueur>` et `--player2 <joueur>` nomment les joueurs (la fenêtre s'ouvre avec ces joueurs déjà choisis), `--msforms` fait jouer dans la fenêtre Microsoft Forms à la place, pour comparer les deux fenêtres, `--console` fait jouer dans la console, et `--seed <nombre>` fixe la graine aléatoire, pour qu'une partie puisse être rejouée coup pour coup :
 
 ```
 rdc run . --player1 merciless --player2 fairplay --seed 42

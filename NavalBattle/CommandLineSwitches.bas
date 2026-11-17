@@ -9,15 +9,15 @@ Public Const ViewMicrosoftForms As String = "MSForms"
 Public Const ViewRDForms As String = "RDForms"
 Public Const ViewConsole As String = "Console"
 
-'@Description("The views to try a game in, in order, until one opens: --console plays in the console alone; --rdforms in the RDForms window, then the console; with neither, the Microsoft Forms window on Windows, then the RDForms window, then the console. --console wins over --rdforms.")
-Public Function GameViews(ByVal commandLine As String, ByVal onWindows As Boolean) As Variant
-Attribute GameViews.VB_Description = "The views to try a game in, in order, until one opens: --console plays in the console alone; --rdforms in the RDForms window, then the console; with neither, the Microsoft Forms window on Windows, then the RDForms window, then the console. --console wins over --rdforms."
+'@Description("The views to try a game in, in order, until one opens: the RDForms window, then the console, on every platform. --msforms plays in the Microsoft Forms window, then the console, to compare the two windows; --console plays in the console alone, and wins over --msforms.")
+Public Function GameViews(ByVal commandLine As String) As Variant
+Attribute GameViews.VB_Description = "The views to try a game in, in order, until one opens: the RDForms window, then the console, on every platform. --msforms plays in the Microsoft Forms window, then the console, to compare the two windows; --console plays in the console alone, and wins over --msforms."
     If HasSwitch(commandLine, "--console") Then
         GameViews = Array(ViewConsole)
-    ElseIf HasSwitch(commandLine, "--rdforms") Or Not onWindows Then
-        GameViews = Array(ViewRDForms, ViewConsole)
+    ElseIf HasSwitch(commandLine, "--msforms") Then
+        GameViews = Array(ViewMicrosoftForms, ViewConsole)
     Else
-        GameViews = Array(ViewMicrosoftForms, ViewRDForms, ViewConsole)
+        GameViews = Array(ViewRDForms, ViewConsole)
     End If
 End Function
 

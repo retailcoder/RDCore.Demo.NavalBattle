@@ -9,9 +9,9 @@ Private Const WatchableAIPause As Long = 800
 
 Private controller As IGameController
 
-'@Description("Plays a game: in the Microsoft Forms window on Windows, else in the RDForms window, else in the console; --rdforms skips the Microsoft Forms window, and --console plays in the console alone. The command line can name the players, --player1 <player> --player2 <player> (Human, Random, Fair-play or Merciless), and fix the random seed so a game can be replayed: --seed <number>. The form opens with the players it names already picked; the console asks for a player it does not name. --test runs the tests instead of a game, in the console. Under --unattended, nobody watches: the computer plays without its pause before each shot.")
+'@Description("Plays a game: in the RDForms window, else in the console, on every platform; --msforms plays in the Microsoft Forms window instead, to compare the two windows, and --console plays in the console alone. The command line can name the players, --player1 <player> --player2 <player> (Human, Random, Fair-play or Merciless), and fix the random seed so a game can be replayed: --seed <number>. The form opens with the players it names already picked; the console asks for a player it does not name. --test runs the tests instead of a game, in the console. Under --unattended, nobody watches: the computer plays without its pause before each shot.")
 Public Sub Main()
-Attribute Main.VB_Description = "Plays a game: in the Microsoft Forms window on Windows, else in the RDForms window, else in the console; --rdforms skips the Microsoft Forms window, and --console plays in the console alone. The command line can name the players, --player1 <player> --player2 <player> (Human, Random, Fair-play or Merciless), and fix the random seed so a game can be replayed: --seed <number>. The form opens with the players it names already picked; the console asks for a player it does not name. --test runs the tests instead of a game, in the console. Under --unattended, nobody watches: the computer plays without its pause before each shot."
+Attribute Main.VB_Description = "Plays a game: in the RDForms window, else in the console, on every platform; --msforms plays in the Microsoft Forms window instead, to compare the two windows, and --console plays in the console alone. The command line can name the players, --player1 <player> --player2 <player> (Human, Random, Fair-play or Merciless), and fix the random seed so a game can be replayed: --seed <number>. The form opens with the players it names already picked; the console asks for a player it does not name. --test runs the tests instead of a game, in the console. Under --unattended, nobody watches: the computer plays without its pause before each shot."
     If HasSwitch(Command$, "--test") Then
         TestRunner.RunAll
         Exit Sub
@@ -30,12 +30,8 @@ Attribute Main.VB_Description = "Plays a game: in the Microsoft Forms window on 
     Dim secondPlayer As String
     TryGetArgument Command$, "--player2", secondPlayer
 
-    Dim onWindows As Boolean
-#If Win32 Or Win64 Then
-    onWindows = True
-#End If
     Dim viewName As Variant
-    For Each viewName In GameViews(Command$, onWindows)
+    For Each viewName In GameViews(Command$)
         If viewName = ViewConsole Then
             PlayInConsole firstPlayer, secondPlayer
             Exit Sub

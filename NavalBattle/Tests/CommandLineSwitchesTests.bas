@@ -61,7 +61,7 @@ Public Sub MSFormsSwitch_TriesMicrosoftFormsThenTheConsole()
 End Sub
 
 '@TestMethod
-Public Sub ConsoleSwitch_PlaysInTheConsoleAlone_EvenWithAWindowsSwitch()
+Public Sub ConsoleSwitch_PlaysInTheConsoleAlone_EvenWithAWindowSwitch()
     Assert.AreEqual "Console", Join(GameViews("--msforms --console"), ",")
     Assert.AreEqual "Console", Join(GameViews("--rdforms --console"), ",")
 End Sub

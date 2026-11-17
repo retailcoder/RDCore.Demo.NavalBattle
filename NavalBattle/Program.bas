@@ -44,20 +44,22 @@ Attribute Main.VB_Description = "Plays a game: in the Microsoft Forms window on 
     Next
 End Sub
 
-'@Description("Plays a game in the given window, Microsoft Forms' or RDForms', and returns True when it is closed; returns False when the window cannot be opened here: Microsoft Forms is not installed, or the runtime has no forms host.")
+'@Description("Plays games in the given window, Microsoft Forms' or RDForms', one after the other while the person asks for a new one, and returns True when it is closed; returns False when the window cannot be opened here: Microsoft Forms is not installed, or the runtime has no forms host.")
 Private Function TryPlayInWindow(ByVal viewName As String, ByVal firstPlayer As String, ByVal secondPlayer As String) As Boolean
-Attribute TryPlayInWindow.VB_Description = "Plays a game in the given window, Microsoft Forms' or RDForms', and returns True when it is closed; returns False when the window cannot be opened here: Microsoft Forms is not installed, or the runtime has no forms host."
+Attribute TryPlayInWindow.VB_Description = "Plays games in the given window, Microsoft Forms' or RDForms', one after the other while the person asks for a new one, and returns True when it is closed; returns False when the window cannot be opened here: Microsoft Forms is not installed, or the runtime has no forms host."
     Dim view As WindowView
     ' Microsoft Forms is missing as soon as its form is made; a missing forms host shows when the RDForms window is first shown, or its player picked.
     On Error GoTo NoWindow
-    If viewName = ViewMicrosoftForms Then
-        Set view = WindowView.Create(New GameForm)
-    Else
-        Set view = WindowView.Create(New BoardForm)
-    End If
+    Do
+        If viewName = ViewMicrosoftForms Then
+            Set view = WindowView.Create(New GameForm)
+        Else
+            Set view = WindowView.Create(New BoardForm)
+        End If
 
-    StartGame GridViewAdapter.Create(view)
-    view.Play firstPlayer, secondPlayer
+        StartGame GridViewAdapter.Create(view)
+        view.Play firstPlayer, secondPlayer
+    Loop While view.WantsNewGame
     TryPlayInWindow = True
     Exit Function
 

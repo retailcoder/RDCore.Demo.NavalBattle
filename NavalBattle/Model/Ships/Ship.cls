@@ -14,6 +14,10 @@ Attribute VB_Description = "Default instance factory; avoid altering default ins
 Option Explicit
 
 Private ShipSizes As Dictionary
+' where the names given in the Options window are kept, between games: one setting for each kind's name, by its place among the five.
+Private Const SettingsApp As String = "NavalBattle"
+Private Const SettingsSection As String = "Formations"
+Private Const NamesPerKind As Long = 5
 ' each kind's name in the game being played: its first name choice, until a game picks one.
 Private shipNames As Dictionary
 
@@ -59,20 +63,68 @@ Attribute Names.VB_Description = "Gets an array of all ship names."
     Names = shipNames.Items
 End Function
 
-'@Description("The names a ship of the given kind can go by: each names its formation of ducks, a big one and its ducklings, one duck to a cell.")
+'@Description("The names a ship of the given kind can go by, five of them: each names its formation of ducks, a big one and its ducklings, one duck to a cell. A name given in the Options window takes the place of its default.")
 Public Function NameChoices(ByVal kind As ShipType) As Variant
-Attribute NameChoices.VB_Description = "The names a ship of the given kind can go by: each names its formation of ducks, a big one and its ducklings, one duck to a cell."
+Attribute NameChoices.VB_Description = "The names a ship of the given kind can go by, five of them: each names its formation of ducks, a big one and its ducklings, one duck to a cell. A name given in the Options window takes the place of its default."
+    Dim defaults As Variant
+    defaults = DefaultNameChoices(kind)
+    Dim result(0 To NamesPerKind - 1) As String
+    Dim position As Long
+    For position = 0 To NamesPerKind - 1
+        result(position) = GetSetting(SettingsApp, SettingsSection, NameKey(kind, position), defaults(LBound(defaults) + position))
+    Next
+    NameChoices = result
+End Function
+
+'@Description("Keeps the given five names for the given kind of ship, for the games that follow: a name left empty takes its default.")
+Public Sub SaveNameChoices(ByVal kind As ShipType, ByRef names() As String)
+Attribute SaveNameChoices.VB_Description = "Keeps the given five names for the given kind of ship, for the games that follow: a name left empty takes its default."
+    Dim defaults As Variant
+    defaults = DefaultNameChoices(kind)
+    Dim position As Long
+    For position = 0 To NamesPerKind - 1
+        Dim name As String
+        name = Trim$(names(LBound(names) + position))
+        If name = vbNullString Then name = defaults(LBound(defaults) + position)
+        SaveSetting SettingsApp, SettingsSection, NameKey(kind, position), name
+    Next
+End Sub
+
+'@Description("A kind of ship, as the Options window shows it: its name and its number of ducks.")
+Public Function KindCaption(ByVal kind As ShipType) As String
+Attribute KindCaption.VB_Description = "A kind of ship, as the Options window shows it: its name and its number of ducks."
+    KindCaption = KindName(kind) & " (" & ShipSizes(kind) & " ducks)"
+End Function
+
+' a setting's key: the kind's name and the name's place among its five, from 1.
+Private Function NameKey(ByVal kind As ShipType, ByVal position As Long) As String
+    NameKey = KindName(kind) & (position + 1)
+End Function
+
+Private Function KindName(ByVal kind As ShipType) As String
+    Select Case kind
+        Case ShipType.Carrier: KindName = "Carrier"
+        Case ShipType.Dreadnought: KindName = "Dreadnought"
+        Case ShipType.Submarine: KindName = "Submarine"
+        Case ShipType.Cruiser: KindName = "Cruiser"
+        Case ShipType.Destroyer: KindName = "Destroyer"
+    End Select
+End Function
+
+'@Description("The five names a ship of the given kind goes by until the Options window gives others.")
+Public Function DefaultNameChoices(ByVal kind As ShipType) As Variant
+Attribute DefaultNameChoices.VB_Description = "The five names a ship of the given kind goes by until the Options window gives others."
     Select Case kind
         Case ShipType.Carrier
-            NameChoices = Array("Ducks in a Row", "Full-Hands Mama", "Tidal Tub-Wave", "The Minivan", "Mega-Bubble Brood")
+            DefaultNameChoices = Array("Ducks in a Row", "Full-Hands Mama", "Tidal Tub-Wave", "The Minivan", "Mega-Bubble Brood")
         Case ShipType.Dreadnought
-            NameChoices = Array("Busy Brood", "Foam Brigade", "Sudsy Squad", "Waddle Parade", "Splash Patrol")
+            DefaultNameChoices = Array("Busy Brood", "Foam Brigade", "Sudsy Squad", "Waddle Parade", "Splash Patrol")
         Case ShipType.Submarine
-            NameChoices = Array("Double Trouble", "Bubble Buddies", "Ripple Rascals", "Bathtub Trio", "Mini-Quack Pack")
+            DefaultNameChoices = Array("Double Trouble", "Bubble Buddies", "Ripple Rascals", "Bathtub Trio", "Mini-Quack Pack")
         Case ShipType.Cruiser
-            NameChoices = Array("Sidekick Squad", "Soap Suds Trio", "Squeaky Three", "Puddle Posse", "Tub-Time Trio")
+            DefaultNameChoices = Array("Sidekick Squad", "Soap Suds Trio", "Squeaky Three", "Puddle Posse", "Tub-Time Trio")
         Case ShipType.Destroyer
-            NameChoices = Array("Only Child", "Squeak & Mini-Squeak", "Mama's Favorite", "Dynamic Duo", "Lil' Splasher")
+            DefaultNameChoices = Array("Only Child", "Squeak & Mini-Squeak", "Mama's Favorite", "Dynamic Duo", "Lil' Splasher")
     End Select
 End Function
 

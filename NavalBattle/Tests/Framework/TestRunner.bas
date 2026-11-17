@@ -48,7 +48,7 @@ End Sub
 '@Description("The number of tests.")
 Private Property Get TestCount() As Long
 Attribute TestCount.VB_Description = "The number of tests."
-    TestCount = 87
+    TestCount = 88
 End Property
 
 '@Description("The name of a test, by its number, and runs it where run is True.")
@@ -138,10 +138,11 @@ Attribute Test.VB_Description = "The name of a test, by its number, and runs it 
         Case 81: Test = "BoardFormTests.FleetStatus_ShowsEveryShipPlaced": If run Then BoardFormTests.FleetStatus_ShowsEveryShipPlaced
         Case 82: Test = "BoardLayoutTests.Banner_IsAcrossTheWindow_OnTheStatusBarsBottomBorder": If run Then BoardLayoutTests.Banner_IsAcrossTheWindow_OnTheStatusBarsBottomBorder
         Case 83: Test = "BoardLayoutTests.Background_IsUnderTheBanner_AndTheWindowEndsWithIt": If run Then BoardLayoutTests.Background_IsUnderTheBanner_AndTheWindowEndsWithIt
-        Case 84: Test = "ShipTests.NameChoices_AreFiveAKind_NoNameTwice": If run Then ShipTests.NameChoices_AreFiveAKind_NoNameTwice
+        Case 84: Test = "ShipTests.DefaultNameChoices_AreFiveAKind_NoNameTwice": If run Then ShipTests.DefaultNameChoices_AreFiveAKind_NoNameTwice
         Case 85: Test = "ShipTests.PickNames_NamesTheShipsCreatedAfterIt_AmongTheirKindsChoices": If run Then ShipTests.PickNames_NamesTheShipsCreatedAfterIt_AmongTheirKindsChoices
         Case 86: Test = "BoardSpritesTests.Squeak_ShowsOnTheHitCell_OfItsGridOnly_UntilItStops": If run Then BoardSpritesTests.Squeak_ShowsOnTheHitCell_OfItsGridOnly_UntilItStops
         Case 87: Test = "BoardInputTests.TakesClicks_WhereAClickDoesSomething": If run Then BoardInputTests.TakesClicks_WhereAClickDoesSomething
+        Case 88: Test = "ShipTests.KindCaption_NamesTheKind_AndItsDucks": If run Then ShipTests.KindCaption_NamesTheKind_AndItsDucks
         Case Else: Test = vbNullString
     End Select
 End Function

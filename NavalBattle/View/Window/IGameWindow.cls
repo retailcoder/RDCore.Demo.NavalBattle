@@ -28,6 +28,11 @@ Public Sub Show()
 Attribute Show.VB_Description = "Shows the window, and returns once it is closed."
 End Sub
 
+'@Description("Whether the window was closed for a new game, from its File menu, rather than to leave.")
+Public Property Get WantsNewGame() As Boolean
+Attribute WantsNewGame.VB_Description = "Whether the window was closed for a new game, from its File menu, rather than to leave."
+End Property
+
 '@Description("Picks the player of a grid: Human, Random, Fair-play or Merciless; the first letter is enough. Anything else keeps the pick as it is.")
 Public Sub PickPlayer(ByVal gridId As PlayGridId, ByVal player As String)
 Attribute PickPlayer.VB_Description = "Picks the player of a grid: Human, Random, Fair-play or Merciless; the first letter is enough. Anything else keeps the pick as it is."

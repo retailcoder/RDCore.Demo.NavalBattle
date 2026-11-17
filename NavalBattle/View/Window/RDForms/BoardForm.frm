@@ -189,6 +189,30 @@ Begin VB.Form BoardForm
       Top             =   0
       Width           =   16360
    End
+   Begin VB.Menu mnuFile
+      Caption         =   "&File"
+      Begin VB.Menu mnuFileNewGame
+         Caption         =   "&New game"
+      End
+      Begin VB.Menu mnuFileOptions
+         Caption         =   "&Options..."
+      End
+      Begin VB.Menu mnuFileSeparator
+         Caption         =   "-"
+      End
+      Begin VB.Menu mnuFileQuit
+         Caption         =   "&Quit"
+      End
+   End
+   Begin VB.Menu mnuHelp
+      Caption         =   "&Help"
+      Begin VB.Menu mnuHelpDocs
+         Caption         =   "RDForms &Docs"
+      End
+      Begin VB.Menu mnuHelpAbout
+         Caption         =   "&About..."
+      End
+   End
 End
 Attribute VB_Name = "BoardForm"
 Attribute VB_GlobalNameSpace = False
@@ -207,6 +231,8 @@ Private Const TwipsPerPoint As Long = 20
 Private Const CellsPerGrid As Long = GridSize * GridSize
 Private Const BackgroundFile As String = "assets\game-form-background.jpg"
 Private Const IconFile As String = "assets\ducky.ico"
+' where Help, RDForms Docs goes.
+Private Const DocsAddress As String = "https://rubberduck-vba.github.io/RDCore.Forms/"
 ' the pale fill of the cell under the pointer.
 Private Const HoverColour As Long = &HFCF3EA
 ' a shot's flash fades back to the water in this many ticks of tmrFlash.
@@ -216,6 +242,8 @@ Private Const MissOpacity As Double = 0.8
 
 ' who is told when the person closes the window.
 Private listener As IGameWindowEvents
+' File, New game closes the window for another game.
+Private newGameWanted As Boolean
 Private paintedColours(PlayerGrid1 To PlayerGrid2, 1 To GridSize, 1 To GridSize) As Long
 Private paintedCaptions(PlayerGrid1 To PlayerGrid2, 1 To GridSize, 1 To GridSize) As String
 Private paintedSprites(PlayerGrid1 To PlayerGrid2, 1 To GridSize, 1 To GridSize) As String
@@ -280,6 +308,39 @@ End Property
 
 Private Sub IGameWindow_Show()
     Me.Show vbModal
+End Sub
+
+Private Property Get IGameWindow_WantsNewGame() As Boolean
+    IGameWindow_WantsNewGame = newGameWanted
+End Property
+
+' a new game: this window closes, which ends the game being played, and the program opens a new one.
+Private Sub mnuFileNewGame_Click()
+    newGameWanted = True
+    Unload Me
+End Sub
+
+Private Sub mnuFileOptions_Click()
+    OptionsForm.Show vbModal
+End Sub
+
+Private Sub mnuFileQuit_Click()
+    Unload Me
+End Sub
+
+' the documentation opens in the browser; where no browser can be started, the address is shown instead.
+Private Sub mnuHelpDocs_Click()
+    Dim started As Boolean
+#If Win32 Or Win64 Then
+    On Error Resume Next
+    started = Shell("explorer.exe """ & DocsAddress & """", vbNormalFocus) <> 0
+    On Error GoTo 0
+#End If
+    If Not started Then MsgBox "The RDForms documentation is at " & DocsAddress, vbInformation, "RDForms Docs"
+End Sub
+
+Private Sub mnuHelpAbout_Click()
+    AboutForm.Show vbModal
 End Sub
 
 Private Sub IGameWindow_PickPlayer(ByVal gridId As PlayGridId, ByVal player As String)

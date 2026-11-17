@@ -225,3 +225,9 @@ Public Sub PickNames_NamesTheShipsCreatedAfterIt_AmongTheirKindsChoices()
     Ship.PickNames randomizer
     Assert.AreEqual choices(LBound(choices)), Ship.Create(ShipType.Destroyer, Horizontal, GridCoord.Default).Name, "the lowest pick"
 End Sub
+
+'@TestMethod
+Public Sub KindCaption_NamesTheKind_AndItsDucks()
+    Assert.AreEqual "Carrier (5 ducks)", Ship.KindCaption(ShipType.Carrier)
+    Assert.AreEqual "Destroyer (2 ducks)", Ship.KindCaption(ShipType.Destroyer)
+End Sub

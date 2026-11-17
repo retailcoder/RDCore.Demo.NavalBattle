@@ -191,13 +191,13 @@ End Sub
 
 
 '@TestMethod
-Public Sub NameChoices_AreFiveAKind_NoNameTwice()
+Public Sub DefaultNameChoices_AreFiveAKind_NoNameTwice()
     Dim seen As Collection
     Set seen = New Collection
     Dim kind As Variant
     For Each kind In Ship.ShipKinds
         Dim choices As Variant
-        choices = Ship.NameChoices(kind)
+        choices = Ship.DefaultNameChoices(kind)
         Assert.AreEqual 5, UBound(choices) - LBound(choices) + 1, "kind " & kind
         Dim choice As Variant
         For Each choice In choices

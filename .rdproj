@@ -155,6 +155,12 @@
         "RelativeUri": "NavalBattle/View/Window/RDForms/BoardForm.frm"
       },
       {
+        "RelativeUri": "NavalBattle/View/Window/RDForms/AboutForm.frm"
+      },
+      {
+        "RelativeUri": "NavalBattle/View/Window/RDForms/OptionsForm.frm"
+      },
+      {
         "RelativeUri": "NavalBattle/View/IGridViewCommands.cls"
       },
       {

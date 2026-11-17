@@ -220,7 +220,7 @@ End Sub
 
 Private Sub AddFleetShip(ByVal shipNumber As Long, ByVal item As IShip)
     Dim shipName As MSForms.Label
-    Set shipName = AddLabel("Ship" & shipNumber & "Name", BoardLayout.ShipCellLeft(1), BoardLayout.ShipNameTop(shipNumber) + TextOffset, BoardLayout.CaptionWidth, LineHeight - TextOffset, item.Name)
+    Set shipName = AddLabel("Ship" & shipNumber & "Name", BoardLayout.ShipCellLeft(1), BoardLayout.ShipNameTop(shipNumber), BoardLayout.CaptionWidth, BoardLayout.ShipNameHeight, item.Name)
     fleetNames.Add shipName
 
     Dim cells As Collection

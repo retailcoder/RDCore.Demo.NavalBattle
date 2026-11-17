@@ -14,6 +14,8 @@ Public Const WindowWidth As Long = 816
 Public Const BackgroundHeight As Long = 392
 ' the height of a line of text: a player's line, a ship's name, and the status text.
 Public Const LineHeight As Long = 22
+' the height of a ship's name in the fleet status: its ducks sit right under it, so the name reads as theirs.
+Public Const ShipNameHeight As Long = 16
 ' the space between the window's edges and what it shows.
 Public Const Margin As Long = 12
 ' how far the status bar starts past the window's top, left and right edges, so that only its bottom border shows.
@@ -36,6 +38,8 @@ Private Const GridDepth As Long = 40
 Private Const ButtonGap As Long = 10
 ' the columns: the two grids, then the fleet status.
 Private Const ColumnCount As Long = 3
+' the space between one ship's ducks and the next ship's name in the fleet status.
+Private Const ShipGap As Long = 10
 
 '@Description("The status bar's left edge: past the window's.")
 Public Function StatusBarLeft() As Long
@@ -191,10 +195,10 @@ Attribute CellTop.VB_Description = "A row's top edge in a grid: rows 1 to GridSi
     CellTop = GridTop + (row - 1) * CellSize
 End Function
 
-'@Description("The height of a ship in the fleet status: its name, then its cells.")
+'@Description("The height of a ship in the fleet status: its name, then its cells, then the space before the next ship.")
 Public Function ShipHeight() As Long
-Attribute ShipHeight.VB_Description = "The height of a ship in the fleet status: its name, then its cells."
-    ShipHeight = LineHeight + CellSize
+Attribute ShipHeight.VB_Description = "The height of a ship in the fleet status: its name, then its cells, then the space before the next ship."
+    ShipHeight = ShipNameHeight + CellSize + ShipGap
 End Function
 
 '@Description("The top edge of a ship's name in the fleet status, by the ship's place in the fleet, from 1.")
@@ -206,7 +210,7 @@ End Function
 '@Description("The top edge of a ship's cells in the fleet status, under its name.")
 Public Function ShipCellTop(ByVal shipNumber As Long) As Long
 Attribute ShipCellTop.VB_Description = "The top edge of a ship's cells in the fleet status, under its name."
-    ShipCellTop = ShipNameTop(shipNumber) + LineHeight
+    ShipCellTop = ShipNameTop(shipNumber) + ShipNameHeight
 End Function
 
 '@Description("The left edge of a ship's cell in the fleet status, from 1 at its stern: the ships lie across, under their caption, as a grid's cells do.")

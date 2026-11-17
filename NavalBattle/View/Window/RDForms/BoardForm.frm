@@ -528,7 +528,7 @@ End Sub
 ' and the Tag says which sprite a cell shows: it is cleared, so the cell is painted.
 Private Sub AddFleetShip(ByVal shipNumber As Long, ByVal item As IShip)
     If shipNumber > 1 Then Load lblShip(shipNumber - 1)
-    Place lblShip(shipNumber - 1), BoardLayout.ShipCellLeft(1), BoardLayout.ShipNameTop(shipNumber), BoardLayout.CaptionWidth, LineHeight
+    Place lblShip(shipNumber - 1), BoardLayout.ShipCellLeft(1), BoardLayout.ShipNameTop(shipNumber), BoardLayout.CaptionWidth, BoardLayout.ShipNameHeight
     lblShip(shipNumber - 1).Caption = item.Name
     lblShip(shipNumber - 1).Visible = True
     lblShip(shipNumber - 1).ZOrder vbBringToFront

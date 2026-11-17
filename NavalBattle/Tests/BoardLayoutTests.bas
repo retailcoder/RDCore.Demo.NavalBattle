@@ -86,8 +86,8 @@ Public Sub FleetShips_AreUnderTheirBanner_OneUnderTheOther_InsideTheWindow()
     ' the carrier, five cells, is the longest ship.
     Const LongestShip As Long = 5
     Assert.AreEqual BoardLayout.GridTop, BoardLayout.ShipNameTop(1), "the first ship's name"
-    Assert.AreEqual BoardLayout.ShipNameTop(1) + BoardLayout.LineHeight, BoardLayout.ShipCellTop(1), "its cells, under its name"
-    Assert.IsTrue BoardLayout.ShipNameTop(2) >= BoardLayout.ShipCellTop(1) + BoardLayout.CellSize, "the next ship, under the first one's cells"
+    Assert.AreEqual BoardLayout.ShipNameTop(1) + BoardLayout.ShipNameHeight, BoardLayout.ShipCellTop(1), "its cells, right under its name"
+    Assert.IsTrue BoardLayout.ShipNameTop(2) - (BoardLayout.ShipCellTop(1) + BoardLayout.CellSize) > BoardLayout.ShipCellTop(1) - (BoardLayout.ShipNameTop(1) + BoardLayout.ShipNameHeight), "the next ship, further from the first one's cells than they are from their name"
     Assert.IsTrue BoardLayout.ShipCellTop(PlayerGrid.ShipsPerGrid) + BoardLayout.CellSize <= BoardLayout.WindowHeight - BoardLayout.Margin, "the window's height"
     Assert.IsTrue BoardLayout.ShipCellLeft(LongestShip) + BoardLayout.CellSize <= BoardLayout.FleetLeft + BoardLayout.GridWidth, "the longest ship, inside its column"
 End Sub

@@ -62,6 +62,7 @@ Begin VB.Form OptionsForm
       TabIndex        =   0
       Top             =   240
       Width           =   11880
+      WordWrap        =   -1  'True
    End
    Begin VB.Label lblKind
       Height          =   330

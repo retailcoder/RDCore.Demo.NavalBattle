@@ -69,7 +69,7 @@ Begin VB.Form AboutForm
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      Caption         =   "© 2026 9562-7303 Québec inc."
+      Caption         =   "Â© 2026 9562-7303 QuÃ©bec inc."
       Height          =   300
       Left            =   240
       TabIndex        =   3
@@ -145,6 +145,7 @@ Begin VB.Form AboutForm
       TabIndex        =   7
       Top             =   6960
       Width           =   6120
+      WordWrap        =   -1  'True
    End
    Begin VB.Label lblSignature
       Alignment       =   2  'Center
@@ -195,11 +196,11 @@ Private Sub Form_Load()
     LoadLogo
     lblThanks.Caption = "Anthropic" & vbCrLf & "HexIDE" & vbCrLf & "ThunderFrame"
     lblTrademarks.Caption = _
-        """RDCore"" and ""VIVAT CUCUMIS"" are trademarks claimed by 9562-7303 Québec inc. (pending)." & vbCrLf & _
+        """RDCore"" and ""VIVAT CUCUMIS"" are trademarks claimed by 9562-7303 QuÃ©bec inc. (pending)." & vbCrLf & _
         "BATTLESHIP is a trademark of Hasbro, Inc. NavalBattle is not affiliated with, sponsored by or endorsed by Hasbro, Inc." & vbCrLf & _
         "NavalBattle is not a Microsoft product and is not affiliated with Microsoft, directly or indirectly." & vbCrLf & _
         "All trademarks belong to their respective owners."
-    ' the signature's heart is not in the form file's code page, so the caption is written here.
+    ' the signature's heart is in no ANSI code page, so the caption is written with ChrW$, as a form file saved by VB would need.
     lblSignature.Caption = "V I V A T  " & ChrW$(&H2764) & ChrW$(&HFE0F) & "  C U C U M I S " & ChrW$(&H2122)
 End Sub
 

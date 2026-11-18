@@ -90,6 +90,27 @@ Public Sub DizzyShip_ShowsItsBowDizzy_UntilItRecovers()
 End Sub
 
 '@TestMethod
+Public Sub DizzyShip_ADucklingHit_TheHelmIsDizzy_OnlyWhileItIsYellow()
+    Dim grid As PlayerGrid
+    Set grid = PlayerGrid.Create(PlayerGrid1)
+    grid.AddShip Ship.Create(ShipType.Cruiser, Horizontal, GridCoord.Create(2, 3))
+    Dim SUT As BoardSprites
+    Set SUT = New BoardSprites
+
+    grid.TryHit GridCoord.Create(2, 3)
+    SUT.DizzyShip PlayerGrid1, grid.Fleet(1)
+    Assert.AreEqual "sunk-dizzy", ShownSprite(SUT, grid, True, 4, 3), "a duckling hit, the helm yellow"
+    SUT.DizzyShipRecovers
+
+    Set grid = PlayerGrid.Create(PlayerGrid1)
+    grid.AddShip Ship.Create(ShipType.Cruiser, Horizontal, GridCoord.Create(2, 3))
+    grid.TryHit GridCoord.Create(4, 3)
+    grid.TryHit GridCoord.Create(2, 3)
+    SUT.DizzyShip PlayerGrid1, grid.Fleet(1)
+    Assert.AreEqual "duck-big-right-red", ShownSprite(SUT, grid, True, 4, 3), "a duckling hit, the helm red"
+End Sub
+
+'@TestMethod
 Public Sub SunkShip_ShowsDizzy_ThenItsRedBigDuck_EvenHidden()
     Dim grid As PlayerGrid
     Set grid = DestroyerGrid(Horizontal)
@@ -97,6 +118,8 @@ Public Sub SunkShip_ShowsDizzy_ThenItsRedBigDuck_EvenHidden()
     grid.TryHit GridCoord.Create(3, 3)
     Dim SUT As BoardSprites
     Set SUT = New BoardSprites
+    SUT.Squeak PlayerGrid1, GridCoord.Create(3, 3)
+    SUT.SqueakStops
 
     Assert.AreEqual "sunk-dizzy", ShownSprite(SUT, grid, False, 3, 3), "while it sinks"
     Assert.AreEqual "duck-small-right-red", ShownSprite(SUT, grid, False, 2, 3), "the stern, shown once sunk"
@@ -104,6 +127,23 @@ Public Sub SunkShip_ShowsDizzy_ThenItsRedBigDuck_EvenHidden()
     SUT.FinishSinking PlayerGrid1, grid.Fleet(1)
     SUT.FinishSinking PlayerGrid1, grid.Fleet(1)
     Assert.AreEqual "duck-big-right-red", ShownSprite(SUT, grid, False, 3, 3), "once it sank"
+End Sub
+
+'@TestMethod
+Public Sub SunkShip_ItsBowHitBefore_StaysRed_NotDizzy()
+    Dim grid As PlayerGrid
+    Set grid = DestroyerGrid(Horizontal)
+    grid.TryHit GridCoord.Create(3, 3)
+    grid.TryHit GridCoord.Create(2, 3)
+    Dim SUT As BoardSprites
+    Set SUT = New BoardSprites
+    SUT.Squeak PlayerGrid1, GridCoord.Create(3, 3)
+    SUT.SqueakStops
+    SUT.Squeak PlayerGrid1, GridCoord.Create(2, 3)
+    SUT.SqueakStops
+
+    Assert.AreEqual "duck-big-right-red", ShownSprite(SUT, grid, False, 3, 3), "hidden, while it sinks"
+    Assert.AreEqual "duck-big-right-red", ShownSprite(SUT, grid, True, 3, 3), "shown, while it sinks"
 End Sub
 
 '@TestMethod

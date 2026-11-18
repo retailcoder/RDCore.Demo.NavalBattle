@@ -771,7 +771,7 @@ End Sub
 ' the ducky on the window's title bar. Without it, the window keeps the icon it has.
 Private Sub LoadWindowIcon()
     On Error GoTo NoIcon
-    Set Me.Icon = LoadPicture(CurDir$ & "\" & IconFile)
+    Set Me.Icon = LoadPicture(App.Path & "\" & IconFile)
     Exit Sub
 
 NoIcon:
@@ -782,7 +782,7 @@ Private Sub LoadBackground()
     Place imgBackground, 0, BoardLayout.BackgroundTop, WindowWidth, BackgroundHeight
     imgBackground.ZOrder vbSendToBack
     On Error GoTo NoBackground
-    Set imgBackground.Picture = LoadPicture(CurDir$ & "\" & BackgroundFile)
+    Set imgBackground.Picture = LoadPicture(App.Path & "\" & BackgroundFile)
     Exit Sub
 
 NoBackground:

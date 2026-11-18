@@ -42,7 +42,7 @@ Private Function ITestList_Test(ByVal index As Long, ByVal run As Boolean) As St
         Case 21: ITestList_Test = "BoardSpritesTests.DizzyShip_ShowsItsBowDizzy_UntilItRecovers": If run Then BoardSpritesTests.DizzyShip_ShowsItsBowDizzy_UntilItRecovers
         Case 22: ITestList_Test = "BoardSpritesTests.SunkShip_ShowsDizzy_ThenItsRedBigDuck_EvenHidden": If run Then BoardSpritesTests.SunkShip_ShowsDizzy_ThenItsRedBigDuck_EvenHidden
         Case 23: ITestList_Test = "BoardSpritesTests.FallbackColours_TellWaterShipsHitsAndMissesApart": If run Then BoardSpritesTests.FallbackColours_TellWaterShipsHitsAndMissesApart
-        Case 24: ITestList_Test = "BoardSpritesTests.EverySprite_IsAPngInTheWorkspaceAssets": If run Then BoardSpritesTests.EverySprite_IsAPngInTheWorkspaceAssets
+        Case 24: ITestList_Test = "BoardSpritesTests.EverySprite_IsAPngInTheAppsAssets": If run Then BoardSpritesTests.EverySprite_IsAPngInTheAppsAssets
         Case 25: ITestList_Test = "BoardFormTests.Cells_AreLoadedFromTheDesignedCell": If run Then BoardFormTests.Cells_AreLoadedFromTheDesignedCell
         Case 26: ITestList_Test = "BoardFormTests.PlayerPickers_OfferEveryPlayer": If run Then BoardFormTests.PlayerPickers_OfferEveryPlayer
         Case 27: ITestList_Test = "BoardFormTests.PickedPlayer_ShowsInItsGridsPicker": If run Then BoardFormTests.PickedPlayer_ShowsInItsGridsPicker

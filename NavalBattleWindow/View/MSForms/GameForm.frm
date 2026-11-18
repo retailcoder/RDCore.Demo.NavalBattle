@@ -301,7 +301,7 @@ End Sub
 Private Sub LoadBackground()
     Dim background As Object
     On Error GoTo NoBackground
-    Set background = LoadPicture(CurDir$ & "\" & BackgroundFile)
+    Set background = LoadPicture(App.Path & "\" & BackgroundFile)
     On Error GoTo 0
 
     With Me.Controls.Add("Forms.Image.1", "Background", True)

@@ -54,10 +54,10 @@ Attribute Names.VB_Description = "The names of every sprite a cell can show, on 
         SpriteHiddenHit, SpriteSqueak, SpriteMiss, SpriteDizzy)
 End Function
 
-'@Description("The file of a sprite, by its name: a PNG in the workspace's assets/sprites folder.")
+'@Description("The file of a sprite, by its name: a PNG in the window app's assets/sprites folder, next to its project file (or its built program).")
 Public Function Path(ByVal spriteName As String) As String
-Attribute Path.VB_Description = "The file of a sprite, by its name: a PNG in the workspace's assets/sprites folder."
-    Path = CurDir$ & "\" & SpriteFolder & spriteName & ".png"
+Attribute Path.VB_Description = "The file of a sprite, by its name: a PNG in the window app's assets/sprites folder, next to its project file (or its built program)."
+    Path = App.Path & "\" & SpriteFolder & spriteName & ".png"
 End Function
 
 '@Description("The sprite each cell of a grid shows, by its name, in an array indexed by column and row from 1: empty for open water. A miss shows where it was played. A hit shows its duck in red where the ships are shown, or where its ship is sunk, and the devil duck facing front where its ship is hidden. The ships show a duck on each cell that is not hit, when they are shown, and a sunk ship's bow shows either way: a dizzy duck while it sinks, when the shot that sank it hit the bow, then its big duck in red. A bow hit by an earlier shot stays red. The big duck of the ship that was just hit is dizzy too, and the cell that was just hit squeaks.")

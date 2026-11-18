@@ -165,12 +165,12 @@ Public Sub FallbackColours_TellWaterShipsHitsAndMissesApart()
 End Sub
 
 '@TestMethod
-Public Sub EverySprite_IsAPngInTheWorkspaceAssets()
+Public Sub EverySprite_IsAPngInTheAppsAssets()
     Dim SUT As BoardSprites
     Set SUT = New BoardSprites
 
     Assert.AreEqual 12, UBound(SUT.Names) - LBound(SUT.Names) + 1, "the sprites: four ducks and their four red ones, the devil duck, the squeak, the miss and the dizzy duck"
-    Assert.AreEqual CurDir$ & "\assets\sprites\hit-squeak.png", SUT.Path("hit-squeak")
+    Assert.AreEqual App.Path & "\assets\sprites\hit-squeak.png", SUT.Path("hit-squeak")
 End Sub
 
 '@TestMethod

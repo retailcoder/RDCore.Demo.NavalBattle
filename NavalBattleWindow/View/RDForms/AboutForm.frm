@@ -232,7 +232,7 @@ End Function
 
 Private Sub LoadLogo()
     On Error GoTo NoLogo
-    Set imgLogo.Picture = LoadPicture(CurDir$ & "\" & LogoFile)
+    Set imgLogo.Picture = LoadPicture(App.Path & "\" & LogoFile)
     imgLogo.Move (picLogo.Width - 2 * LogoBorder - imgLogo.Width) / 2, (picLogo.Height - 2 * LogoBorder - imgLogo.Height) / 2
     Exit Sub
 

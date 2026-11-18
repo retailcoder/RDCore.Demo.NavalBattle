@@ -80,7 +80,24 @@
         "RelativeUri": "View/WindowView.cls"
       }
     ],
-    "OtherFiles": [],
+    "OtherFiles": [
+      "assets/ducky.ico",
+      "assets/game-form-background.jpg",
+      "assets/rdcore-ducky.png",
+      "assets/sprites/duck-big-down-red.png",
+      "assets/sprites/duck-big-down.png",
+      "assets/sprites/duck-big-right-red.png",
+      "assets/sprites/duck-big-right.png",
+      "assets/sprites/duck-devil.png",
+      "assets/sprites/duck-small-down-red.png",
+      "assets/sprites/duck-small-down.png",
+      "assets/sprites/duck-small-right-red.png",
+      "assets/sprites/duck-small-right.png",
+      "assets/sprites/hit-squeak.png",
+      "assets/sprites/miss-ripple-2.png",
+      "assets/sprites/miss-ripple.png",
+      "assets/sprites/sunk-dizzy.png"
+    ],
     "Folders": []
   }
 }

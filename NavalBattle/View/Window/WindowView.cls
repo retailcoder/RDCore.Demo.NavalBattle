@@ -129,7 +129,8 @@ Private Sub IGridViewCommands_OnMiss(ByVal gridId As PlayGridId, ByVal position 
 End Sub
 
 Private Sub IGridViewCommands_OnHit(ByVal gridId As PlayGridId, ByVal position As IGridCoord, ByVal hitShip As IShip)
-    Report gridId, position, "hit, the " & hitShip.Name & "."
+    ' a hit does not name its ship: the name tells the kind, and so its length, before the ship is sunk.
+    Report gridId, position, "hit."
     ShowSqueak gridId, position
     ShowDizzyShip gridId, hitShip
 End Sub

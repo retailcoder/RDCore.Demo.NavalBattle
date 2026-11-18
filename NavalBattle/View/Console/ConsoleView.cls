@@ -101,7 +101,7 @@ Private Sub IGridViewCommands_OnMiss(ByVal gridId As PlayGridId, ByVal position 
 End Sub
 
 Private Sub IGridViewCommands_OnHit(ByVal gridId As PlayGridId, ByVal position As IGridCoord, ByVal hitShip As IShip)
-    Debug.Print "Shot at grid " & gridId & ", " & CellName(position.X, position.Y) & ": hit, the " & hitShip.Name & "."
+    Debug.Print "Shot at grid " & gridId & ", " & CellName(position.X, position.Y) & ": hit."
 End Sub
 
 Private Sub IGridViewCommands_OnSink(ByVal gridId As PlayGridId, ByVal position As IGridCoord, ByVal sunkShip As IShip)

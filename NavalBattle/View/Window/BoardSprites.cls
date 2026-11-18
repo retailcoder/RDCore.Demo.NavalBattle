@@ -35,6 +35,9 @@ Private Type TSprites
     SqueakGridId As PlayGridId
     SqueakX As Long
     SqueakY As Long
+    ' the cell of each grid that was hit last, by grid id: the shot that sank a ship, while it sinks.
+    LastHitX(1 To 2) As Long
+    LastHitY(1 To 2) As Long
 End Type
 
 Private this As TSprites
@@ -57,9 +60,9 @@ Attribute Path.VB_Description = "The file of a sprite, by its name: a PNG in the
     Path = CurDir$ & "\" & SpriteFolder & spriteName & ".png"
 End Function
 
-'@Description("The sprite each cell of a grid shows, by its name, in an array indexed by column and row from 1: empty for open water. A miss shows where it was played. A hit shows its duck in red where the ships are shown, or where its ship is sunk, and the devil duck facing front where its ship is hidden. The ships show a duck on each cell that is not hit, when they are shown, and a sunk ship's bow shows either way: a dizzy duck while it sinks, then its big duck in red. The big duck of the ship that was just hit is dizzy too, and the cell that was just hit squeaks.")
+'@Description("The sprite each cell of a grid shows, by its name, in an array indexed by column and row from 1: empty for open water. A miss shows where it was played. A hit shows its duck in red where the ships are shown, or where its ship is sunk, and the devil duck facing front where its ship is hidden. The ships show a duck on each cell that is not hit, when they are shown, and a sunk ship's bow shows either way: a dizzy duck while it sinks, when the shot that sank it hit the bow, then its big duck in red. A bow hit before stays red: it is not dizzy again. The big duck of the ship that was just hit is dizzy too, and the cell that was just hit squeaks.")
 Public Function CellSprites(ByVal grid As PlayerGrid, ByVal showShips As Boolean) As Variant
-Attribute CellSprites.VB_Description = "The sprite each cell of a grid shows, by its name, in an array indexed by column and row from 1: empty for open water. A miss shows where it was played. A hit shows its duck in red where the ships are shown, or where its ship is sunk, and the devil duck facing front where its ship is hidden. The ships show a duck on each cell that is not hit, when they are shown, and a sunk ship's bow shows either way: a dizzy duck while it sinks, then its big duck in red. The big duck of the ship that was just hit is dizzy too, and the cell that was just hit squeaks."
+Attribute CellSprites.VB_Description = "The sprite each cell of a grid shows, by its name, in an array indexed by column and row from 1: empty for open water. A miss shows where it was played. A hit shows its duck in red where the ships are shown, or where its ship is sunk, and the devil duck facing front where its ship is hidden. The ships show a duck on each cell that is not hit, when they are shown, and a sunk ship's bow shows either way: a dizzy duck while it sinks, when the shot that sank it hit the bow, then its big duck in red. A bow hit before stays red: it is not dizzy again. The big duck of the ship that was just hit is dizzy too, and the cell that was just hit squeaks."
     Dim result() As String
     ReDim result(1 To PlayerGrid.Size, 1 To PlayerGrid.Size)
     Dim X As Long
@@ -79,7 +82,7 @@ Attribute CellSprites.VB_Description = "The sprite each cell of a grid shows, by
             Dim isBow As Boolean
             isBow = index = item.Size - 1
             If item.IsSunken And isBow Then
-                result(X, Y) = IIf(IsSinkingDone(grid.gridId, item), RedDuckSprite(item.Orientation, True), SpriteDizzy)
+                result(X, Y) = IIf(IsSinkingDone(grid.gridId, item) Or Not IsLastHit(grid.gridId, X, Y), RedDuckSprite(item.Orientation, True), SpriteDizzy)
             ElseIf grid.State(GridCoord.Create(X, Y)) = GridState.PreviousHit Then
                 result(X, Y) = IIf(showShips Or item.IsSunken, RedDuckSprite(item.Orientation, isBow), SpriteHiddenHit)
             ElseIf showShips Then
@@ -187,6 +190,8 @@ Attribute Squeak.VB_Description = "A cell of a grid was just hit: it squeaks, un
     this.SqueakGridId = gridId
     this.SqueakX = position.X
     this.SqueakY = position.Y
+    this.LastHitX(gridId) = position.X
+    this.LastHitY(gridId) = position.Y
 End Sub
 
 '@Description("The cell that was just hit shows its hit again.")
@@ -224,6 +229,10 @@ Private Function IsSinkingDone(ByVal gridId As PlayGridId, ByVal sunkShip As ISh
             Exit Function
         End If
     Next
+End Function
+
+Private Function IsLastHit(ByVal gridId As PlayGridId, ByVal X As Long, ByVal Y As Long) As Boolean
+    IsLastHit = this.LastHitX(gridId) = X And this.LastHitY(gridId) = Y
 End Function
 
 ' a ship is known by its grid, its position and its direction: no two ships of a grid share a bow.

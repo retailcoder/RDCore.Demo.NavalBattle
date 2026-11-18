@@ -21,6 +21,9 @@
       }
     ],
     "OtherFiles": [],
-    "Folders": []
+    "Folders": [],
+    "build": {
+      "outputType": "ConsoleApplication"
+    }
   }
 }

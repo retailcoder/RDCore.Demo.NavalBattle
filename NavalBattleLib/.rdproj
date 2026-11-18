@@ -1,0 +1,136 @@
+{
+  "Version": "1.3",
+  "Configuration": [],
+  "ProjectInfo": {
+    "Name": "NavalBattleLib",
+    "References": [
+      {
+        "Name": "VBRUN"
+      }
+    ],
+    "Modules": [
+      {
+        "RelativeUri": "CommandLineSwitches.bas"
+      },
+      {
+        "RelativeUri": "Controller/GridViewAdapter.cls"
+      },
+      {
+        "RelativeUri": "Controller/IGameController.cls"
+      },
+      {
+        "RelativeUri": "Controller/StandardGameController.cls"
+      },
+      {
+        "RelativeUri": "Games.bas"
+      },
+      {
+        "RelativeUri": "Lib/Dictionary.cls"
+      },
+      {
+        "RelativeUri": "Model/Grid/GridCoord.cls"
+      },
+      {
+        "RelativeUri": "Model/Grid/IGridCoord.cls"
+      },
+      {
+        "RelativeUri": "Model/Grid/PlayerGrid.cls"
+      },
+      {
+        "RelativeUri": "Model/Players/AI/FairPlayStrategy.cls"
+      },
+      {
+        "RelativeUri": "Model/Players/AI/GameStrategyBase.cls"
+      },
+      {
+        "RelativeUri": "Model/Players/AI/IGameStrategy.cls"
+      },
+      {
+        "RelativeUri": "Model/Players/AI/MercilessStrategy.cls"
+      },
+      {
+        "RelativeUri": "Model/Players/AI/RandomShotStrategy.cls"
+      },
+      {
+        "RelativeUri": "Model/Players/AIPlayer.cls"
+      },
+      {
+        "RelativeUri": "Model/Players/HumanPlayer.cls"
+      },
+      {
+        "RelativeUri": "Model/Players/IPlayer.cls"
+      },
+      {
+        "RelativeUri": "Model/Players/IPlayerFactory.cls"
+      },
+      {
+        "RelativeUri": "Model/Players/PlayerChoices.bas"
+      },
+      {
+        "RelativeUri": "Model/Players/PlayerFactory.cls"
+      },
+      {
+        "RelativeUri": "Model/Random/GameRandomizer.cls"
+      },
+      {
+        "RelativeUri": "Model/Random/IRandomizer.cls"
+      },
+      {
+        "RelativeUri": "Model/Ships/IShip.cls"
+      },
+      {
+        "RelativeUri": "Model/Ships/Ship.cls"
+      },
+      {
+        "RelativeUri": "Tests/CommandLineSwitchesTests.bas"
+      },
+      {
+        "RelativeUri": "Tests/Doubles/EdgeRandomizer.cls"
+      },
+      {
+        "RelativeUri": "Tests/Doubles/ScriptedPlayer.cls"
+      },
+      {
+        "RelativeUri": "Tests/Doubles/ScriptedPlayerFactory.cls"
+      },
+      {
+        "RelativeUri": "Tests/Doubles/SinkRecorderView.cls"
+      },
+      {
+        "RelativeUri": "Tests/Framework/ITestList.cls"
+      },
+      {
+        "RelativeUri": "Tests/Framework/TestAssert.cls"
+      },
+      {
+        "RelativeUri": "Tests/Framework/TestRunner.bas"
+      },
+      {
+        "RelativeUri": "Tests/GameControllerTests.bas"
+      },
+      {
+        "RelativeUri": "Tests/LibraryTests.cls"
+      },
+      {
+        "RelativeUri": "Tests/PlayerChoicesTests.bas"
+      },
+      {
+        "RelativeUri": "Tests/PlayerGridTests.bas"
+      },
+      {
+        "RelativeUri": "Tests/ShipTests.bas"
+      },
+      {
+        "RelativeUri": "View/IGridViewCommands.cls"
+      },
+      {
+        "RelativeUri": "View/IGridViewEvents.cls"
+      }
+    ],
+    "OtherFiles": [],
+    "Folders": [],
+    "build": {
+      "outputType": "Library"
+    }
+  }
+}

@@ -6,9 +6,8 @@ Attribute VB_Name = "GridViewAdapter"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
-Attribute VB_Exposed = True
+Attribute VB_Exposed = False
 '@PredeclaredId
-'@Exposed
 '@Folder("NavalBattle.Controller")
 Option Explicit
 Implements IGridViewCommands

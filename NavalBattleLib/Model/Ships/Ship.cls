@@ -6,9 +6,10 @@ Attribute VB_Name = "Ship"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
-Attribute VB_Exposed = False
+Attribute VB_Exposed = True
 Attribute VB_Description = "Default instance factory; avoid altering default instance state."
 '@PredeclaredId
+'@Exposed
 '@Folder("NavalBattle.Model.Ships")
 '@ModuleDescription "Default instance factory; avoid altering default instance state."
 Option Explicit

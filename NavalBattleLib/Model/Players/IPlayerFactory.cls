@@ -6,7 +6,7 @@ Attribute VB_Name = "IPlayerFactory"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
-Attribute VB_Exposed = True
+Attribute VB_Exposed = False
 Attribute VB_Description = "Describes an object responsible for creating players."
 '@Folder("NavalBattle.Model.Players")
 '@ModuleDescription("Describes an object responsible for creating players.")

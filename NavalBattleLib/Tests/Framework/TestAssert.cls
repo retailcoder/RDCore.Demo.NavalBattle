@@ -6,8 +6,9 @@ Attribute VB_Name = "TestAssert"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
-Attribute VB_Exposed = False
+Attribute VB_Exposed = True
 Attribute VB_Description = "The assertions of the test modules: the members of legacy Rubberduck's AssertClass that the tests use. A failed assertion does not stop its test; the test's outcome is its first failure, or Inconclusive."
+'@Exposed
 '@Folder("NavalBattle.Tests.Framework")
 '@ModuleDescription("The assertions of the test modules: the members of legacy Rubberduck's AssertClass that the tests use. A failed assertion does not stop its test; the test's outcome is its first failure, or Inconclusive.")
 '@PredeclaredId

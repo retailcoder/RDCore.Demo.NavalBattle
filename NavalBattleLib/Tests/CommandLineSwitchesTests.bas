@@ -44,24 +44,3 @@ Public Sub SwitchesItIsNotAskedAbout_AreIgnored()
     Assert.IsTrue HasSwitch("--unattended --console --someday", "--console")
     Assert.IsFalse HasSwitch("--unattended --someday", "--test")
 End Sub
-
-'@TestMethod
-Public Sub NoViewSwitch_TriesRDFormsThenTheConsole()
-    Assert.AreEqual "RDForms,Console", Join(GameViews("--seed 42"), ",")
-End Sub
-
-'@TestMethod
-Public Sub RDFormsSwitch_TriesRDFormsThenTheConsole()
-    Assert.AreEqual "RDForms,Console", Join(GameViews("--unattended --rdforms"), ",")
-End Sub
-
-'@TestMethod
-Public Sub MSFormsSwitch_TriesMicrosoftFormsThenTheConsole()
-    Assert.AreEqual "MSForms,Console", Join(GameViews("--unattended --msforms"), ",")
-End Sub
-
-'@TestMethod
-Public Sub ConsoleSwitch_PlaysInTheConsoleAlone_EvenWithAWindowSwitch()
-    Assert.AreEqual "Console", Join(GameViews("--msforms --console"), ",")
-    Assert.AreEqual "Console", Join(GameViews("--rdforms --console"), ",")
-End Sub

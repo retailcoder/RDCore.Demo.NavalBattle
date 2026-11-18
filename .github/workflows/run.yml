@@ -2,14 +2,16 @@
 #
 # Plays the game on the RDCore platform, on Windows and on Linux. RDCore has no published release, so the job builds
 # the platform from source (rubberduck-vba/RDCore at RDCORE_REF) with its own PlatformPublish.ps1, then:
-#   1. `rdc run --unattended`, AI vs AI with a fixed seed, in the console: the game must play to "Game over" and exit 0.
+#   1. `rdc run --unattended` on the console app, AI vs AI with a fixed seed: the game must play to "Game over" and exit 0.
 #      The command line names both players, so it asks nobody anything and runs unattended; a game against a person
-#      would fail here, as it should. The game is played in its window unless --console says otherwise, and a
-#      form is UI that nobody answers when the run is unattended.
+#      would fail here, as it should.
 #   2. the same seed again: the two games must print the same output.
-#   3. `rdc build`, for the runner's own OS, then the built program plays the same two games in the console, unattended.
-#      With no executable (no .NET application host for the OS), the built program runs as `dotnet NavalBattle.dll`.
-#   4. `rdc run --unattended` with `--test`: the program runs its tests instead of a game, and exits 1 when one fails.
+#   3. `rdc build` of the console app, for the runner's own OS, then the built program plays the same two games, unattended.
+#      With no executable (no .NET application host for the OS), the built program runs as `dotnet NavalBattleConsole.dll`.
+#   4. `rdc run --unattended` with `--test`, on both apps: the console app runs the library's tests, the window app runs
+#      them and its own; each exits 1 when a test fails.
+# The workspace has three projects: NavalBattleLib, and the two apps that reference it, NavalBattleConsole and
+# NavalBattleWindow. Each app runs from its own folder, in the workspace that `.rdworkspace` makes of the three.
 
 name: Run
 
@@ -63,7 +65,7 @@ jobs:
         run: |
           $rdc = Join-Path $env:RUNNER_TEMP 'platform/RDCore.CLI' ($IsWindows ? 'rdc.exe' : 'rdc')
           $games = foreach ($n in 1, 2) {
-            $output = & $rdc run --unattended ./demo -- --console --seed 42 --player1 merciless --player2 fairplay 2>&1 | Out-String
+            $output = & $rdc run --unattended ./demo/NavalBattleConsole -- --seed 42 --player1 merciless --player2 fairplay 2>&1 | Out-String
             Write-Host $output
             if ($LASTEXITCODE -ne 0) { throw "Game $n exited with $LASTEXITCODE." }
             if ($output -notmatch 'Game over: grid \d wins\.') { throw "Game $n did not play to the end." }
@@ -71,16 +73,16 @@ jobs:
           }
           if ($games[0] -ne $games[1]) { throw 'The same seed played two different games.' }
 
-      - name: Build the program, and play AI vs AI with it
+      - name: Build the console app, and play AI vs AI with it
         run: |
           $rdc = Join-Path $env:RUNNER_TEMP 'platform/RDCore.CLI' ($IsWindows ? 'rdc.exe' : 'rdc')
-          $out = Join-Path $env:RUNNER_TEMP 'NavalBattle'
-          & $rdc build ./demo -c Release -o $out
+          $out = Join-Path $env:RUNNER_TEMP 'NavalBattleConsole'
+          & $rdc build ./demo/NavalBattleConsole -c Release -o $out
           if ($LASTEXITCODE -ne 0) { throw "rdc build exited with $LASTEXITCODE." }
-          $exe = Join-Path $out ($IsWindows ? 'NavalBattle.exe' : 'NavalBattle')
-          $play = (Test-Path $exe) ? { & $exe @args } : { dotnet (Join-Path $out 'NavalBattle.dll') @args }
+          $exe = Join-Path $out ($IsWindows ? 'NavalBattleConsole.exe' : 'NavalBattleConsole')
+          $play = (Test-Path $exe) ? { & $exe @args } : { dotnet (Join-Path $out 'NavalBattleConsole.dll') @args }
           $games = foreach ($n in 1, 2) {
-            $output = & $play --unattended --console --seed 42 --player1 merciless --player2 fairplay 2>&1 | Out-String
+            $output = & $play --unattended --seed 42 --player1 merciless --player2 fairplay 2>&1 | Out-String
             Write-Host $output
             if ($LASTEXITCODE -ne 0) { throw "Game $n exited with $LASTEXITCODE." }
             if ($output -notmatch 'Game over: grid \d wins\.') { throw "Game $n did not play to the end." }
@@ -88,8 +90,10 @@ jobs:
           }
           if ($games[0] -ne $games[1]) { throw 'The same seed played two different games.' }
 
-      - name: Run the tests
+      - name: Run the tests, in both apps
         run: |
           $rdc = Join-Path $env:RUNNER_TEMP 'platform/RDCore.CLI' ($IsWindows ? 'rdc.exe' : 'rdc')
-          & $rdc run --unattended ./demo -- --test
-          if ($LASTEXITCODE -ne 0) { throw "The tests exited with $LASTEXITCODE." }
+          foreach ($app in 'NavalBattleConsole', 'NavalBattleWindow') {
+            & $rdc run --unattended ./demo/$app -- --test
+            if ($LASTEXITCODE -ne 0) { throw "The tests of $app exited with $LASTEXITCODE." }
+          }

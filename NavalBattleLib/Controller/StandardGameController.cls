@@ -6,7 +6,7 @@ Attribute VB_Name = "StandardGameController"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
-Attribute VB_Exposed = True
+Attribute VB_Exposed = False
 Attribute VB_Description = "A game controller implementing the classic rules."
 '@Folder("NavalBattle.Controller")
 '@ModuleDescription("A game controller implementing the classic rules.")

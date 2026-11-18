@@ -6,7 +6,7 @@ Attribute VB_Name = "Dictionary"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
-Attribute VB_Exposed = True
+Attribute VB_Exposed = False
 Attribute VB_Description = "Drop-in replacement for Scripting.Dictionary on Mac\r\n(c) Tim Hall - https://github.com/vba-tools/vba-dictionary"
 '@Folder("NavalBattle.Lib")
 ''

@@ -6,8 +6,7 @@ Attribute VB_Name = "IGameStrategy"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
-Attribute VB_Exposed = True
-'@Exposed
+Attribute VB_Exposed = False
 '@Folder("NavalBattle.Model.Players.AI")
 '@Interface
 Option Explicit

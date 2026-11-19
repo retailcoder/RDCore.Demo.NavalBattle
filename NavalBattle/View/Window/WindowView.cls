@@ -107,9 +107,9 @@ Attribute FailureNumber.VB_Description = "The number of the error the window fai
     FailureNumber = this.FailureNumber
 End Property
 
-'@Description("The description of the error the window failed with before it opened, when TryPlay returned False.")
+'@Description("The description of the error the window failed with before it opened, when TryPlay returned False; empty otherwise.")
 Public Property Get FailureDescription() As String
-Attribute FailureDescription.VB_Description = "The description of the error the window failed with before it opened, when TryPlay returned False."
+Attribute FailureDescription.VB_Description = "The description of the error the window failed with before it opened, when TryPlay returned False; empty otherwise."
     FailureDescription = this.FailureDescription
 End Property
 

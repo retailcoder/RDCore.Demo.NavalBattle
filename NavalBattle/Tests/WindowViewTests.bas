@@ -6,7 +6,7 @@ Attribute VB_Description = "Tests covering the NavalBattle.WindowView class: a w
 Option Explicit
 Option Private Module
 
-' the error that a forms host which cannot start raises today (E_FAIL), as on macOS.
+' the error a forms host that cannot start raises on macOS (E_FAIL).
 Private Const StartFailed As Long = &H80004005
 
 Private Assert As TestAssert

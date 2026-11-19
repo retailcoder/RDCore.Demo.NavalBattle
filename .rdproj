@@ -65,6 +65,12 @@
         "RelativeUri": "NavalBattle/Tests/Doubles/EdgeRandomizer.cls"
       },
       {
+        "RelativeUri": "NavalBattle/Tests/Doubles/FailingWindow.cls"
+      },
+      {
+        "RelativeUri": "NavalBattle/Tests/WindowViewTests.bas"
+      },
+      {
         "RelativeUri": "NavalBattle/Model/Players/AIPlayer.cls"
       },
       {

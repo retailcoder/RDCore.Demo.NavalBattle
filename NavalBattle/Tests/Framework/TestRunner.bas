@@ -48,7 +48,7 @@ End Sub
 '@Description("The number of tests.")
 Private Property Get TestCount() As Long
 Attribute TestCount.VB_Description = "The number of tests."
-    TestCount = 90
+    TestCount = 92
 End Property
 
 '@Description("The name of a test, by its number, and runs it where run is True.")
@@ -145,6 +145,8 @@ Attribute Test.VB_Description = "The name of a test, by its number, and runs it 
         Case 88: Test = "ShipTests.KindCaption_NamesTheKind_AndItsDucks": If run Then ShipTests.KindCaption_NamesTheKind_AndItsDucks
         Case 89: Test = "BoardSpritesTests.SunkShip_ItsBowHitBefore_StaysRed_NotDizzy": If run Then BoardSpritesTests.SunkShip_ItsBowHitBefore_StaysRed_NotDizzy
         Case 90: Test = "BoardSpritesTests.DizzyShip_ADucklingHit_TheHelmIsDizzy_OnlyWhileItIsYellow": If run Then BoardSpritesTests.DizzyShip_ADucklingHit_TheHelmIsDizzy_OnlyWhileItIsYellow
+        Case 91: Test = "WindowViewTests.WindowFailingBeforeItOpens_TryPlayReturnsFalse_WithTheError": If run Then WindowViewTests.WindowFailingBeforeItOpens_TryPlayReturnsFalse_WithTheError
+        Case 92: Test = "WindowViewTests.WindowFailingOnceOpen_RaisesTheGamesError": If run Then WindowViewTests.WindowFailingOnceOpen_RaisesTheGamesError
         Case Else: Test = vbNullString
     End Select
 End Function
@@ -191,6 +193,7 @@ Attribute EnterModule.VB_Description = "Cleans up the current module and initial
         Case "BoardInputTests": BoardInputTests.ModuleCleanup
         Case "BoardSpritesTests": BoardSpritesTests.ModuleCleanup
         Case "BoardFormTests": BoardFormTests.ModuleCleanup
+        Case "WindowViewTests": WindowViewTests.ModuleCleanup
     End Select
     this.CurrentModule = moduleName
     Select Case moduleName
@@ -203,5 +206,6 @@ Attribute EnterModule.VB_Description = "Cleans up the current module and initial
         Case "BoardInputTests": BoardInputTests.ModuleInitialize
         Case "BoardSpritesTests": BoardSpritesTests.ModuleInitialize
         Case "BoardFormTests": BoardFormTests.ModuleInitialize
+        Case "WindowViewTests": WindowViewTests.ModuleInitialize
     End Select
 End Sub

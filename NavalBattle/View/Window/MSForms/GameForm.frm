@@ -417,6 +417,11 @@ Private Function PickerOf(ByVal gridId As PlayGridId) As MSForms.ComboBox
     End If
 End Function
 
+' the window is on screen: its listener knows it opened.
+Private Sub UserForm_Activate()
+    If Not listener Is Nothing Then listener.Opened
+End Sub
+
 Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
     Set personInput.Events = Nothing
     Erase cells

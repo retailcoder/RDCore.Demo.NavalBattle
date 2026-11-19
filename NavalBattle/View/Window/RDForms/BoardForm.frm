@@ -516,6 +516,11 @@ Private Sub personInput_PlayersConfirmed()
     Next
 End Sub
 
+' the window is on screen: its listener knows it opened.
+Private Sub Form_Activate()
+    If Not listener Is Nothing Then listener.Opened
+End Sub
+
 Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
     Set personInput.Events = Nothing
     If Not listener Is Nothing Then listener.Closed

@@ -40,34 +40,50 @@ Attribute Main.VB_Description = "Plays a game: in the RDForms window, else in th
     Next
 End Sub
 
-'@Description("Plays games in the given window, Microsoft Forms' or RDForms', one after the other while the person asks for a new one, and returns True when it is closed; returns False when the window cannot be opened here: Microsoft Forms is not installed, or the runtime has no forms host.")
+'@Description("Plays games in the given window, Microsoft Forms' or RDForms', one after the other while the person asks for a new one, and returns True when it is closed. Returns False when the window cannot be made or fails before it opens, whatever the error, and says why: the game is then played in the next view. An error once the window is open is the game's, and is raised.")
 Private Function TryPlayInWindow(ByVal viewName As String, ByVal firstPlayer As String, ByVal secondPlayer As String) As Boolean
-Attribute TryPlayInWindow.VB_Description = "Plays games in the given window, Microsoft Forms' or RDForms', one after the other while the person asks for a new one, and returns True when it is closed; returns False when the window cannot be opened here: Microsoft Forms is not installed, or the runtime has no forms host."
+Attribute TryPlayInWindow.VB_Description = "Plays games in the given window, Microsoft Forms' or RDForms', one after the other while the person asks for a new one, and returns True when it is closed. Returns False when the window cannot be made or fails before it opens, whatever the error, and says why: the game is then played in the next view. An error once the window is open is the game's, and is raised."
     Dim view As WindowView
-    ' Microsoft Forms is missing as soon as its form is made; a missing forms host shows when the RDForms window is first shown, or its player picked.
-    On Error GoTo NoWindow
     Do
-        If viewName = ViewMicrosoftForms Then
-            Set view = WindowView.Create(New GameForm)
-        Else
-            Set view = WindowView.Create(New BoardForm)
-        End If
+        If Not TryMakeWindow(viewName, view) Then Exit Function
 
         StartGame GridViewAdapter.Create(view)
-        view.Play firstPlayer, secondPlayer
+        If Not view.TryPlay(firstPlayer, secondPlayer) Then
+            ReportNoWindow viewName, view.FailureNumber, view.FailureDescription
+            Exit Function
+        End If
     Loop While view.WantsNewGame
     TryPlayInWindow = True
+End Function
+
+'@Description("Makes the view of the given window, and returns True; returns False, and says why, when the window cannot be made, whatever the error: Microsoft Forms is missing as soon as its form is made.")
+Private Function TryMakeWindow(ByVal viewName As String, ByRef outView As WindowView) As Boolean
+Attribute TryMakeWindow.VB_Description = "Makes the view of the given window, and returns True; returns False, and says why, when the window cannot be made, whatever the error: Microsoft Forms is missing as soon as its form is made."
+    On Error GoTo NoWindow
+    If viewName = ViewMicrosoftForms Then
+        Set outView = WindowView.Create(New GameForm)
+    Else
+        Set outView = WindowView.Create(New BoardForm)
+    End If
+    TryMakeWindow = True
     Exit Function
 
 NoWindow:
-    If Err.Number <> ClassNotRegistered Then Err.Raise Err.Number, Err.Source, Err.Description
-    If viewName = ViewMicrosoftForms Then
-        Debug.Print "The game form needs Microsoft Forms, which is not installed here."
-    Else
-        Debug.Print "The RDForms window needs a forms host, which this runtime does not have."
-    End If
-    TryPlayInWindow = False
+    ReportNoWindow viewName, Err.Number, Err.Description
+    TryMakeWindow = False
 End Function
+
+'@Description("Says why the given window could not be opened here, before the game is played in the next view.")
+Private Sub ReportNoWindow(ByVal viewName As String, ByVal errorNumber As Long, ByVal errorDescription As String)
+Attribute ReportNoWindow.VB_Description = "Says why the given window could not be opened here, before the game is played in the next view."
+    If errorNumber = ClassNotRegistered And viewName = ViewMicrosoftForms Then
+        Debug.Print "The game form needs Microsoft Forms, which is not installed here."
+    ElseIf errorNumber = ClassNotRegistered Then
+        Debug.Print "The RDForms window cannot be opened here: this runtime has no forms host, or its windows cannot start."
+    Else
+        Debug.Print "The " & IIf(viewName = ViewMicrosoftForms, "Microsoft Forms", "RDForms") & " window could not be opened here: error " & errorNumber & ", " & errorDescription
+    End If
+End Sub
 
 '@Description("Plays a game in the console.")
 Private Sub PlayInConsole(ByVal firstPlayer As String, ByVal secondPlayer As String)

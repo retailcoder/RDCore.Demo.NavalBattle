@@ -19,6 +19,9 @@ Private Type TView
     ViewEvents As IGridViewEvents
     Window As IGameWindow
     Closed As Boolean
+    Opened As Boolean
+    FailureNumber As Long
+    FailureDescription As String
     HumanGridId As PlayGridId
     Grids(PlayerGrid1 To PlayerGrid2) As PlayerGrid
 End Type
@@ -60,6 +63,10 @@ Private Sub IGameWindowEvents_Closed()
     If Not this.ViewEvents Is Nothing Then this.ViewEvents.ViewClosed
 End Sub
 
+Private Sub IGameWindowEvents_Opened()
+    this.Opened = True
+End Sub
+
 ' once the person closes the window, a game that is still being played goes on without it, and is no longer shown.
 Private Function IsOpen() As Boolean
     IsOpen = Not this.Closed
@@ -78,6 +85,33 @@ Attribute Play.VB_Description = "Shows the game window, with the given players p
     If IsOpen Then window.PickPlayer PlayerGrid2, secondPlayer
     If IsOpen Then window.Show
 End Sub
+
+'@Description("Plays as Play does, and returns True once the window is closed. Returns False when the window failed before it opened, whatever the error: no forms host, a forms host that cannot start here, or no Microsoft Forms. FailureNumber and FailureDescription then say why. An error once the window is open is the game's, and is raised.")
+Public Function TryPlay(Optional ByVal firstPlayer As String, Optional ByVal secondPlayer As String) As Boolean
+Attribute TryPlay.VB_Description = "Plays as Play does, and returns True once the window is closed. Returns False when the window failed before it opened, whatever the error: no forms host, a forms host that cannot start here, or no Microsoft Forms. FailureNumber and FailureDescription then say why. An error once the window is open is the game's, and is raised."
+    On Error GoTo Failed
+    Play firstPlayer, secondPlayer
+    TryPlay = True
+    Exit Function
+
+Failed:
+    If this.Opened Then Err.Raise Err.Number, Err.Source, Err.Description
+    this.FailureNumber = Err.Number
+    this.FailureDescription = Err.Description
+    TryPlay = False
+End Function
+
+'@Description("The number of the error the window failed with before it opened, when TryPlay returned False; 0 otherwise.")
+Public Property Get FailureNumber() As Long
+Attribute FailureNumber.VB_Description = "The number of the error the window failed with before it opened, when TryPlay returned False; 0 otherwise."
+    FailureNumber = this.FailureNumber
+End Property
+
+'@Description("The description of the error the window failed with before it opened, when TryPlay returned False.")
+Public Property Get FailureDescription() As String
+Attribute FailureDescription.VB_Description = "The description of the error the window failed with before it opened, when TryPlay returned False."
+    FailureDescription = this.FailureDescription
+End Property
 
 Private Property Get IGridViewCommands_Events() As IGridViewEvents
     Set IGridViewCommands_Events = this.ViewEvents

@@ -685,8 +685,9 @@ Private Sub FillCell(ByVal gridId As PlayGridId, ByVal X As Long, ByVal Y As Lon
         If colour = board.Water Then
             .BackStyle = 0 ' transparent
         Else
-            .BackColor = colour
+            ' opaque first: VB6 drops the BackColor of a transparent label.
             .BackStyle = 1 ' opaque
+            .BackColor = colour
         End If
     End With
 End Sub

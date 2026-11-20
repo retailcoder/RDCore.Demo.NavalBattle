@@ -14,7 +14,9 @@ Attribute VB_Description = "An implementation of IPlayer that is AI-controlled."
 Option Explicit
 Implements IPlayer
 
-#If Win32 Or Win64 Then
+' kernel32's Sleep on Windows; a Mac, and any other platform, waits on the Timer.
+#If Mac Then
+#ElseIf Win32 Then
 Private Declare PtrSafe Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As Long)
 #End If
 
@@ -101,9 +103,18 @@ End Property
 '@Description("Waits the given number of milliseconds, so a person can watch the AI play.")
 Private Sub Pause(ByVal milliseconds As Long)
 Attribute Pause.VB_Description = "Waits the given number of milliseconds, so a person can watch the AI play."
-#If Win32 Or Win64 Then
+#If Mac Then
+    WaitOnTimer milliseconds
+#ElseIf Win32 Then
     Sleep milliseconds
 #Else
+    WaitOnTimer milliseconds
+#End If
+End Sub
+
+'@Description("Waits the given number of milliseconds on the Timer, where there is no kernel32.")
+Private Sub WaitOnTimer(ByVal milliseconds As Long)
+Attribute WaitOnTimer.VB_Description = "Waits the given number of milliseconds on the Timer, where there is no kernel32."
     Dim startTime As Single
     startTime = Timer
     Dim elapsed As Single
@@ -112,5 +123,4 @@ Attribute Pause.VB_Description = "Waits the given number of milliseconds, so a p
         elapsed = Timer - startTime
         If elapsed < 0 Then elapsed = elapsed + 86400 ' Timer went past midnight
     Loop While elapsed * 1000 < milliseconds
-#End If
 End Sub

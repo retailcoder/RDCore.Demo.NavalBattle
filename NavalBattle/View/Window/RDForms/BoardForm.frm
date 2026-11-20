@@ -331,7 +331,9 @@ End Sub
 ' the documentation opens in the browser; where no browser can be started, the address is shown instead.
 Private Sub mnuHelpDocs_Click()
     Dim started As Boolean
-#If Win32 Or Win64 Then
+#If Mac Then
+    ' a Mac has no explorer.exe: the address is shown.
+#ElseIf Win32 Then
     On Error Resume Next
     started = Shell("explorer.exe """ & DocsAddress & """", vbNormalFocus) <> 0
     On Error GoTo 0

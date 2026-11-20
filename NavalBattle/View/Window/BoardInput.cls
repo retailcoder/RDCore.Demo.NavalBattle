@@ -29,6 +29,7 @@ Private Type TInput
     PreviewX As Long
     PreviewY As Long
     Locked(PlayerGrid1 To PlayerGrid2) As Boolean
+    OtherButtonPressed As Boolean
 End Type
 
 Private this As TInput
@@ -150,9 +151,16 @@ Attribute TakesClicks.VB_Description = "Whether a grid's cells take the person's
     TakesClicks = this.Phase = PhaseShipPlacement Or this.Phase = PhaseAttack
 End Function
 
-'@Description("The person clicked a cell: while they place their ships, the ship goes there; in the battle, it is their shot.")
+'@Description("The person pressed the given mouse button on a cell. A window raises Click for a right click too, after its MouseUp: the Click that follows a button other than the left one is ignored.")
+Public Sub ButtonPressed(ByVal button As Integer)
+Attribute ButtonPressed.VB_Description = "The person pressed the given mouse button on a cell. A window raises Click for a right click too, after its MouseUp: the Click that follows a button other than the left one is ignored."
+    this.OtherButtonPressed = button <> vbLeftButton
+End Sub
+
+'@Description("The person clicked a cell: while they place their ships, the ship goes there; in the battle, it is their shot. Ignored when the button pressed was not the left one.")
 Public Sub Click(ByVal gridId As PlayGridId, ByVal position As IGridCoord)
-Attribute Click.VB_Description = "The person clicked a cell: while they place their ships, the ship goes there; in the battle, it is their shot."
+Attribute Click.VB_Description = "The person clicked a cell: while they place their ships, the ship goes there; in the battle, it is their shot. Ignored when the button pressed was not the left one."
+    If this.OtherButtonPressed Then Exit Sub
     If this.Locked(gridId) Or this.ComputerTurn Or this.ViewEvents Is Nothing Then Exit Sub
     Select Case this.Phase
         Case PhaseShipPlacement

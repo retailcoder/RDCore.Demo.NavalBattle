@@ -77,6 +77,39 @@ Public Sub ShipPlacementRightClick_TurnsTheShip()
 End Sub
 
 '@TestMethod
+Public Sub ShipPlacementRightClick_ItsClick_PlacesNothing()
+    Dim SUT As BoardInput
+    Dim window As BoardInputRecorder
+    Set window = Watched(SUT)
+    SUT.BeginShipPlacement PlayerGrid1
+
+    ' a window raises Click after the MouseUp of a right click.
+    SUT.ButtonPressed vbRightButton
+    SUT.RightClick PlayerGrid1, GridCoord.Create(5, 6)
+    SUT.Click PlayerGrid1, GridCoord.Create(5, 6)
+
+    Assert.AreEqual 1, window.Calls.Count, "the calls"
+    Assert.AreEqual "PreviewRotateShip 1 (5,6)", window.Calls(1)
+End Sub
+
+'@TestMethod
+Public Sub LeftClickAfterARightClick_PlacesTheShip()
+    Dim SUT As BoardInput
+    Dim window As BoardInputRecorder
+    Set window = Watched(SUT)
+    SUT.BeginShipPlacement PlayerGrid1
+    SUT.ButtonPressed vbRightButton
+    SUT.Click PlayerGrid1, GridCoord.Create(5, 6)
+
+    SUT.ButtonPressed vbLeftButton
+    SUT.Click PlayerGrid1, GridCoord.Create(3, 4)
+
+    Assert.AreEqual 2, window.Calls.Count, "the calls"
+    Assert.AreEqual "PreviewShipPosition 1 (3,4)", window.Calls(1)
+    Assert.AreEqual "ConfirmShipPosition 1 (3,4)", window.Calls(2)
+End Sub
+
+'@TestMethod
 Public Sub Ready_ConfirmsThePlayers_AndMakesThem()
     Dim SUT As BoardInput
     Dim window As BoardInputRecorder

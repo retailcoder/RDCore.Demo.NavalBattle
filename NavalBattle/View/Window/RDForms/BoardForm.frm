@@ -471,6 +471,11 @@ Private Sub imgBackground_MouseMove(Button As Integer, Shift As Integer, X As Si
     HoverCell 0, 0, 0
 End Sub
 
+' the Click a right click raises after its MouseUp is not a click on the cell: the input knows which button was pressed.
+Private Sub lblCell_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+    personInput.ButtonPressed Button
+End Sub
+
 Private Sub lblCell_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
     If Button = vbRightButton Then personInput.RightClick GridOf(Index), PositionOf(Index)
 End Sub
@@ -482,6 +487,10 @@ End Sub
 
 Private Sub imgCellSprite_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
     lblCell_MouseMove Index, Button, Shift, X, Y
+End Sub
+
+Private Sub imgCellSprite_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+    lblCell_MouseDown Index, Button, Shift, X, Y
 End Sub
 
 Private Sub imgCellSprite_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
